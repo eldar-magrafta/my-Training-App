@@ -1234,7 +1234,14 @@
       btn.style.background = '';
 
       document.getElementById('ytBtn').onclick = () => {
-        window.open('https://www.youtube.com/results?search_query=' + encodeURIComponent(ex.yt), '_blank');
+        const url = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(ex.yt);
+        const a = document.createElement('a');
+        a.href = url;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => document.body.removeChild(a), 100);
       };
 
       document.getElementById('modalOverlay').classList.add('open');
