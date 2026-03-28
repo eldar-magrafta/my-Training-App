@@ -1761,10 +1761,12 @@
     }
 
     function bwPrevMonth() {
+      if (bwCalYear === 2020 && bwCalMon === 0) return;
       if (bwCalMon===0) { bwCalMon=11; bwCalYear--; } else bwCalMon--;
       renderBWCalendar();
     }
     function bwNextMonth() {
+      if (bwCalYear === 2035 && bwCalMon === 11) return;
       if (bwCalMon===11) { bwCalMon=0; bwCalYear++; } else bwCalMon++;
       renderBWCalendar();
     }
