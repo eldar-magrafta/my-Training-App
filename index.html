@@ -954,7 +954,7 @@
         document.getElementById('fab').classList.add('hidden');
         navContext = 'home';
         buildHome();
-      } else {
+      } else if (tab === 'plans') {
         showView('plansView');
         setHeader('My Plans', false);
         document.getElementById('fab').classList.remove('hidden');
