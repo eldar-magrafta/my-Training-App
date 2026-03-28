@@ -177,6 +177,27 @@
     }
     .add-ex-btn:active { background: rgba(233,69,96,0.08); }
 
+    .plan-detail-actions {
+      display: flex; gap: 10px; margin-top: 4px;
+    }
+    .plan-detail-actions .add-ex-btn { margin-top: 0; }
+
+    /* ── Section Titles inside a plan ── */
+    .plan-section-title {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 2px 6px;
+    }
+    .plan-section-title-text {
+      font-size: 0.78rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1.5px; color: var(--accent);
+    }
+    .plan-title-remove {
+      background: none; border: none; color: rgba(255,255,255,0.2);
+      font-size: 1.1rem; cursor: pointer; padding: 4px 6px; line-height: 1;
+      border-radius: 6px;
+    }
+    .plan-title-remove:active { color: var(--accent); background: rgba(233,69,96,0.12); }
+
     .plan-empty-ex {
       text-align: center; padding: 40px 20px; color: var(--muted);
     }
@@ -357,7 +378,10 @@
   </div>
   <div class="view" id="planDetailView">
     <div class="plan-detail-list" id="planDetailList"></div>
-    <button class="add-ex-btn" id="addExBtn" onclick="showExercisePicker()">+ Add Exercises</button>
+    <div class="plan-detail-actions">
+      <button class="add-ex-btn" id="addExBtn" onclick="showExercisePicker()">＋ Add Exercises</button>
+      <button class="add-ex-btn" id="addTitleBtn" onclick="openAddTitle()" style="border-color:rgba(255,255,255,0.18);color:rgba(255,255,255,0.55);flex:0 0 auto;width:auto;padding:15px 18px;">＋ Title</button>
+    </div>
   </div>
   <div class="view" id="exercisePickerView">
     <div class="picker-list" id="pickerList"></div>
@@ -422,6 +446,21 @@
       </div>
       <button class="save-btn" id="saveBtn" onclick="saveLog()">Save</button>
       <button class="yt-btn" id="ytBtn">▶&nbsp; Watch Tutorial on YouTube</button>
+    </div>
+  </div>
+
+  <!-- Add Title Modal -->
+  <div class="modal-overlay" id="addTitleOverlay" onclick="handleTitleOverlayClick(event)">
+    <div class="modal">
+      <div class="modal-handle"></div>
+      <div class="modal-header">
+        <div class="modal-title">Add Section Title</div>
+        <button class="modal-close" onclick="closeAddTitle()">✕</button>
+      </div>
+      <input class="plan-name-input" id="titleInput"
+        type="text" placeholder="e.g. Warmup, Main Set, Finisher…"
+        maxlength="30" onkeydown="if(event.key==='Enter')saveTitle()" />
+      <button class="create-btn" onclick="saveTitle()">Add Title</button>
     </div>
   </div>
 
@@ -897,7 +936,7 @@
         plans.forEach(plan => {
           const card = document.createElement('div');
           card.className = 'plan-card';
-          const exCount = plan.exercises.length;
+          const exCount = plan.exercises.filter(i => typeof i === 'string').length;
           card.innerHTML = `
             <div>
               <div class="plan-card-name">${plan.name}</div>
@@ -954,6 +993,7 @@
       const list = document.getElementById('planDetailList');
       list.innerHTML = '';
 
+      const exItems = plan.exercises.filter(i => typeof i === 'string');
       if (plan.exercises.length === 0) {
         list.innerHTML = `
           <div class="plan-empty-ex">
@@ -961,25 +1001,40 @@
             <p>No exercises yet.<br>Tap below to add some.</p>
           </div>`;
       } else {
-        plan.exercises.forEach(exName => {
+        plan.exercises.forEach((item, idx) => {
+          // ── Section title ──
+          if (item && typeof item === 'object' && item.title !== undefined) {
+            const row = document.createElement('div');
+            row.className = 'plan-section-title';
+            row.innerHTML = `
+              <span class="plan-section-title-text">${item.title}</span>
+              <button class="plan-title-remove" title="Remove title">✕</button>`;
+            row.querySelector('.plan-title-remove').onclick = () => {
+              removeTitleFromPlan(planId, idx);
+            };
+            list.appendChild(row);
+            return;
+          }
+          // ── Exercise ──
+          const exName = item;
           const found = findExercise(exName);
           if (!found) return;
           const log = getLog(exName);
-          const item = document.createElement('div');
-          item.className = 'plan-ex-item';
+          const el = document.createElement('div');
+          el.className = 'plan-ex-item';
           const subText = log ? `Last: ${log.weight} kg × ${log.reps} reps` : found.ex.sets;
-          item.innerHTML = `
+          el.innerHTML = `
             <div class="plan-ex-info">
               <div class="plan-ex-name">${exName}</div>
               <div class="plan-ex-sub ${log ? 'logged' : ''}">${subText}</div>
             </div>
             <button class="plan-ex-remove" title="Remove">−</button>`;
-          item.querySelector('.plan-ex-info').onclick = () => openModal(found.ex, found.groupName);
-          item.querySelector('.plan-ex-remove').onclick = (e) => {
+          el.querySelector('.plan-ex-info').onclick = () => openModal(found.ex, found.groupName);
+          el.querySelector('.plan-ex-remove').onclick = (e) => {
             e.stopPropagation();
             removeExerciseFromPlan(planId, exName);
           };
-          list.appendChild(item);
+          list.appendChild(el);
         });
       }
 
@@ -993,9 +1048,44 @@
       const plans = getPlans();
       const plan = plans.find(p => p.id === planId);
       if (!plan) return;
-      plan.exercises = plan.exercises.filter(e => e !== exName);
+      plan.exercises = plan.exercises.filter(i => i !== exName);
       savePlans(plans);
       showPlanDetail(planId);
+    }
+
+    function removeTitleFromPlan(planId, idx) {
+      const plans = getPlans();
+      const plan = plans.find(p => p.id === planId);
+      if (!plan) return;
+      plan.exercises.splice(idx, 1);
+      savePlans(plans);
+      showPlanDetail(planId);
+    }
+
+    function openAddTitle() {
+      document.getElementById('titleInput').value = '';
+      document.getElementById('addTitleOverlay').classList.add('open');
+      setTimeout(() => document.getElementById('titleInput').focus(), 300);
+    }
+
+    function closeAddTitle() {
+      document.getElementById('addTitleOverlay').classList.remove('open');
+    }
+
+    function handleTitleOverlayClick(e) {
+      if (e.target === document.getElementById('addTitleOverlay')) closeAddTitle();
+    }
+
+    function saveTitle() {
+      const text = document.getElementById('titleInput').value.trim();
+      if (!text || !currentPlanId) return;
+      const plans = getPlans();
+      const plan = plans.find(p => p.id === currentPlanId);
+      if (!plan) return;
+      plan.exercises.push({ title: text });
+      savePlans(plans);
+      closeAddTitle();
+      showPlanDetail(currentPlanId);
     }
 
     // ── Exercise Picker ──
@@ -1010,7 +1100,7 @@
         const groupEl = document.createElement('div');
         groupEl.className = 'picker-group';
 
-        const addedCount = group.exercises.filter(ex => plan.exercises.includes(ex.name)).length;
+        const addedCount = group.exercises.filter(ex => plan.exercises.some(i => i === ex.name)).length;
 
         groupEl.innerHTML = `
           <div class="picker-group-hdr" onclick="togglePickerGroup(this)">
@@ -1023,7 +1113,7 @@
           </div>
           <div class="picker-exercises" id="picker_${key}">
             ${group.exercises.map(ex => {
-              const added = plan.exercises.includes(ex.name);
+              const added = plan.exercises.some(i => i === ex.name);
               return `
                 <div class="picker-ex-item" onclick="toggleExerciseInPlan('${ex.name.replace(/'/g, "\\'")}', '${key}')">
                   <span class="picker-ex-name ${added ? '' : ''}" id="pname_${ex.name.replace(/[^a-z0-9]/gi,'_')}">${ex.name}</span>
@@ -1036,7 +1126,7 @@
       });
 
       showView('exercisePickerView');
-      setHeader('Add Exercises', true);
+      setHeader('Add Exercises', false, '✓  Done', () => showPlanDetail(currentPlanId));
       document.getElementById('fab').classList.add('hidden');
       navContext = 'picker';
     }
@@ -1052,7 +1142,7 @@
       const plan = plans.find(p => p.id === currentPlanId);
       if (!plan) return;
 
-      const idx = plan.exercises.indexOf(exName);
+      const idx = plan.exercises.findIndex(i => i === exName);
       if (idx === -1) {
         plan.exercises.push(exName);
       } else {
@@ -1069,7 +1159,7 @@
       const updatedPlan = getPlan(currentPlanId);
       const group = data[groupKey];
       if (group) {
-        const count = group.exercises.filter(e => updatedPlan.exercises.includes(e.name)).length;
+        const count = group.exercises.filter(e => updatedPlan.exercises.some(i => i === e.name)).length;
         const badge = document.getElementById('badge_' + groupKey);
         if (badge) {
           badge.textContent = count;
