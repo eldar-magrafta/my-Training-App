@@ -46,7 +46,7 @@
       cursor: pointer; display: none; align-items: center; justify-content: center; flex-shrink: 0;
     }
     .back-btn.visible { display: flex; }
-    .header-title { font-size: 1.4rem; font-weight: 700; flex: 1; text-align: center; }
+    .header-title { font-size: 1.4rem; font-weight: 700; flex: 1; }
     .header-action {
       background: none; border: none; color: var(--accent);
       font-size: 0.95rem; font-weight: 600; cursor: pointer;
@@ -424,7 +424,7 @@
   <!-- Tab Bar -->
   <div class="tab-bar">
     <button class="tab-btn active" id="tabEx" onclick="switchTab('exercises')">
-      <span class="tab-icon">💪</span><span>Exercises</span>
+      <span class="tab-icon">💪</span><span>All Exercises</span>
     </button>
     <button class="tab-btn" id="tabPlans" onclick="switchTab('plans')">
       <span class="tab-icon">📋</span><span>My Plans</span>
@@ -905,9 +905,8 @@
       const entries = Object.entries(data);
       grid.innerHTML = '';
       entries.forEach(([key, group], i) => {
-        const isLastOdd = i === entries.length - 1 && entries.length % 2 !== 0;
         const card = document.createElement('div');
-        card.className = 'muscle-card' + (isLastOdd ? ' wide' : '');
+        card.className = 'muscle-card';
         card.innerHTML = `
           <div class="muscle-icon-wrap">
             <img src="images/baseImage_transparent.png" alt="" loading="lazy">
