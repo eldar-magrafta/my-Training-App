@@ -198,6 +198,15 @@
     }
     .plan-title-remove:active { color: var(--accent); background: rgba(233,69,96,0.12); }
 
+    /* ── Drag handle ── */
+    .drag-handle {
+      color: rgba(255,255,255,0.2); font-size: 1.15rem;
+      padding: 8px 6px 8px 0; cursor: grab; touch-action: none;
+      flex-shrink: 0; user-select: none; -webkit-user-select: none;
+      line-height: 1;
+    }
+    .drag-handle:active { color: rgba(255,255,255,0.5); }
+
     .plan-empty-ex {
       text-align: center; padding: 40px 20px; color: var(--muted);
     }
@@ -412,13 +421,7 @@
       <div class="modal-desc" id="modalDesc"></div>
       <div class="section-label">Key Tips</div>
       <ul class="tips-list" id="modalTips"></ul>
-      <div class="sets-box">
-        <span class="sets-icon">📊</span>
-        <div>
-          <div class="sets-label">Recommended Volume</div>
-          <div class="sets-value" id="modalSets"></div>
-        </div>
-      </div>
+      <button class="yt-btn" id="ytBtn" style="margin-bottom:20px;">▶&nbsp; Watch Tutorial on YouTube</button>
       <div class="section-label">Last Session</div>
       <div class="last-session-box">
         <span class="ls-icon">🕐</span>
@@ -445,7 +448,6 @@
         </div>
       </div>
       <button class="save-btn" id="saveBtn" onclick="saveLog()">Save</button>
-      <button class="yt-btn" id="ytBtn">▶&nbsp; Watch Tutorial on YouTube</button>
     </div>
   </div>
 
@@ -902,7 +904,7 @@
         const log = getLog(ex.name);
         const item = document.createElement('div');
         item.className = 'exercise-item';
-        const subText = log ? `Last: ${log.weight} kg × ${log.reps} reps` : ex.sets;
+        const subText = log ? `Last: ${log.weight} kg × ${log.reps} reps` : group.name;
         item.innerHTML = `
           <div>
             <div class="ex-name">${ex.name}</div>
@@ -1006,7 +1008,9 @@
           if (item && typeof item === 'object' && item.title !== undefined) {
             const row = document.createElement('div');
             row.className = 'plan-section-title';
+            row.dataset.planItemIdx = idx;
             row.innerHTML = `
+              <span class="drag-handle" style="padding:4px 8px 4px 0;font-size:1rem;">⠿</span>
               <span class="plan-section-title-text">${item.title}</span>
               <button class="plan-title-remove" title="Remove title">✕</button>`;
             row.querySelector('.plan-title-remove').onclick = () => {
@@ -1022,8 +1026,10 @@
           const log = getLog(exName);
           const el = document.createElement('div');
           el.className = 'plan-ex-item';
-          const subText = log ? `Last: ${log.weight} kg × ${log.reps} reps` : found.ex.sets;
+          el.dataset.planItemIdx = idx;
+          const subText = log ? `Last: ${log.weight} kg × ${log.reps} reps` : found.groupName;
           el.innerHTML = `
+            <span class="drag-handle">⠿</span>
             <div class="plan-ex-info">
               <div class="plan-ex-name">${exName}</div>
               <div class="plan-ex-sub ${log ? 'logged' : ''}">${subText}</div>
@@ -1037,6 +1043,9 @@
           list.appendChild(el);
         });
       }
+
+      // Init drag-to-reorder on all rendered items
+      [...list.children].forEach((child, i) => _initItemDrag(child, i));
 
       showView('planDetailView');
       setHeader(plan.name, true, 'Delete', deletePlan);
@@ -1174,7 +1183,6 @@
       document.getElementById('modalTitle').textContent = ex.name;
       document.getElementById('modalTag').textContent = muscleName;
       document.getElementById('modalDesc').textContent = ex.desc;
-      document.getElementById('modalSets').textContent = ex.sets;
       document.getElementById('modalTips').innerHTML = ex.tips.map(t => `<li>${t}</li>`).join('');
 
       const log = getLog(ex.name);
@@ -1225,11 +1233,130 @@
       setTimeout(() => { btn.textContent = 'Save'; btn.style.background = ''; }, 1800);
     }
 
-    function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
+    function closeModal() {
+      const modal = document.querySelector('#modalOverlay .modal');
+      modal.style.transform = '';
+      document.getElementById('modalOverlay').classList.remove('open');
+    }
     function handleOverlayClick(e) { if (e.target === document.getElementById('modalOverlay')) closeModal(); }
+
+    // ── Drag-to-reorder plan items ──
+    let _drag = null;
+    let _dragOrigItems = null;
+
+    function _initItemDrag(el, domIdx) {
+      const handle = el.querySelector('.drag-handle');
+      if (!handle) return;
+      handle.addEventListener('touchstart', e => {
+        e.preventDefault();
+        e.stopPropagation();
+        _startDrag(e, domIdx);
+      }, { passive: false });
+    }
+
+    function _startDrag(e, domIdx) {
+      if (_drag) return;
+      const plan = getPlan(currentPlanId);
+      if (!plan) return;
+      _dragOrigItems = [...plan.exercises];
+
+      const touch = e.touches[0];
+      const listEl = document.getElementById('planDetailList');
+      const el = [...listEl.children][domIdx];
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+
+      const ghost = el.cloneNode(true);
+      ghost.style.cssText = `position:fixed;left:${rect.left}px;top:${rect.top}px;width:${rect.width}px;z-index:1000;pointer-events:none;opacity:0.93;box-shadow:0 10px 40px rgba(0,0,0,0.6);transform:scale(1.03);border-radius:14px;transition:none;background:var(--card);`;
+      document.body.appendChild(ghost);
+      el.style.visibility = 'hidden';
+
+      _drag = { el, ghost, listEl, offsetY: touch.clientY - rect.top };
+
+      document.addEventListener('touchmove', _onDragMove, { passive: false });
+      document.addEventListener('touchend', _onDragEnd, { once: true });
+    }
+
+    function _onDragMove(e) {
+      e.preventDefault();
+      if (!_drag) return;
+      const touch = e.touches[0];
+      const { ghost, el, offsetY, listEl } = _drag;
+      ghost.style.top = (touch.clientY - offsetY) + 'px';
+
+      // Find insertion point
+      const siblings = [...listEl.children].filter(c => c !== el);
+      let insertBefore = null;
+      for (const sib of siblings) {
+        const r = sib.getBoundingClientRect();
+        if (touch.clientY < r.top + r.height / 2) { insertBefore = sib; break; }
+      }
+      if (insertBefore) listEl.insertBefore(el, insertBefore);
+      else listEl.appendChild(el);
+    }
+
+    function _onDragEnd() {
+      document.removeEventListener('touchmove', _onDragMove);
+      if (!_drag) return;
+      const { el, ghost, listEl } = _drag;
+      ghost.remove();
+      el.style.visibility = '';
+
+      // Rebuild order from DOM data-plan-item-idx
+      const newOrder = [...listEl.children].map(child => {
+        const origIdx = parseInt(child.dataset.planItemIdx);
+        return _dragOrigItems[origIdx];
+      }).filter(i => i !== undefined);
+
+      const plans = getPlans();
+      const plan = plans.find(p => p.id === currentPlanId);
+      if (plan) { plan.exercises = newOrder; savePlans(plans); }
+
+      _drag = null;
+      _dragOrigItems = null;
+      showPlanDetail(currentPlanId);
+    }
+
+    // ── Modal swipe-down to dismiss ──
+    function initModalSwipe() {
+      const overlay = document.getElementById('modalOverlay');
+      const modal = overlay.querySelector('.modal');
+      let _md = null;
+
+      modal.addEventListener('touchstart', e => {
+        const touch = e.touches[0];
+        const rect = modal.getBoundingClientRect();
+        if (touch.clientY - rect.top > 72) return; // only top area
+        _md = { startY: touch.clientY };
+      }, { passive: true });
+
+      modal.addEventListener('touchmove', e => {
+        if (!_md) return;
+        const dy = Math.max(0, e.touches[0].clientY - _md.startY);
+        e.preventDefault();
+        modal.style.transition = 'none';
+        modal.style.transform = `translateY(${dy}px)`;
+        overlay.style.background = `rgba(0,0,0,${Math.max(0.05, 0.65 - dy / 350)})`;
+      }, { passive: false });
+
+      modal.addEventListener('touchend', e => {
+        if (!_md) return;
+        const dy = e.changedTouches[0].clientY - _md.startY;
+        modal.style.transition = '';
+        overlay.style.background = '';
+        if (dy > 110) {
+          modal.style.transform = `translateY(110%)`;
+          setTimeout(() => { modal.style.transform = ''; closeModal(); }, 240);
+        } else {
+          modal.style.transform = '';
+        }
+        _md = null;
+      });
+    }
 
     // ── Init ──
     buildHome();
+    initModalSwipe();
   </script>
 </body>
 </html>
