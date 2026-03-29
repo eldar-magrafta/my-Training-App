@@ -533,6 +533,16 @@
     <button class="bw-delete-all-btn" onclick="openBWDeleteConfirm()">🗑  Delete All Weight Data</button>
   </div>
 
+  <!-- Remove exercise from plan confirmation sheet -->
+  <div class="confirm-overlay" id="removeExConfirmOverlay" onclick="if(event.target===this)closeRemoveExConfirm()">
+    <div class="confirm-sheet">
+      <div class="confirm-title">Remove Exercise?</div>
+      <div class="confirm-msg" id="removeExConfirmMsg"></div>
+      <button class="confirm-btn-del" onclick="confirmRemoveEx()">Remove</button>
+      <button class="confirm-btn-cancel" onclick="closeRemoveExConfirm()">Cancel</button>
+    </div>
+  </div>
+
   <!-- Delete-all confirmation sheet -->
   <div class="confirm-overlay" id="bwConfirmOverlay" onclick="if(event.target===this)closeBWDeleteConfirm()">
     <div class="confirm-sheet">
@@ -1231,7 +1241,7 @@
           el.querySelector('.plan-ex-info').onclick = () => openModal(found.ex, found.groupName, true);
           el.querySelector('.plan-ex-remove').onclick = (e) => {
             e.stopPropagation();
-            removeExerciseFromPlan(planId, exName);
+            openRemoveExConfirm(planId, exName);
           };
           list.appendChild(el);
         });
@@ -1244,6 +1254,26 @@
       setHeader(plan.name, true, 'Delete', deletePlan);
       document.getElementById('fab').classList.add('hidden');
       navContext = 'plan-detail';
+    }
+
+    let _pendingRemovePlanId = null;
+    let _pendingRemoveExName = null;
+    function openRemoveExConfirm(planId, exName) {
+      _pendingRemovePlanId = planId;
+      _pendingRemoveExName = exName;
+      document.getElementById('removeExConfirmMsg').textContent =
+        `Remove "${exName}" from this plan?`;
+      document.getElementById('removeExConfirmOverlay').classList.add('open');
+    }
+    function closeRemoveExConfirm() {
+      document.getElementById('removeExConfirmOverlay').classList.remove('open');
+      _pendingRemovePlanId = null;
+      _pendingRemoveExName = null;
+    }
+    function confirmRemoveEx() {
+      if (_pendingRemovePlanId && _pendingRemoveExName)
+        removeExerciseFromPlan(_pendingRemovePlanId, _pendingRemoveExName);
+      closeRemoveExConfirm();
     }
 
     function removeExerciseFromPlan(planId, exName) {
