@@ -470,6 +470,74 @@
     .bw-viewer.open { display: flex; }
     .bw-viewer img { max-width: 96vw; max-height: 88vh; border-radius: 12px; object-fit: contain; }
     .bw-viewer-close { position: absolute; top: calc(var(--safe-top) + 18px); right: 20px; background: rgba(255,255,255,0.12); border: none; color: #fff; width: 38px; height: 38px; border-radius: 50%; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+    /* ── Nutrition Lab ── */
+    .nl-sort-row { display:flex; gap:8px; margin-bottom:16px; }
+    .nl-sort-btn { flex:1; background:var(--card); border:1px solid rgba(255,255,255,0.08); color:var(--muted); padding:10px; border-radius:12px; font-size:0.85rem; font-family:inherit; cursor:pointer; }
+    .nl-sort-btn.active { color:#fff; border-color:var(--accent); background:rgba(233,69,96,0.12); }
+    .nl-fav-btn { flex:0 0 48px; font-size:1.1rem; }
+    .nl-fav-btn.active { color:#ffd93d; border-color:#ffd93d; background:rgba(255,217,61,0.1); }
+    .nl-meal-card { background:var(--card); border-radius:16px; padding:16px; margin-bottom:12px; cursor:pointer; border:1px solid rgba(255,255,255,0.05); }
+    .nl-meal-card:active { opacity:0.85; }
+    .nl-meal-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+    .nl-meal-name { font-weight:700; font-size:1.05rem; }
+    .nl-meal-fav { background:none; border:none; font-size:1.2rem; cursor:pointer; padding:4px; }
+    .nl-meal-macros { display:flex; gap:14px; font-size:0.8rem; color:var(--muted); }
+    .nl-meal-macros b { color:#ccc; font-weight:600; }
+    .nl-meal-cals { font-size:0.85rem; font-weight:700; color:var(--accent); margin-top:6px; }
+    .nl-empty { text-align:center; padding:60px 20px; color:var(--muted); }
+    .nl-empty-icon { font-size:3rem; margin-bottom:12px; }
+    .nl-empty-text { font-size:0.95rem; line-height:1.6; }
+    .nl-chart-wrap { display:flex; align-items:center; justify-content:center; gap:20px; padding:16px 0 20px; }
+    .nl-pie-svg { transform:rotate(-90deg); }
+    .nl-chart-legend { display:flex; flex-direction:column; gap:8px; font-size:0.88rem; }
+    .nl-chart-empty { color:var(--muted); font-size:0.9rem; text-align:center; padding:30px; }
+    .nl-totals { display:flex; justify-content:space-around; background:var(--card); border-radius:16px; padding:14px 8px; margin-bottom:18px; }
+    .nl-total-item { text-align:center; }
+    .nl-total-val { font-size:1.1rem; font-weight:700; }
+    .nl-total-label { font-size:0.68rem; color:var(--muted); margin-top:2px; }
+    .nl-ing-card { background:var(--card); border-radius:14px; padding:14px; margin-bottom:10px; border:1px solid rgba(255,255,255,0.05); }
+    .nl-ing-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+    .nl-ing-name { font-weight:600; font-size:0.95rem; flex:1; }
+    .nl-ing-remove { background:none; border:none; color:var(--accent); font-size:1.2rem; cursor:pointer; padding:4px 8px; }
+    .nl-ing-controls { display:flex; align-items:center; gap:12px; margin-bottom:8px; }
+    .nl-ing-btn { background:rgba(255,255,255,0.08); border:none; color:#fff; width:36px; height:36px; border-radius:50%; font-size:1.1rem; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+    .nl-ing-btn:active { background:rgba(255,255,255,0.18); }
+    .nl-ing-grams { font-size:1rem; font-weight:700; min-width:55px; text-align:center; }
+    .nl-ing-macros { display:flex; gap:10px; font-size:0.78rem; color:var(--muted); flex-wrap:wrap; }
+    .nl-ing-macros span { color:#ccc; }
+    .nl-meal-actions { display:flex; gap:10px; margin-top:16px; margin-bottom:20px; }
+    .nl-action-btn { flex:1; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); color:#fff; padding:14px; border-radius:14px; font-size:0.88rem; font-family:inherit; cursor:pointer; text-align:center; }
+    .nl-action-btn:active { opacity:0.8; }
+    .nl-notes { width:100%; box-sizing:border-box; background:var(--card); color:#fff; border:1px solid rgba(255,255,255,0.1); border-radius:12px; padding:12px 14px; font-size:0.92rem; font-family:inherit; resize:none; height:80px; outline:none; margin-bottom:16px; }
+    .nl-search { width:100%; box-sizing:border-box; background:var(--card); border:1px solid rgba(255,255,255,0.1); color:#fff; padding:14px 16px; border-radius:14px; font-size:1rem; font-family:inherit; outline:none; margin-bottom:14px; }
+    .nl-search::placeholder { color:var(--muted); }
+    .nl-cat-label { font-size:0.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin:14px 0 8px; font-weight:600; }
+    .nl-pick-item { display:flex; justify-content:space-between; align-items:center; background:var(--card); border-radius:12px; padding:13px 16px; margin-bottom:8px; cursor:pointer; border:1px solid rgba(255,255,255,0.05); }
+    .nl-pick-item:active { opacity:0.85; }
+    .nl-pick-name { font-weight:600; font-size:0.93rem; }
+    .nl-pick-sub { font-size:0.72rem; color:var(--muted); margin-top:2px; }
+    .nl-amount-title { font-size:1.1rem; font-weight:700; text-align:center; margin-bottom:4px; }
+    .nl-amount-sub { font-size:0.78rem; color:var(--muted); text-align:center; margin-bottom:20px; }
+    .nl-quick-row { display:flex; gap:10px; margin-bottom:18px; }
+    .nl-quick-btn { flex:1; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); color:#fff; padding:12px; border-radius:12px; font-size:0.9rem; font-family:inherit; cursor:pointer; text-align:center; }
+    .nl-quick-btn:active { background:rgba(233,69,96,0.2); border-color:var(--accent); }
+    .nl-gram-row { display:flex; align-items:center; justify-content:center; gap:18px; margin-bottom:18px; }
+    .nl-gram-display { font-size:1.5rem; font-weight:700; min-width:80px; text-align:center; }
+    .nl-gram-btn { background:var(--accent); border:none; color:#fff; width:46px; height:46px; border-radius:50%; font-size:1.3rem; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+    .nl-gram-btn:active { opacity:0.8; }
+    .nl-amount-preview { display:flex; justify-content:space-around; background:rgba(255,255,255,0.04); border-radius:12px; padding:12px; margin-bottom:20px; }
+    .nl-amount-preview div { text-align:center; }
+    .nl-amount-preview .val { font-weight:700; font-size:1rem; display:block; }
+    .nl-amount-preview .lbl { color:var(--muted); font-size:0.68rem; display:block; }
+    .nl-confirm-btn { width:100%; background:var(--accent); border:none; color:#fff; padding:16px; border-radius:16px; font-size:1rem; font-weight:700; font-family:inherit; cursor:pointer; }
+    .nl-confirm-btn:active { opacity:0.85; }
+    .nl-custom-row { display:flex; gap:10px; margin-bottom:12px; }
+    .nl-custom-field { flex:1; }
+    .nl-custom-field label { display:block; font-size:0.72rem; color:var(--muted); margin-bottom:4px; }
+    .nl-custom-field input { width:100%; box-sizing:border-box; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); color:#fff; padding:12px; border-radius:10px; font-size:0.95rem; font-family:inherit; outline:none; }
+    .nl-add-ing-btn { width:100%; background:rgba(233,69,96,0.12); border:1px solid rgba(233,69,96,0.3); color:var(--accent); padding:15px; border-radius:14px; font-size:0.95rem; font-weight:600; font-family:inherit; cursor:pointer; margin-bottom:12px; }
+    .nl-add-ing-btn:active { opacity:0.85; }
   </style>
 </head>
 <body>
@@ -581,8 +649,36 @@
     <img id="bwViewerImg" />
   </div>
 
-  <!-- FAB (create plan) -->
-  <button class="fab hidden" id="fab" onclick="openCreatePlan()">+</button>
+  <!-- ── Nutrition Lab Tab ── -->
+  <div class="view" id="nutritionView">
+    <div class="nl-sort-row">
+      <button class="nl-sort-btn active" onclick="nlSetSort('date',this)">Date</button>
+      <button class="nl-sort-btn" onclick="nlSetSort('cals',this)">Calories</button>
+      <button class="nl-sort-btn" onclick="nlSetSort('protein',this)">Protein</button>
+      <button class="nl-sort-btn nl-fav-btn" onclick="nlToggleFavFilter(this)">★</button>
+    </div>
+    <div id="nlMealList"></div>
+  </div>
+  <div class="view" id="nlMealView">
+    <div id="nlMealChart"></div>
+    <div class="nl-totals" id="nlTotals"></div>
+    <div id="nlIngList"></div>
+    <button class="nl-add-ing-btn" onclick="nlShowPicker()">＋ Add Ingredient</button>
+    <div class="section-label" style="margin-top:18px;">Notes to Self</div>
+    <textarea class="nl-notes" id="nlNotes" maxlength="500" placeholder="Taste, digestion, timing, reminders…" oninput="nlAutoSaveNotes()"></textarea>
+    <div class="nl-meal-actions">
+      <button class="nl-action-btn" onclick="nlDuplicateMeal()">Duplicate</button>
+      <button class="nl-action-btn" id="nlCopyBtn" onclick="nlCopySummary()">Copy Summary</button>
+    </div>
+  </div>
+  <div class="view" id="nlPickerView">
+    <input class="nl-search" type="text" id="nlSearchInput" placeholder="Search ingredients…" oninput="renderNLPicker()">
+    <div id="nlPickerList"></div>
+    <button class="nl-add-ing-btn" style="margin-top:12px;" onclick="nlOpenCustomModal()">＋ Create Custom Ingredient</button>
+  </div>
+
+  <!-- FAB (create plan / create meal) -->
+  <button class="fab hidden" id="fab" onclick="handleFab()">+</button>
 
   <!-- Tab Bar -->
   <div class="tab-bar">
@@ -594,6 +690,9 @@
     </button>
     <button class="tab-btn" id="tabWeight" onclick="switchTab('weight')">
       <span class="tab-icon">⚖️</span><span>Body Weight</span>
+    </button>
+    <button class="tab-btn" id="tabNutrition" onclick="switchTab('nutrition')">
+      <span class="tab-icon">🧪</span><span>Nutrition</span>
     </button>
   </div>
 
@@ -674,6 +773,74 @@
         type="text" placeholder="e.g. Push Day, Chest & Triceps..."
         maxlength="40" onkeydown="if(event.key==='Enter')createPlan()" />
       <button class="create-btn" onclick="createPlan()">Create Plan</button>
+    </div>
+  </div>
+
+  <!-- NL Amount Sheet -->
+  <div class="bw-overlay" id="nlAmountOverlay" onclick="if(event.target===this)nlCloseAmount()">
+    <div class="bw-sheet" id="nlAmountSheet">
+      <div class="bw-sheet-handle"></div>
+      <div class="nl-amount-title" id="nlAmountTitle"></div>
+      <div class="nl-amount-sub" id="nlAmountSub"></div>
+      <div class="nl-quick-row">
+        <button class="nl-quick-btn" onclick="nlSetGrams(50)">50g</button>
+        <button class="nl-quick-btn" onclick="nlSetGrams(100)">100g</button>
+        <button class="nl-quick-btn" onclick="nlSetGrams(150)">150g</button>
+      </div>
+      <div class="nl-gram-row">
+        <button class="nl-gram-btn" onclick="nlAdjustPickerGrams(-10)">−</button>
+        <div class="nl-gram-display" id="nlGramDisplay">100g</div>
+        <button class="nl-gram-btn" onclick="nlAdjustPickerGrams(10)">+</button>
+      </div>
+      <div class="nl-amount-preview" id="nlAmountPreview"></div>
+      <button class="nl-confirm-btn" onclick="nlConfirmAddIng()">Add to Meal</button>
+    </div>
+  </div>
+
+  <!-- NL Create Meal Modal -->
+  <div class="modal-overlay" id="nlCreateOverlay" onclick="if(event.target===this)nlCloseCreate()">
+    <div class="modal">
+      <div class="modal-handle"></div>
+      <div class="modal-header">
+        <div class="modal-title">New Meal</div>
+        <button class="modal-close" onclick="nlCloseCreate()">✕</button>
+      </div>
+      <input class="plan-name-input" id="nlMealNameInput" type="text" placeholder="e.g. Breakfast, Post-Workout, Chicken Bowl…" maxlength="50" onkeydown="if(event.key==='Enter')nlCreateMeal()" />
+      <button class="create-btn" onclick="nlCreateMeal()">Create Meal</button>
+    </div>
+  </div>
+
+  <!-- NL Custom Ingredient Modal -->
+  <div class="modal-overlay" id="nlCustomOverlay" onclick="if(event.target===this)nlCloseCustom()">
+    <div class="modal">
+      <div class="modal-handle"></div>
+      <div class="modal-header">
+        <div class="modal-title">Custom Ingredient</div>
+        <button class="modal-close" onclick="nlCloseCustom()">✕</button>
+      </div>
+      <input class="plan-name-input" id="nlCustomName" type="text" placeholder="Ingredient name" maxlength="40" />
+      <div style="font-size:0.8rem;color:var(--muted);margin:-10px 0 14px;">Values per 100g</div>
+      <div class="nl-custom-row">
+        <div class="nl-custom-field">
+          <label>Protein (g)</label>
+          <input type="number" id="nlCustomP" placeholder="0" inputmode="decimal" />
+        </div>
+        <div class="nl-custom-field">
+          <label>Carbs (g)</label>
+          <input type="number" id="nlCustomC" placeholder="0" inputmode="decimal" />
+        </div>
+      </div>
+      <div class="nl-custom-row">
+        <div class="nl-custom-field">
+          <label>Fat (g)</label>
+          <input type="number" id="nlCustomF" placeholder="0" inputmode="decimal" />
+        </div>
+        <div class="nl-custom-field">
+          <label>Calories</label>
+          <input type="number" id="nlCustomCal" placeholder="0" inputmode="numeric" />
+        </div>
+      </div>
+      <button class="create-btn" onclick="nlSaveCustom()">Save Ingredient</button>
     </div>
   </div>
 
@@ -1021,6 +1188,7 @@
       document.getElementById('tabEx').classList.toggle('active', tab === 'exercises');
       document.getElementById('tabPlans').classList.toggle('active', tab === 'plans');
       document.getElementById('tabWeight').classList.toggle('active', tab === 'weight');
+      document.getElementById('tabNutrition').classList.toggle('active', tab === 'nutrition');
 
       if (tab === 'exercises') {
         showView('homeView');
@@ -1040,6 +1208,12 @@
         document.getElementById('fab').classList.add('hidden');
         navContext = 'weight';
         buildWeightView();
+      } else if (tab === 'nutrition') {
+        showView('nutritionView');
+        setHeader('Nutrition Lab', false);
+        document.getElementById('fab').classList.remove('hidden');
+        navContext = 'nutrition';
+        renderNLMeals();
       }
     }
 
@@ -1062,6 +1236,11 @@
       }
     }
 
+    function handleFab() {
+      if (currentTab === 'plans') openCreatePlan();
+      else if (currentTab === 'nutrition') nlOpenCreateModal();
+    }
+
     function handleBack() {
       if (navContext === 'exercise-list') {
         showView('homeView');
@@ -1078,6 +1257,19 @@
         renderPlans();
       } else if (navContext === 'picker') {
         showPlanDetail(currentPlanId);
+      } else if (navContext === 'nl-meal') {
+        showView('nutritionView');
+        setHeader('Nutrition Lab', false);
+        document.getElementById('fab').classList.remove('hidden');
+        navContext = 'nutrition';
+        nlCurrentMealId = null;
+        renderNLMeals();
+      } else if (navContext === 'nl-picker') {
+        const meal = getNLMeals().find(m => m.id === nlCurrentMealId);
+        showView('nlMealView');
+        setHeader(meal ? meal.name : 'Meal', true, 'Delete', nlDeleteMeal);
+        document.getElementById('fab').classList.add('hidden');
+        navContext = 'nl-meal';
       }
     }
 
@@ -1939,6 +2131,344 @@
       document.getElementById('bwViewer').classList.add('open');
     }
     function closeBWViewer() { document.getElementById('bwViewer').classList.remove('open'); }
+
+    // ── Nutrition Lab ──
+    const NL_INGREDIENTS = [
+      {name:'Chicken Breast',cat:'protein',p:31,c:0,f:3.6,cal:165},
+      {name:'Salmon',cat:'protein',p:20,c:0,f:13,cal:208},
+      {name:'Tuna (canned)',cat:'protein',p:26,c:0,f:1,cal:116},
+      {name:'Ground Beef (lean)',cat:'protein',p:26,c:0,f:15,cal:250},
+      {name:'Turkey Breast',cat:'protein',p:29,c:0,f:1,cal:135},
+      {name:'Eggs (whole)',cat:'protein',p:13,c:1.1,f:11,cal:155},
+      {name:'Egg Whites',cat:'protein',p:11,c:0.7,f:0.2,cal:52},
+      {name:'Shrimp',cat:'protein',p:24,c:0.2,f:0.3,cal:99},
+      {name:'Tilapia',cat:'protein',p:26,c:0,f:2.7,cal:128},
+      {name:'Whey Protein Powder',cat:'protein',p:80,c:8,f:4,cal:400},
+      {name:'Tofu',cat:'protein',p:8,c:1.9,f:4.8,cal:76},
+      {name:'Greek Yogurt',cat:'dairy',p:10,c:3.6,f:0.7,cal:59},
+      {name:'Cottage Cheese',cat:'dairy',p:11,c:3.4,f:4.3,cal:98},
+      {name:'Whole Milk',cat:'dairy',p:3.2,c:4.8,f:3.3,cal:61},
+      {name:'Skim Milk',cat:'dairy',p:3.4,c:5,f:0.1,cal:34},
+      {name:'Cheddar Cheese',cat:'dairy',p:25,c:1.3,f:33,cal:403},
+      {name:'Mozzarella',cat:'dairy',p:22,c:2.2,f:22,cal:280},
+      {name:'Parmesan',cat:'dairy',p:35.8,c:3.2,f:25.8,cal:392},
+      {name:'White Rice (cooked)',cat:'carbs',p:2.7,c:28,f:0.3,cal:130},
+      {name:'Brown Rice (cooked)',cat:'carbs',p:2.6,c:23,f:0.9,cal:112},
+      {name:'Oats',cat:'carbs',p:13.2,c:67.7,f:6.5,cal:389},
+      {name:'Sweet Potato',cat:'carbs',p:1.6,c:20,f:0.1,cal:86},
+      {name:'Potato',cat:'carbs',p:2,c:17,f:0.1,cal:77},
+      {name:'Pasta (cooked)',cat:'carbs',p:5.8,c:25,f:0.9,cal:131},
+      {name:'White Bread',cat:'carbs',p:9,c:49,f:3.2,cal:265},
+      {name:'Whole Wheat Bread',cat:'carbs',p:13,c:43,f:3.4,cal:247},
+      {name:'Banana',cat:'carbs',p:1.1,c:23,f:0.3,cal:89},
+      {name:'Apple',cat:'carbs',p:0.3,c:14,f:0.2,cal:52},
+      {name:'Quinoa (cooked)',cat:'carbs',p:4.4,c:21.3,f:1.9,cal:120},
+      {name:'Corn Tortilla',cat:'carbs',p:5.7,c:44,f:3,cal:218},
+      {name:'Olive Oil',cat:'fats',p:0,c:0,f:100,cal:884},
+      {name:'Avocado',cat:'fats',p:2,c:8.5,f:14.7,cal:160},
+      {name:'Almonds',cat:'fats',p:21,c:22,f:49,cal:579},
+      {name:'Peanut Butter',cat:'fats',p:25,c:20,f:50,cal:588},
+      {name:'Walnuts',cat:'fats',p:15,c:14,f:65,cal:654},
+      {name:'Coconut Oil',cat:'fats',p:0,c:0,f:100,cal:862},
+      {name:'Butter',cat:'fats',p:0.9,c:0.1,f:81,cal:717},
+      {name:'Chia Seeds',cat:'fats',p:17,c:42,f:31,cal:486},
+      {name:'Flax Seeds',cat:'fats',p:18,c:29,f:42,cal:534},
+      {name:'Tahini',cat:'fats',p:17,c:21,f:54,cal:595},
+      {name:'Broccoli',cat:'vegetables',p:2.8,c:7,f:0.4,cal:34},
+      {name:'Spinach',cat:'vegetables',p:2.9,c:3.6,f:0.4,cal:23},
+      {name:'Tomato',cat:'vegetables',p:0.9,c:3.9,f:0.2,cal:18},
+      {name:'Cucumber',cat:'vegetables',p:0.7,c:3.6,f:0.1,cal:15},
+      {name:'Carrot',cat:'vegetables',p:0.9,c:10,f:0.2,cal:41},
+      {name:'Bell Pepper',cat:'vegetables',p:1,c:6,f:0.3,cal:31},
+      {name:'Onion',cat:'vegetables',p:1.1,c:9.3,f:0.1,cal:40},
+      {name:'Mushrooms',cat:'vegetables',p:3.1,c:3.3,f:0.3,cal:22},
+      {name:'Zucchini',cat:'vegetables',p:1.2,c:3.1,f:0.3,cal:17},
+      {name:'Lettuce',cat:'vegetables',p:1.4,c:2.9,f:0.2,cal:15},
+      {name:'Honey',cat:'other',p:0.3,c:82,f:0,cal:304},
+      {name:'Sugar',cat:'other',p:0,c:100,f:0,cal:387},
+      {name:'Dark Chocolate',cat:'other',p:7.8,c:46,f:43,cal:598},
+      {name:'Hummus',cat:'other',p:8,c:14,f:9.6,cal:166},
+      {name:'Chickpeas (cooked)',cat:'other',p:8.9,c:27,f:2.6,cal:164},
+      {name:'Lentils (cooked)',cat:'other',p:9,c:20,f:0.4,cal:116},
+      {name:'Granola',cat:'other',p:9.5,c:64,f:18,cal:471},
+      {name:'Protein Bar',cat:'other',p:20,c:38,f:12,cal:350},
+      {name:'Rice Cakes',cat:'other',p:7.4,c:82,f:2.8,cal:387},
+    ];
+
+    let nlSortBy = 'date';
+    let nlFavOnly = false;
+    let nlCurrentMealId = null;
+    let nlPickerIng = null;
+    let nlPickerGrams = 100;
+
+    function getNLMeals() { try { return JSON.parse(localStorage.getItem('trainer_meals')) || []; } catch { return []; } }
+    function saveNLMeals(m) { localStorage.setItem('trainer_meals', JSON.stringify(m)); }
+    function getCustomIngs() { try { return JSON.parse(localStorage.getItem('trainer_custom_ings')) || []; } catch { return []; } }
+    function saveCustomIngs(c) { localStorage.setItem('trainer_custom_ings', JSON.stringify(c)); }
+    function getAllIngs() { return [...NL_INGREDIENTS, ...getCustomIngs()]; }
+
+    function nlCalcTotals(meal) {
+      let p=0,c=0,f=0,cal=0;
+      (meal.ingredients||[]).forEach(i => { const m=i.grams/100; p+=i.p*m; c+=i.c*m; f+=i.f*m; cal+=i.cal*m; });
+      return { p:Math.round(p*10)/10, c:Math.round(c*10)/10, f:Math.round(f*10)/10, cal:Math.round(cal) };
+    }
+
+    function nlRenderPie(p,c,f) {
+      const pCal=p*4, cCal=c*4, fCal=f*9, total=pCal+cCal+fCal;
+      if (total===0) return '<div class="nl-chart-empty">Add ingredients to see macro breakdown</div>';
+      const pPct=pCal/total, cPct=cCal/total, fPct=fCal/total;
+      const r=55, circ=2*Math.PI*r;
+      let offset=0;
+      const segs=[{pct:pPct,col:'#4ecdc4',lbl:'Protein'},{pct:cPct,col:'#ff6b6b',lbl:'Carbs'},{pct:fPct,col:'#ffd93d',lbl:'Fat'}];
+      let circles='';
+      segs.forEach(s => { if(s.pct>0){circles+=`<circle cx="70" cy="70" r="${r}" fill="none" stroke="${s.col}" stroke-width="22" stroke-dasharray="${s.pct*circ} ${circ}" stroke-dashoffset="${-offset*circ}"/>`;offset+=s.pct;} });
+      return `<svg class="nl-pie-svg" viewBox="0 0 140 140" width="130" height="130">${circles}</svg>
+        <div class="nl-chart-legend">${segs.map(s=>`<div><span style="color:${s.col};font-size:1.1rem;">●</span> ${s.lbl} <b>${Math.round(s.pct*100)}%</b></div>`).join('')}</div>`;
+    }
+
+    function renderNLMeals() {
+      const list = document.getElementById('nlMealList');
+      let meals = getNLMeals();
+      if (nlFavOnly) meals = meals.filter(m => m.favorite);
+      meals.sort((a,b) => {
+        if (nlSortBy==='date') return (b.createdAt||'').localeCompare(a.createdAt||'');
+        const ta=nlCalcTotals(a), tb=nlCalcTotals(b);
+        if (nlSortBy==='cals') return tb.cal-ta.cal;
+        if (nlSortBy==='protein') return tb.p-ta.p;
+        return 0;
+      });
+      if (meals.length===0) {
+        list.innerHTML = `<div class="nl-empty"><div class="nl-empty-icon">🧪</div><div class="nl-empty-text">${nlFavOnly?'No favorite meals yet.<br>Star a meal to see it here.':'No meals yet.<br>Tap + to create your first meal.'}</div></div>`;
+        return;
+      }
+      list.innerHTML = meals.map(m => {
+        const t=nlCalcTotals(m);
+        return `<div class="nl-meal-card" onclick="nlShowMeal('${m.id}')">
+          <div class="nl-meal-top"><div class="nl-meal-name">${m.name}</div><button class="nl-meal-fav" onclick="event.stopPropagation();nlToggleFav('${m.id}')">${m.favorite?'★':'☆'}</button></div>
+          <div class="nl-meal-macros"><div>P: <b>${t.p}g</b></div><div>C: <b>${t.c}g</b></div><div>F: <b>${t.f}g</b></div></div>
+          <div class="nl-meal-cals">🔥 ${t.cal} cal</div></div>`;
+      }).join('');
+    }
+
+    function nlShowMeal(id) {
+      nlCurrentMealId = id;
+      renderNLMealDetail();
+      showView('nlMealView');
+      const meal = getNLMeals().find(m => m.id===id);
+      setHeader(meal?meal.name:'Meal', true, 'Delete', nlDeleteMeal);
+      document.getElementById('fab').classList.add('hidden');
+      navContext = 'nl-meal';
+    }
+
+    function renderNLMealDetail() {
+      const meals=getNLMeals(), meal=meals.find(m=>m.id===nlCurrentMealId);
+      if (!meal) return;
+      const t=nlCalcTotals(meal);
+      document.getElementById('nlMealChart').innerHTML = `<div class="nl-chart-wrap">${nlRenderPie(t.p,t.c,t.f)}</div>`;
+      document.getElementById('nlTotals').innerHTML = `
+        <div class="nl-total-item"><div class="nl-total-val" style="color:var(--accent);">${t.cal}</div><div class="nl-total-label">Calories</div></div>
+        <div class="nl-total-item"><div class="nl-total-val" style="color:#4ecdc4;">${t.p}g</div><div class="nl-total-label">Protein</div></div>
+        <div class="nl-total-item"><div class="nl-total-val" style="color:#ff6b6b;">${t.c}g</div><div class="nl-total-label">Carbs</div></div>
+        <div class="nl-total-item"><div class="nl-total-val" style="color:#ffd93d;">${t.f}g</div><div class="nl-total-label">Fat</div></div>`;
+      const ingList=document.getElementById('nlIngList');
+      if (!meal.ingredients||meal.ingredients.length===0) {
+        ingList.innerHTML = '<div class="nl-chart-empty">No ingredients added yet.</div>';
+      } else {
+        ingList.innerHTML = meal.ingredients.map((ing,idx)=>{
+          const m=ing.grams/100;
+          return `<div class="nl-ing-card">
+            <div class="nl-ing-top"><div class="nl-ing-name">${ing.name}</div><button class="nl-ing-remove" onclick="nlRemoveIng(${idx})">✕</button></div>
+            <div class="nl-ing-controls">
+              <button class="nl-ing-btn" onclick="nlAdjustIng(${idx},-10)">−</button>
+              <div class="nl-ing-grams">${ing.grams}g</div>
+              <button class="nl-ing-btn" onclick="nlAdjustIng(${idx},10)">+</button>
+            </div>
+            <div class="nl-ing-macros">
+              <div>P: <span>${(ing.p*m).toFixed(1)}g</span></div>
+              <div>C: <span>${(ing.c*m).toFixed(1)}g</span></div>
+              <div>F: <span>${(ing.f*m).toFixed(1)}g</span></div>
+              <div>🔥 <span>${Math.round(ing.cal*m)}</span></div>
+            </div></div>`;
+        }).join('');
+      }
+      document.getElementById('nlNotes').value = meal.notes||'';
+    }
+
+    function nlAdjustIng(idx,delta) {
+      const meals=getNLMeals(), meal=meals.find(m=>m.id===nlCurrentMealId);
+      if (!meal||!meal.ingredients[idx]) return;
+      meal.ingredients[idx].grams = Math.max(10, meal.ingredients[idx].grams+delta);
+      saveNLMeals(meals); renderNLMealDetail();
+    }
+
+    function nlRemoveIng(idx) {
+      const meals=getNLMeals(), meal=meals.find(m=>m.id===nlCurrentMealId);
+      if (!meal) return;
+      meal.ingredients.splice(idx,1);
+      saveNLMeals(meals); renderNLMealDetail();
+    }
+
+    function nlAutoSaveNotes() {
+      const meals=getNLMeals(), meal=meals.find(m=>m.id===nlCurrentMealId);
+      if (!meal) return;
+      meal.notes = document.getElementById('nlNotes').value;
+      saveNLMeals(meals);
+    }
+
+    function nlShowPicker() {
+      showView('nlPickerView');
+      setHeader('Add Ingredient', true);
+      document.getElementById('nlSearchInput').value = '';
+      navContext = 'nl-picker';
+      renderNLPicker();
+    }
+
+    function renderNLPicker() {
+      const filter=(document.getElementById('nlSearchInput').value||'').toLowerCase();
+      const all=getAllIngs();
+      const filtered=filter?all.filter(i=>i.name.toLowerCase().includes(filter)):all;
+      const cats=['protein','dairy','carbs','fats','vegetables','other','custom'];
+      const catNames={protein:'Protein',dairy:'Dairy',carbs:'Carbs',fats:'Fats',vegetables:'Vegetables',other:'Other',custom:'Custom'};
+      let html='';
+      cats.forEach(cat=>{
+        const items=filtered.filter(i=>i.cat===cat);
+        if (items.length===0) return;
+        html+=`<div class="nl-cat-label">${catNames[cat]}</div>`;
+        items.forEach(ing=>{
+          const safeName=ing.name.replace(/'/g,"\\'");
+          html+=`<div class="nl-pick-item" onclick="nlPickIngredient('${safeName}')">
+            <div><div class="nl-pick-name">${ing.name}</div><div class="nl-pick-sub">P:${ing.p}g C:${ing.c}g F:${ing.f}g | ${ing.cal} cal /100g</div></div>
+            <span class="arrow">›</span></div>`;
+        });
+      });
+      document.getElementById('nlPickerList').innerHTML = html||'<div class="nl-chart-empty">No ingredients found.</div>';
+    }
+
+    function nlPickIngredient(name) {
+      const ing=getAllIngs().find(i=>i.name===name);
+      if (!ing) return;
+      nlPickerIng=ing; nlPickerGrams=100;
+      document.getElementById('nlAmountTitle').textContent=ing.name;
+      document.getElementById('nlAmountSub').textContent=`${ing.cal} cal per 100g`;
+      document.getElementById('nlGramDisplay').textContent='100g';
+      nlUpdateAmountPreview();
+      const overlay=document.getElementById('nlAmountOverlay');
+      overlay.classList.add('open');
+      setTimeout(()=>document.getElementById('nlAmountSheet').style.transform='translateY(0)',10);
+    }
+
+    function nlCloseAmount() { document.getElementById('nlAmountOverlay').classList.remove('open'); }
+
+    function nlSetGrams(g) {
+      nlPickerGrams=g;
+      document.getElementById('nlGramDisplay').textContent=g+'g';
+      nlUpdateAmountPreview();
+    }
+
+    function nlAdjustPickerGrams(delta) {
+      nlPickerGrams=Math.max(10,nlPickerGrams+delta);
+      document.getElementById('nlGramDisplay').textContent=nlPickerGrams+'g';
+      nlUpdateAmountPreview();
+    }
+
+    function nlUpdateAmountPreview() {
+      if (!nlPickerIng) return;
+      const m=nlPickerGrams/100;
+      document.getElementById('nlAmountPreview').innerHTML=`
+        <div><span class="val">${(nlPickerIng.p*m).toFixed(1)}g</span><span class="lbl">Protein</span></div>
+        <div><span class="val">${(nlPickerIng.c*m).toFixed(1)}g</span><span class="lbl">Carbs</span></div>
+        <div><span class="val">${(nlPickerIng.f*m).toFixed(1)}g</span><span class="lbl">Fat</span></div>
+        <div><span class="val">${Math.round(nlPickerIng.cal*m)}</span><span class="lbl">Calories</span></div>`;
+    }
+
+    function nlConfirmAddIng() {
+      if (!nlPickerIng||!nlCurrentMealId) return;
+      const meals=getNLMeals(), meal=meals.find(m=>m.id===nlCurrentMealId);
+      if (!meal) return;
+      meal.ingredients.push({name:nlPickerIng.name,grams:nlPickerGrams,p:nlPickerIng.p,c:nlPickerIng.c,f:nlPickerIng.f,cal:nlPickerIng.cal});
+      saveNLMeals(meals);
+      nlCloseAmount(); nlPickerIng=null;
+      renderNLMealDetail();
+      showView('nlMealView');
+      const updated=getNLMeals().find(m=>m.id===nlCurrentMealId);
+      setHeader(updated?updated.name:'Meal',true,'Delete',nlDeleteMeal);
+      navContext='nl-meal';
+    }
+
+    function nlOpenCreateModal() {
+      document.getElementById('nlMealNameInput').value='';
+      document.getElementById('nlCreateOverlay').classList.add('open');
+      setTimeout(()=>document.getElementById('nlMealNameInput').focus(),300);
+    }
+    function nlCloseCreate() { document.getElementById('nlCreateOverlay').classList.remove('open'); }
+
+    function nlCreateMeal() {
+      const name=document.getElementById('nlMealNameInput').value.trim();
+      if (!name) return;
+      const meal={id:'meal_'+Date.now(),name,ingredients:[],notes:'',favorite:false,createdAt:new Date().toISOString().slice(0,10)};
+      const meals=getNLMeals(); meals.push(meal); saveNLMeals(meals);
+      nlCloseCreate(); nlShowMeal(meal.id);
+    }
+
+    function nlDeleteMeal() {
+      const meals=getNLMeals(), meal=meals.find(m=>m.id===nlCurrentMealId);
+      if (!meal||!confirm('Delete "'+meal.name+'"?')) return;
+      saveNLMeals(meals.filter(m=>m.id!==nlCurrentMealId));
+      nlCurrentMealId=null; switchTab('nutrition');
+    }
+
+    function nlToggleFav(id) {
+      const meals=getNLMeals(), meal=meals.find(m=>m.id===id);
+      if (!meal) return;
+      meal.favorite=!meal.favorite; saveNLMeals(meals); renderNLMeals();
+    }
+
+    function nlDuplicateMeal() {
+      const meals=getNLMeals(), meal=meals.find(m=>m.id===nlCurrentMealId);
+      if (!meal) return;
+      const dup={id:'meal_'+Date.now(),name:meal.name+' (copy)',ingredients:meal.ingredients.map(i=>({...i})),notes:meal.notes,favorite:false,createdAt:new Date().toISOString().slice(0,10)};
+      meals.push(dup); saveNLMeals(meals); nlShowMeal(dup.id);
+    }
+
+    function nlCopySummary() {
+      const meals=getNLMeals(), meal=meals.find(m=>m.id===nlCurrentMealId);
+      if (!meal) return;
+      const t=nlCalcTotals(meal);
+      let text=meal.name+'\n\n';
+      (meal.ingredients||[]).forEach(i=>{const m=i.grams/100;text+=`• ${i.name} — ${i.grams}g (P:${(i.p*m).toFixed(1)}g C:${(i.c*m).toFixed(1)}g F:${(i.f*m).toFixed(1)}g ${Math.round(i.cal*m)}cal)\n`;});
+      text+=`\nTotals: ${t.cal} cal | P:${t.p}g | C:${t.c}g | F:${t.f}g`;
+      if (meal.notes) text+='\n\nNotes: '+meal.notes;
+      navigator.clipboard.writeText(text).then(()=>{
+        const btn=document.getElementById('nlCopyBtn');
+        if(btn){btn.textContent='Copied!';setTimeout(()=>{btn.textContent='Copy Summary';},1500);}
+      }).catch(()=>{});
+    }
+
+    function nlSetSort(by,btn) {
+      nlSortBy=by;
+      document.querySelectorAll('.nl-sort-btn:not(.nl-fav-btn)').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active'); renderNLMeals();
+    }
+    function nlToggleFavFilter(btn) { nlFavOnly=!nlFavOnly; btn.classList.toggle('active',nlFavOnly); renderNLMeals(); }
+
+    function nlOpenCustomModal() {
+      ['nlCustomName','nlCustomP','nlCustomC','nlCustomF','nlCustomCal'].forEach(id=>document.getElementById(id).value='');
+      document.getElementById('nlCustomOverlay').classList.add('open');
+      setTimeout(()=>document.getElementById('nlCustomName').focus(),300);
+    }
+    function nlCloseCustom() { document.getElementById('nlCustomOverlay').classList.remove('open'); }
+
+    function nlSaveCustom() {
+      const name=document.getElementById('nlCustomName').value.trim();
+      const p=parseFloat(document.getElementById('nlCustomP').value)||0;
+      const c=parseFloat(document.getElementById('nlCustomC').value)||0;
+      const f=parseFloat(document.getElementById('nlCustomF').value)||0;
+      let cal=parseFloat(document.getElementById('nlCustomCal').value)||0;
+      if (!name) return;
+      if (cal===0) cal=Math.round(p*4+c*4+f*9);
+      const customs=getCustomIngs(); customs.push({name,cat:'custom',p,c,f,cal});
+      saveCustomIngs(customs); nlCloseCustom(); renderNLPicker();
+    }
 
     // ── Init ──
     buildHome();
