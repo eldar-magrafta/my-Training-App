@@ -716,9 +716,6 @@
         <span class="bw-cal-title" id="exHistCalTitle"></span>
         <button class="bw-cal-nav" onclick="exHistNextMonth()">›</button>
       </div>
-      <div class="bw-cal-labels">
-        <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
-      </div>
       <div class="bw-cal-grid" id="exHistCalGrid"></div>
     </div>
   </div>
@@ -729,22 +726,18 @@
       <div class="bw-sheet-handle"></div>
       <div class="bw-sheet-dateLbl" id="exHistEntryDate"></div>
       <div class="bw-sheet-title">Log Exercise</div>
-      <div class="log-row" style="margin-bottom:16px;">
-        <div class="log-field">
-          <label>Weight</label>
-          <div class="log-input-wrap">
-            <input type="number" id="exHistWeight" placeholder="0" inputmode="decimal" />
-            <span>kg</span>
-          </div>
-        </div>
-        <div class="log-field">
-          <label>Reps</label>
-          <div class="log-input-wrap">
-            <input type="number" id="exHistReps" placeholder="0" inputmode="numeric" />
-            <span>reps</span>
-          </div>
-        </div>
+      <div style="margin-bottom:14px;">
+        <label style="font-size:0.8rem;color:var(--muted);display:block;margin-bottom:6px;">Number of Sets</label>
+        <select id="exHistSetCount" onchange="renderExHistSets()"
+          style="width:100%;background:var(--card);color:#fff;border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:12px 14px;font-size:1rem;font-family:inherit;outline:none;appearance:none;-webkit-appearance:none;">
+          <option value="1">1 set</option>
+          <option value="2">2 sets</option>
+          <option value="3" selected>3 sets</option>
+          <option value="4">4 sets</option>
+          <option value="5">5 sets</option>
+        </select>
       </div>
+      <div id="exHistSetsContainer"></div>
       <div class="section-label">Notes</div>
       <textarea id="exHistNotes" maxlength="250" placeholder="How did it feel…"
         style="width:100%;box-sizing:border-box;background:rgba(255,255,255,0.06);color:#fff;border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px;font-size:0.92rem;font-family:inherit;resize:none;height:70px;outline:none;margin-bottom:16px;"></textarea>
@@ -1239,7 +1232,14 @@
       const [ds,e]=entries[0];
       const d=new Date(ds+'T00:00:00');
       const date=d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
-      return { weight:e.w, reps:e.r, date };
+      if(e.sets&&e.sets.length){
+        const maxW=Math.max(...e.sets.map(s=>parseFloat(s.w)||0));
+        const setsCount=e.sets.length;
+        const repsArr=e.sets.map(s=>parseInt(s.r)||0);
+        const topReps=repsArr[0]||0;
+        return { weight:maxW, reps:topReps, sets:setsCount, date };
+      }
+      return { weight:e.w, reps:e.r, sets:1, date };
     }
 
     function saveLogData(name, weight, reps) {
@@ -1409,7 +1409,7 @@
         const log = getLog(ex.name);
         const item = document.createElement('div');
         item.className = 'exercise-item';
-        const subText = log ? `Last: ${log.weight} kg × ${log.reps} reps` : group.name;
+        const subText = log ? `Last: ${log.weight}kg × ${log.reps}r` + (log.sets > 1 ? ` · ${log.sets} sets` : '') : group.name;
         item.innerHTML = `
           <div>
             <div class="ex-name">${ex.name}</div>
@@ -1532,7 +1532,7 @@
           const el = document.createElement('div');
           el.className = 'plan-ex-item';
           el.dataset.planItemIdx = idx;
-          const subText = log ? `Last: ${log.weight} kg × ${log.reps} reps` : found.groupName;
+          const subText = log ? `Last: ${log.weight}kg × ${log.reps}r` + (log.sets > 1 ? ` · ${log.sets} sets` : '') : found.groupName;
           el.innerHTML = `
             <span class="drag-handle">⠿</span>
             <div class="plan-ex-info">
@@ -1738,7 +1738,7 @@
         const valEl = document.getElementById('lastSessionValue');
         const dateEl = document.getElementById('lastSessionDate');
         if (log) {
-          valEl.textContent = `${log.weight} kg × ${log.reps} reps`;
+          valEl.textContent = `${log.weight}kg × ${log.reps} reps` + (log.sets > 1 ? ` · ${log.sets} sets` : '');
           valEl.className = 'ls-value';
           dateEl.textContent = log.date;
         } else {
@@ -2629,7 +2629,7 @@
       const svg=document.getElementById('exHistChartSvg');
       const tooltip=document.getElementById('exHistTooltip');
       const hist=getExHist(currentExerciseName);
-      let entries=Object.entries(hist).filter(([,v])=>v.w&&!isNaN(parseFloat(v.w))).sort(([a],[b])=>a.localeCompare(b)).map(([d,v])=>[d,parseFloat(v.w),v.r||'']);
+      let entries=Object.entries(hist).filter(([,v])=>exHistMaxWeight(v)>0).sort(([a],[b])=>a.localeCompare(b)).map(([d,v])=>[d,exHistMaxWeight(v),v]);
 
       const today=exHistToStr(new Date());
       if(exHistRange>0){
@@ -2653,7 +2653,8 @@
       const pts=entries.map(([d,v],i)=>{
         const x=pad+i*xStep;
         const y=pT+(1-(v-mn)/rng)*(H-pT-pB);
-        return {x,y,d,v,r:entries[i][2]};
+        const raw=entries[i][2];
+        return {x,y,d,v,raw};
       });
 
       const line=pts.map((p,i)=>(i===0?'M':'L')+p.x.toFixed(1)+','+p.y.toFixed(1)).join(' ');
@@ -2682,7 +2683,14 @@
         let closest=pts[0],minD=9999;
         pts.forEach(p=>{const d=Math.abs(p.x-svgX);if(d<minD){minD=d;closest=p;}});
         const [y,m,d]=closest.d.split('-');
-        document.getElementById('exHistTooltipVal').textContent=closest.v+'kg × '+closest.r+' reps';
+        const raw=closest.raw;
+        let tipText=closest.v+'kg';
+        if(raw.sets&&raw.sets.length){
+          tipText+=` · ${raw.sets.length} set${raw.sets.length>1?'s':''}`;
+        } else if(raw.r){
+          tipText+=` × ${raw.r} reps`;
+        }
+        document.getElementById('exHistTooltipVal').textContent=tipText;
         document.getElementById('exHistTooltipDate').textContent=d+'/'+m+'/'+y;
         tooltip.classList.add('visible');
         const px=closest.x/W*rect.width;
@@ -2697,26 +2705,32 @@
       const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
       document.getElementById('exHistCalTitle').textContent=months[exHistCalMon]+' '+exHistCalYear;
       const grid=document.getElementById('exHistCalGrid');
-      grid.innerHTML='';
       const hist=getExHist(currentExerciseName);
       const today=exHistToStr(new Date());
-      const first=new Date(exHistCalYear,exHistCalMon,1);
-      const startDay=first.getDay();
+      const firstDow=new Date(exHistCalYear,exHistCalMon,1).getDay();
       const daysInMonth=new Date(exHistCalYear,exHistCalMon+1,0).getDate();
+      const daysInPrev=new Date(exHistCalYear,exHistCalMon,0).getDate();
 
-      for(let i=0;i<startDay;i++){const sp=document.createElement('span');sp.className='bw-cal-day empty';grid.appendChild(sp);}
+      let html=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d=>`<div class="bw-cal-dow">${d}</div>`).join('');
 
+      // Prev month padding
+      for(let i=firstDow-1;i>=0;i--){
+        const d=daysInPrev-i;
+        html+=`<div class="bw-cal-day other-month">${d}</div>`;
+      }
+      // This month
       for(let d=1;d<=daysInMonth;d++){
         const ds=`${exHistCalYear}-${String(exHistCalMon+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-        const hasData=!!hist[ds];
         const isFuture=ds>today;
-        const isToday=ds===today;
-        const el=document.createElement('span');
-        el.className='bw-cal-day'+(hasData?' has-data':'')+(isToday?' today':'')+(isFuture?' future':'');
-        el.textContent=d;
-        if(!isFuture) el.onclick=()=>openExHistEntry(ds);
-        grid.appendChild(el);
+        const cls=['bw-cal-day',isFuture?'future':'',ds===today?'today':'',hist[ds]?'has-data':''].filter(Boolean).join(' ');
+        html+=`<div class="${cls}"${isFuture?'':` onclick="openExHistEntry('${ds}')"`}>${d}</div>`;
       }
+      // Next month padding
+      const remain=42-(firstDow+daysInMonth);
+      for(let d=1;d<=remain;d++){
+        html+=`<div class="bw-cal-day other-month">${d}</div>`;
+      }
+      grid.innerHTML=html;
     }
 
     function exHistPrevMonth(){
@@ -2730,14 +2744,37 @@
       renderExHistCal();
     }
 
+    function renderExHistSets(existingSets) {
+      const count=parseInt(document.getElementById('exHistSetCount').value)||3;
+      const container=document.getElementById('exHistSetsContainer');
+      let html='';
+      for(let i=0;i<count;i++){
+        const s=existingSets&&existingSets[i]?existingSets[i]:{};
+        html+=`<div style="margin-bottom:10px;">
+          <div style="font-size:0.75rem;color:var(--muted);margin-bottom:4px;font-weight:600;">Set ${i+1}</div>
+          <div class="log-row">
+            <div class="log-field"><label>Weight</label><div class="log-input-wrap"><input type="number" id="exHistW_${i}" placeholder="0" inputmode="decimal" value="${s.w||''}"/><span>kg</span></div></div>
+            <div class="log-field"><label>Reps</label><div class="log-input-wrap"><input type="number" id="exHistR_${i}" placeholder="0" inputmode="numeric" value="${s.r||''}"/><span>reps</span></div></div>
+          </div></div>`;
+      }
+      container.innerHTML=html;
+    }
+
     function openExHistEntry(dateStr) {
       exHistSelectedDate=dateStr;
       const d=new Date(dateStr+'T00:00:00');
       document.getElementById('exHistEntryDate').textContent=d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
       const hist=getExHist(currentExerciseName);
       const entry=hist[dateStr];
-      document.getElementById('exHistWeight').value=entry?entry.w:'';
-      document.getElementById('exHistReps').value=entry?entry.r:'';
+      // Handle old format {w,r} and new format {sets:[]}
+      let sets=[];
+      let setCount=3;
+      if(entry){
+        if(entry.sets){sets=entry.sets;setCount=sets.length;}
+        else if(entry.w){sets=[{w:entry.w,r:entry.r}];setCount=1;}
+      }
+      document.getElementById('exHistSetCount').value=setCount;
+      renderExHistSets(sets);
       document.getElementById('exHistNotes').value=entry&&entry.n?entry.n:'';
       document.getElementById('exHistBtnDel').style.display=entry?'':'none';
       document.getElementById('exHistEntryOverlay').classList.add('open');
@@ -2750,12 +2787,19 @@
 
     function saveExHistEntry(){
       if(!currentExerciseName||!exHistSelectedDate)return;
-      const w=document.getElementById('exHistWeight').value.trim();
-      const r=document.getElementById('exHistReps').value.trim();
+      const count=parseInt(document.getElementById('exHistSetCount').value)||3;
+      const sets=[];
+      let hasData=false;
+      for(let i=0;i<count;i++){
+        const w=document.getElementById('exHistW_'+i).value.trim();
+        const r=document.getElementById('exHistR_'+i).value.trim();
+        sets.push({w:w||'0',r:r||'0'});
+        if(w||r) hasData=true;
+      }
+      if(!hasData)return;
       const n=document.getElementById('exHistNotes').value.trim();
-      if(!w&&!r)return;
       const hist=getExHist(currentExerciseName);
-      hist[exHistSelectedDate]={w:w||'0',r:r||'0'};
+      hist[exHistSelectedDate]={sets};
       if(n) hist[exHistSelectedDate].n=n;
       saveExHist(currentExerciseName,hist);
       closeExHistEntry();
@@ -2771,6 +2815,15 @@
       closeExHistEntry();
       renderExHistChart();
       renderExHistCal();
+    }
+
+    function exHistMaxWeight(entry) {
+      if(entry.sets) return Math.max(...entry.sets.map(s=>parseFloat(s.w)||0));
+      return parseFloat(entry.w)||0;
+    }
+    function exHistTotalReps(entry) {
+      if(entry.sets) return entry.sets.map(s=>parseInt(s.r)||0);
+      return [parseInt(entry.r)||0];
     }
 
     // ── Init ──
