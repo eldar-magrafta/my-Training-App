@@ -542,6 +542,15 @@
     .nl-custom-field input { width:100%; box-sizing:border-box; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); color:#fff; padding:12px; border-radius:10px; font-size:0.95rem; font-family:inherit; outline:none; }
     .nl-add-ing-btn { width:100%; background:rgba(233,69,96,0.12); border:1px solid rgba(233,69,96,0.3); color:var(--accent); padding:15px; border-radius:14px; font-size:0.95rem; font-weight:600; font-family:inherit; cursor:pointer; margin-bottom:12px; }
     .nl-add-ing-btn:active { opacity:0.85; }
+    .nl-browse-btn { width:100%; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); color:#fff; padding:14px; border-radius:14px; font-size:0.95rem; font-family:inherit; cursor:pointer; margin-bottom:18px; text-align:center; }
+    .nl-browse-btn:active { background:rgba(255,255,255,0.08); }
+    .nl-amount-header { display:flex; align-items:center; gap:14px; justify-content:center; margin-bottom:16px; }
+    .nl-amount-img { width:56px; height:56px; border-radius:14px; object-fit:cover; flex-shrink:0; }
+    .nl-amount-initial { width:56px; height:56px; border-radius:14px; background:rgba(255,255,255,0.06); display:flex; align-items:center; justify-content:center; font-size:1.4rem; font-weight:700; color:var(--muted); flex-shrink:0; }
+    .nl-custom-photo-area { margin:-4px 0 16px; }
+    .nl-custom-photo-btn { width:100%; background:rgba(255,255,255,0.04); border:1px dashed rgba(255,255,255,0.15); color:var(--muted); padding:12px; border-radius:12px; font-size:0.85rem; font-family:inherit; cursor:pointer; text-align:center; }
+    .nl-custom-photo-btn:active { background:rgba(255,255,255,0.08); }
+    .nl-custom-thumb { width:60px; height:60px; border-radius:12px; object-fit:cover; }
   </style>
 </head>
 <body>
@@ -661,6 +670,7 @@
       <button class="nl-sort-btn" onclick="nlSetSort('protein',this)">Protein</button>
       <button class="nl-sort-btn nl-fav-btn" onclick="nlToggleFavFilter(this)">★</button>
     </div>
+    <button class="nl-browse-btn" onclick="nlBrowseFoods()">🔍 Browse All Foods</button>
     <div id="nlMealList"></div>
   </div>
   <div class="view" id="nlMealView">
@@ -784,8 +794,7 @@
   <div class="bw-overlay" id="nlAmountOverlay" onclick="if(event.target===this)nlCloseAmount()">
     <div class="bw-sheet" id="nlAmountSheet">
       <div class="bw-sheet-handle"></div>
-      <div class="nl-amount-title" id="nlAmountTitle"></div>
-      <div class="nl-amount-sub" id="nlAmountSub"></div>
+      <div class="nl-amount-header" id="nlAmountHeader"></div>
       <div class="nl-quick-row">
         <button class="nl-quick-btn" onclick="nlSetGrams(50)">50g</button>
         <button class="nl-quick-btn" onclick="nlSetGrams(100)">100g</button>
@@ -797,7 +806,7 @@
         <button class="nl-gram-btn" onclick="nlAdjustPickerGrams(10)">+</button>
       </div>
       <div class="nl-amount-preview" id="nlAmountPreview"></div>
-      <button class="nl-confirm-btn" onclick="nlConfirmAddIng()">Add to Meal</button>
+      <button class="nl-confirm-btn" id="nlAddToMealBtn" onclick="nlConfirmAddIng()">Add to Meal</button>
     </div>
   </div>
 
@@ -823,6 +832,12 @@
         <button class="modal-close" onclick="nlCloseCustom()">✕</button>
       </div>
       <input class="plan-name-input" id="nlCustomName" type="text" placeholder="Ingredient name" maxlength="40" />
+      <div class="nl-custom-photo-area">
+        <input type="file" id="nlCustomPhotoInput" accept="image/*" style="display:none" onchange="nlCustomPhotoSelected(this)">
+        <div id="nlCustomPhotoPreview">
+          <button class="nl-custom-photo-btn" onclick="document.getElementById('nlCustomPhotoInput').click()">📷 Add Photo (optional)</button>
+        </div>
+      </div>
       <div style="font-size:0.8rem;color:var(--muted);margin:-10px 0 14px;">Values per 100g</div>
       <div class="nl-custom-row">
         <div class="nl-custom-field">
@@ -1274,6 +1289,12 @@
         setHeader(meal ? meal.name : 'Meal', true, 'Delete', nlDeleteMeal);
         document.getElementById('fab').classList.add('hidden');
         navContext = 'nl-meal';
+      } else if (navContext === 'nl-browse') {
+        showView('nutritionView');
+        setHeader('Nutrition Lab', false);
+        document.getElementById('fab').classList.remove('hidden');
+        navContext = 'nutrition';
+        renderNLMeals();
       }
     }
 
@@ -2204,6 +2225,8 @@
     let nlCurrentMealId = null;
     let nlPickerIng = null;
     let nlPickerGrams = 100;
+    let nlBrowseMode = false;
+    let nlCustomPhotoBase64 = null;
 
     function getNLMeals() { try { return JSON.parse(localStorage.getItem('trainer_meals')) || []; } catch { return []; } }
     function saveNLMeals(m) { localStorage.setItem('trainer_meals', JSON.stringify(m)); }
@@ -2320,7 +2343,18 @@
       saveNLMeals(meals);
     }
 
+    function nlBrowseFoods() {
+      nlBrowseMode = true;
+      showView('nlPickerView');
+      setHeader('All Foods', true);
+      document.getElementById('nlSearchInput').value = '';
+      document.getElementById('fab').classList.add('hidden');
+      navContext = 'nl-browse';
+      renderNLPicker();
+    }
+
     function nlShowPicker() {
+      nlBrowseMode = false;
       showView('nlPickerView');
       setHeader('Add Ingredient', true);
       document.getElementById('nlSearchInput').value = '';
@@ -2355,12 +2389,12 @@
       const ing=getAllIngs().find(i=>i.name===name);
       if (!ing) return;
       nlPickerIng=ing; nlPickerGrams=100;
-      document.getElementById('nlAmountTitle').textContent=ing.name;
-      document.getElementById('nlAmountSub').textContent=`${ing.cal} cal per 100g`;
+      const imgHtml=ing.img?`<img class="nl-amount-img" src="${ing.img}">`:`<div class="nl-amount-initial">${ing.name[0]}</div>`;
+      document.getElementById('nlAmountHeader').innerHTML=`${imgHtml}<div><div class="nl-amount-title">${ing.name}</div><div class="nl-amount-sub">${ing.cal} cal per 100g</div></div>`;
       document.getElementById('nlGramDisplay').textContent='100g';
+      document.getElementById('nlAddToMealBtn').style.display=nlBrowseMode?'none':'';
       nlUpdateAmountPreview();
-      const overlay=document.getElementById('nlAmountOverlay');
-      overlay.classList.add('open');
+      document.getElementById('nlAmountOverlay').classList.add('open');
       setTimeout(()=>document.getElementById('nlAmountSheet').style.transform='translateY(0)',10);
     }
 
@@ -2462,10 +2496,35 @@
 
     function nlOpenCustomModal() {
       ['nlCustomName','nlCustomP','nlCustomC','nlCustomF','nlCustomCal'].forEach(id=>document.getElementById(id).value='');
+      nlCustomPhotoBase64=null;
+      document.getElementById('nlCustomPhotoInput').value='';
+      document.getElementById('nlCustomPhotoPreview').innerHTML='<button class="nl-custom-photo-btn" onclick="document.getElementById(\'nlCustomPhotoInput\').click()">📷 Add Photo (optional)</button>';
       document.getElementById('nlCustomOverlay').classList.add('open');
       setTimeout(()=>document.getElementById('nlCustomName').focus(),300);
     }
     function nlCloseCustom() { document.getElementById('nlCustomOverlay').classList.remove('open'); }
+
+    function nlCustomPhotoSelected(input) {
+      if (!input.files||!input.files[0]) return;
+      const reader=new FileReader();
+      reader.onload=e=>{
+        const img=new Image();
+        img.onload=()=>{
+          const MAX=300; let w=img.width,h=img.height;
+          if(w>h){if(w>MAX){h=h*MAX/w;w=MAX;}}else{if(h>MAX){w=w*MAX/h;h=MAX;}}
+          const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
+          canvas.getContext('2d').drawImage(img,0,0,w,h);
+          nlCustomPhotoBase64=canvas.toDataURL('image/jpeg',0.7);
+          document.getElementById('nlCustomPhotoPreview').innerHTML=`
+            <div style="display:flex;align-items:center;gap:12px;">
+              <img class="nl-custom-thumb" src="${nlCustomPhotoBase64}">
+              <button class="nl-custom-photo-btn" style="flex:1;" onclick="document.getElementById('nlCustomPhotoInput').click()">Change Photo</button>
+            </div>`;
+        };
+        img.src=e.target.result;
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
 
     function nlSaveCustom() {
       const name=document.getElementById('nlCustomName').value.trim();
@@ -2475,7 +2534,9 @@
       let cal=parseFloat(document.getElementById('nlCustomCal').value)||0;
       if (!name) return;
       if (cal===0) cal=Math.round(p*4+c*4+f*9);
-      const customs=getCustomIngs(); customs.push({name,cat:'custom',p,c,f,cal});
+      const ingData={name,cat:'custom',p,c,f,cal};
+      if(nlCustomPhotoBase64) ingData.img=nlCustomPhotoBase64;
+      const customs=getCustomIngs(); customs.push(ingData);
       saveCustomIngs(customs); nlCloseCustom(); renderNLPicker();
     }
 
