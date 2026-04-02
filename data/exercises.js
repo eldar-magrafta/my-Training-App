@@ -273,6 +273,35 @@ export const exerciseData = {
         yt: 'seated adductor squeeze inner thigh exercise' }
     ]
   },
+  forearms: {
+    name: 'Forearms', icon: '🤜', img: 'forearms',
+    exercises: [
+      { name: 'Wrist Curl', sets: '3–4 sets × 15–20 reps',
+        desc: 'The classic forearm flexor exercise. Builds the meaty inner forearm responsible for grip strength.',
+        tips: ['Sit with forearms resting on your thighs', 'Palms face up, wrists just past the knees', 'Curl the weight up using only the wrists', 'Full stretch at the bottom each rep'],
+        yt: 'wrist curl forearm exercise tutorial' },
+      { name: 'Reverse Wrist Curl', sets: '3 sets × 15–20 reps',
+        desc: 'Targets the forearm extensors on the outer forearm. Balances out wrist curls for complete development.',
+        tips: ['Palms face down, forearms on thighs', 'Use lighter weight than regular wrist curls', 'Controlled motion — no momentum', 'Full range of motion each rep'],
+        yt: 'reverse wrist curl forearm extensor tutorial' },
+      { name: 'Reverse Curl', sets: '3 sets × 10–12 reps',
+        desc: 'A standing curl with an overhand grip. Builds the brachioradialis and forearm extensors.',
+        tips: ['Overhand grip, shoulder-width apart', 'Keep elbows pinned at your sides', 'Curl the bar up without swinging', 'Slow negative on the way down'],
+        yt: 'reverse curl forearm brachioradialis tutorial' },
+      { name: 'Farmer\'s Walk', sets: '3 sets × 30–40 meters',
+        desc: 'A loaded carry that builds crushing grip strength, forearms, traps, and full-body stability.',
+        tips: ['Pick up heavy dumbbells or farmer handles', 'Stand tall — chest up, shoulders back', 'Walk in a straight line with short steps', 'Squeeze the handles as hard as possible'],
+        yt: 'farmers walk exercise grip forearm tutorial' },
+      { name: 'Behind-the-Back Wrist Curl', sets: '3 sets × 15–20 reps',
+        desc: 'A barbell wrist curl performed behind the body. Allows heavier loading and a strong forearm pump.',
+        tips: ['Stand holding a barbell behind your back', 'Let the bar roll to your fingertips', 'Curl it back up using only the wrists', 'Keep the rest of your body still'],
+        yt: 'behind the back wrist curl forearm tutorial' },
+      { name: 'Plate Pinch Hold', sets: '3 sets × 20–30 seconds',
+        desc: 'An isometric grip exercise using weight plates. Develops pinch grip and thumb strength.',
+        tips: ['Pinch two plates together smooth-side-out', 'Hold at your side with arm straight', 'Squeeze as hard as possible', 'Progress by adding thinner plates'],
+        yt: 'plate pinch hold grip strength tutorial' }
+    ]
+  },
   core: {
     name: 'Core', icon: '🔥', img: 'abs',
     exercises: [
