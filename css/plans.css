@@ -7,9 +7,19 @@
   transition: transform 0.12s;
 }
 .plan-card:active { transform: scale(0.98); }
+.plan-card-info { flex: 1; cursor: pointer; }
 .plan-card-name { font-size: 1.15rem; font-weight: 700; }
 .plan-card-meta { font-size: 0.8rem; color: var(--muted); margin-top: 5px; }
-.plan-card-arrow { color: var(--accent); font-size: 1.4rem; }
+.plan-card-actions { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+.plan-card-arrow { color: var(--accent); font-size: 1.4rem; cursor: pointer; }
+.plan-card-delete {
+  width: 32px; height: 32px; border-radius: 50%;
+  border: none; background: rgba(255,60,60,0.15);
+  color: #ff4444; font-size: 0.85rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s;
+}
+.plan-card-delete:active { background: rgba(255,60,60,0.35); }
 
 /* ── Plan Detail ── */
 .plan-detail-list { display: flex; flex-direction: column; gap: 10px; }

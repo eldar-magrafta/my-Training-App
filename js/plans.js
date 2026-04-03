@@ -28,12 +28,20 @@ export function renderPlans() {
       card.className = 'plan-card';
       const exCount = plan.exercises.filter(i => typeof i === 'string').length;
       card.innerHTML = `
-        <div>
+        <div class="plan-card-info">
           <div class="plan-card-name">${plan.name}</div>
           <div class="plan-card-meta">${exCount === 0 ? 'No exercises yet' : exCount + ' exercise' + (exCount !== 1 ? 's' : '')}</div>
         </div>
-        <span class="plan-card-arrow">\u203a</span>`;
-      card.onclick = () => showPlanDetail(plan.id);
+        <div class="plan-card-actions">
+          <span class="plan-card-arrow">\u203a</span>
+          <button class="plan-card-delete" title="Delete plan">\u2715</button>
+        </div>`;
+      card.querySelector('.plan-card-info').onclick = () => showPlanDetail(plan.id);
+      card.querySelector('.plan-card-arrow').onclick = () => showPlanDetail(plan.id);
+      card.querySelector('.plan-card-delete').onclick = (e) => {
+        e.stopPropagation();
+        openDeletePlanConfirm(plan.id, plan.name);
+      };
       list.appendChild(card);
     });
   }
@@ -64,15 +72,30 @@ export function createPlan() {
   showPlanDetail(newPlan.id);
 }
 
-export function deletePlan() {
-  if (!state.currentPlanId) return;
-  const plan = getPlan(state.currentPlanId);
-  if (!plan) return;
-  if (!confirm(`Delete "${plan.name}"?`)) return;
-  const plans = getPlans().filter(p => p.id !== state.currentPlanId);
-  savePlans(plans);
-  // switchTab will be called from app.js binding
+/** "Done" button in plan detail — navigate back to plans list */
+export function donePlanDetail() {
   window.switchTab('plans');
+}
+
+/** Open delete-plan confirmation from the plans list card */
+export function openDeletePlanConfirm(planId, planName) {
+  state._pendingDeletePlanId = planId;
+  document.getElementById('deletePlanConfirmMsg').textContent =
+    `Delete "${planName}"? This cannot be undone.`;
+  document.getElementById('deletePlanConfirmOverlay').classList.add('open');
+}
+
+export function closeDeletePlanConfirm() {
+  document.getElementById('deletePlanConfirmOverlay').classList.remove('open');
+  state._pendingDeletePlanId = null;
+}
+
+export function confirmDeletePlan() {
+  if (!state._pendingDeletePlanId) return;
+  const plans = getPlans().filter(p => p.id !== state._pendingDeletePlanId);
+  savePlans(plans);
+  closeDeletePlanConfirm();
+  renderPlans();
 }
 
 // ── Plan Detail ──
@@ -137,7 +160,7 @@ export function showPlanDetail(planId) {
   [...list.children].forEach((child, i) => _initItemDrag(child, i));
 
   showView('planDetailView');
-  setHeader(plan.name, true, 'Delete', deletePlan);
+  setHeader(plan.name, true, '\u2713  Done', donePlanDetail);
   document.getElementById('fab').classList.add('hidden');
   state.navContext = 'plan-detail';
 }

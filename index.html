@@ -90,6 +90,16 @@
     </div>
   </div>
 
+  <!-- Delete-plan confirmation sheet -->
+  <div class="confirm-overlay" id="deletePlanConfirmOverlay" onclick="if(event.target===this)closeDeletePlanConfirm()">
+    <div class="confirm-sheet">
+      <div class="confirm-title">Delete Plan?</div>
+      <div class="confirm-msg" id="deletePlanConfirmMsg"></div>
+      <button class="confirm-btn-del" onclick="confirmDeletePlan()">Delete</button>
+      <button class="confirm-btn-cancel" onclick="closeDeletePlanConfirm()">Cancel</button>
+    </div>
+  </div>
+
   <!-- Delete-all confirmation sheet -->
   <div class="confirm-overlay" id="bwConfirmOverlay" onclick="if(event.target===this)closeBWDeleteConfirm()">
     <div class="confirm-sheet">
