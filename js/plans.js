@@ -233,7 +233,7 @@ export function showExercisePicker() {
             <img class="m-overlay" src="images/${group.img}.png" alt="">
           </div>
           <span class="picker-group-name">${group.name}</span>
-          <span class="picker-group-badge ${addedCount > 0 ? 'visible' : ''}" id="badge_${key}">${addedCount}</span>
+          <span class="picker-group-badge ${addedCount > 0 ? 'visible' : ''}" data-badge-group="${key}">${addedCount}</span>
         </div>
         <span class="picker-chevron">\u25bc</span>
       </div>
@@ -242,8 +242,8 @@ export function showExercisePicker() {
           const added = plan.exercises.some(i => i === ex.name);
           return `
             <div class="picker-ex-item" onclick="toggleExerciseInPlan('${ex.name.replace(/'/g, "\\'")}', '${key}')">
-              <span class="picker-ex-name" id="pname_${ex.name.replace(/[^a-z0-9]/gi, '_')}">${ex.name}</span>
-              <div class="picker-toggle ${added ? 'added' : ''}" id="ptoggle_${ex.name.replace(/[^a-z0-9]/gi, '_')}">\u2713</div>
+              <span class="picker-ex-name">${ex.name}</span>
+              <div class="picker-toggle ${added ? 'added' : ''}" data-ex-toggle="${ex.name}">\u2713</div>
             </div>`;
         }).join('')}
       </div>`;
@@ -276,20 +276,22 @@ export function toggleExerciseInPlan(exName, groupKey) {
   }
   savePlans(plans);
 
-  const safeId = exName.replace(/[^a-z0-9]/gi, '_');
-  const toggle = document.getElementById('ptoggle_' + safeId);
-  if (toggle) toggle.classList.toggle('added', idx === -1);
+  // Update ALL toggle checkmarks for this exercise across every muscle group
+  const isNowAdded = idx === -1;
+  document.querySelectorAll(`[data-ex-toggle="${exName}"]`).forEach(toggle => {
+    toggle.classList.toggle('added', isNowAdded);
+  });
 
+  // Update badges for ALL groups that contain this exercise
   const updatedPlan = getPlan(state.currentPlanId);
-  const group = exerciseData[groupKey];
-  if (group) {
+  Object.entries(exerciseData).forEach(([key, group]) => {
     const count = group.exercises.filter(e => updatedPlan.exercises.some(i => i === e.name)).length;
-    const badge = document.getElementById('badge_' + groupKey);
+    const badge = document.querySelector(`[data-badge-group="${key}"]`);
     if (badge) {
       badge.textContent = count;
       badge.classList.toggle('visible', count > 0);
     }
-  }
+  });
 }
 
 // ── Drag-to-Reorder ──
