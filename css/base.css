@@ -61,7 +61,8 @@ body {
   font-size: 0.7rem; font-family: inherit; letter-spacing: 0.3px;
   transition: color 0.2s;
 }
-.tab-btn .tab-icon { font-size: 1.35rem; }
+.tab-btn .tab-icon { font-size: 1.35rem; filter: grayscale(1) brightness(0.7); transition: filter 0.2s; }
+.tab-btn.active .tab-icon { filter: none; }
 .tab-btn.active { color: var(--accent); }
 
 /* ── FAB ── */
