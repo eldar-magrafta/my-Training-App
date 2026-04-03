@@ -55,27 +55,29 @@ export function openModal(ex, muscleName, fromPlan = false) {
   document.getElementById('modalDesc').textContent = ex.desc;
   document.getElementById('modalTips').innerHTML = ex.tips.map(t => `<li>${t}</li>`).join('');
 
-  const vidEl = document.getElementById('modalVid');
+  // Support both <video> (.webm/.mp4) and <img> (.gif) — find whichever elements exist
+  const vidEl = document.getElementById('modalVid') || document.getElementById('modalGif');
   const imgEl = document.getElementById('modalImg');
   if (ex.gif) {
     const isVideo = ex.gif.endsWith('.webm') || ex.gif.endsWith('.mp4');
-    if (isVideo) {
+    if (isVideo && vidEl) {
       vidEl.src = ex.gif;
       vidEl.style.display = '';
       vidEl.play();
-      imgEl.style.display = 'none';
-      imgEl.src = '';
-    } else {
+      if (imgEl) { imgEl.style.display = 'none'; imgEl.src = ''; }
+    } else if (!isVideo && imgEl) {
       imgEl.src = ex.gif;
       imgEl.style.display = '';
-      vidEl.style.display = 'none';
-      vidEl.src = '';
+      if (vidEl) { vidEl.style.display = 'none'; vidEl.src = ''; }
+    } else if (vidEl) {
+      // Fallback: old HTML only has <video id="modalGif"> — use it for everything
+      vidEl.src = ex.gif;
+      vidEl.style.display = '';
+      try { vidEl.play(); } catch(e) {}
     }
   } else {
-    vidEl.style.display = 'none';
-    vidEl.src = '';
-    imgEl.style.display = 'none';
-    imgEl.src = '';
+    if (vidEl) { vidEl.style.display = 'none'; vidEl.src = ''; }
+    if (imgEl) { imgEl.style.display = 'none'; imgEl.src = ''; }
   }
 
   const planSection = document.getElementById('modalPlanSection');
