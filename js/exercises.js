@@ -55,14 +55,27 @@ export function openModal(ex, muscleName, fromPlan = false) {
   document.getElementById('modalDesc').textContent = ex.desc;
   document.getElementById('modalTips').innerHTML = ex.tips.map(t => `<li>${t}</li>`).join('');
 
-  const gifEl = document.getElementById('modalGif');
+  const vidEl = document.getElementById('modalVid');
+  const imgEl = document.getElementById('modalImg');
   if (ex.gif) {
-    gifEl.src = ex.gif;
-    gifEl.style.display = '';
-    gifEl.play();
+    const isVideo = ex.gif.endsWith('.webm') || ex.gif.endsWith('.mp4');
+    if (isVideo) {
+      vidEl.src = ex.gif;
+      vidEl.style.display = '';
+      vidEl.play();
+      imgEl.style.display = 'none';
+      imgEl.src = '';
+    } else {
+      imgEl.src = ex.gif;
+      imgEl.style.display = '';
+      vidEl.style.display = 'none';
+      vidEl.src = '';
+    }
   } else {
-    gifEl.style.display = 'none';
-    gifEl.src = '';
+    vidEl.style.display = 'none';
+    vidEl.src = '';
+    imgEl.style.display = 'none';
+    imgEl.src = '';
   }
 
   const planSection = document.getElementById('modalPlanSection');
