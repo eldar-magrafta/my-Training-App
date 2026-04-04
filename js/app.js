@@ -210,8 +210,6 @@ function closeBurgerMenu() {
 function toggleTheme() {
   const isLight = document.documentElement.classList.toggle('light');
   localStorage.setItem('theme', isLight ? 'light' : 'dark');
-  document.getElementById('themeIcon').textContent = isLight ? '🌙' : '☀️';
-  document.getElementById('themeLabel').textContent = isLight ? 'Dark Mode' : 'Light Mode';
   const metaTheme = document.querySelector('meta[name="theme-color"]');
   if (metaTheme) metaTheme.content = isLight ? '#f2f2f7' : '#0f0f1a';
 }
@@ -220,8 +218,6 @@ function applyStoredTheme() {
   const stored = localStorage.getItem('theme');
   if (stored === 'light') {
     document.documentElement.classList.add('light');
-    document.getElementById('themeIcon').textContent = '🌙';
-    document.getElementById('themeLabel').textContent = 'Dark Mode';
     const metaTheme = document.querySelector('meta[name="theme-color"]');
     if (metaTheme) metaTheme.content = '#f2f2f7';
   }
