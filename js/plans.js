@@ -70,17 +70,6 @@ export function createPlan() {
 
 /** "Done" button in plan detail — exit edit mode back to view mode */
 export function donePlanDetail() {
-  // Save edited plan name
-  const titleEl = document.getElementById('headerTitle');
-  const newName = titleEl.textContent.trim();
-  if (newName && state.currentPlanId) {
-    const plans = getPlans();
-    const plan = plans.find(p => p.id === state.currentPlanId);
-    if (plan && plan.name !== newName) {
-      plan.name = newName;
-      savePlans(plans);
-    }
-  }
   setPlanEditMode(false);
 }
 
@@ -90,20 +79,12 @@ export function setPlanEditMode(editing) {
   const detail = document.getElementById('planDetailView');
   detail.classList.toggle('editing', editing);
   const btn = document.getElementById('headerAction');
-  const titleEl = document.getElementById('headerTitle');
-  const isPlanDetail = state.navContext === 'plan-detail';
   if (editing) {
     btn.textContent = '\u2713  Done';
     btn.onclick = donePlanDetail;
-    if (isPlanDetail) {
-      titleEl.contentEditable = 'true';
-      titleEl.classList.add('editable');
-    }
   } else {
     btn.innerHTML = '&#9998;';
     btn.onclick = () => setPlanEditMode(true);
-    titleEl.contentEditable = 'false';
-    titleEl.classList.remove('editable');
   }
 }
 
