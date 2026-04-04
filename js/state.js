@@ -18,6 +18,7 @@ export const state = {
   bwCurrentPhoto: null,
 
   // Nutrition Lab
+  nlViewMode: 'today',  // 'today' | 'saved'
   nlSortBy: 'date',
   nlFavOnly: false,
   nlCurrentMealId: null,

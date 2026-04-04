@@ -10,7 +10,8 @@
       "Bash(git commit:*)",
       "Bash(git push:*)",
       "Bash(node -e \"var fs=require\\(''fs''\\); var src=fs.readFileSync\\(''data/exercises.js'',''utf8''\\).replace\\(/^export /gm,''''\\).replace\\(/^import .*/gm,''''\\); try { new Function\\(src\\); console.log\\(''Syntax OK''\\); } catch\\(e\\) { console.error\\(e.message\\); process.exit\\(1\\); }\")",
-      "Bash(node -e \"var fs=require\\(''fs''\\); var src=fs.readFileSync\\(''data/exercises.js'',''utf8''\\).replace\\(/^export /gm,''''\\).replace\\(/^import .*/gm,''''\\); var fn=new Function\\(src+''; return exerciseData;''\\); var data=fn\\(\\); var nameMap={}; var total=0; for\\(var k in data\\){var c=data[k].exercises.length; console.log\\(k+'': ''+c\\); total+=c; data[k].exercises.forEach\\(function\\(ex\\){if\\(!nameMap[ex.name]\\)nameMap[ex.name]=[]; nameMap[ex.name].push\\(k\\);}\\)} console.log\\(''Total: ''+total\\); var dups=0; for\\(var n in nameMap\\){if\\(nameMap[n].length>1\\){console.log\\(''DUPLICATE: ''+n+'' in ''+nameMap[n].join\\('', ''\\)\\); dups++;}} if\\(dups==0\\) console.log\\(''No duplicates found''\\);\")"
+      "Bash(node -e \"var fs=require\\(''fs''\\); var src=fs.readFileSync\\(''data/exercises.js'',''utf8''\\).replace\\(/^export /gm,''''\\).replace\\(/^import .*/gm,''''\\); var fn=new Function\\(src+''; return exerciseData;''\\); var data=fn\\(\\); var nameMap={}; var total=0; for\\(var k in data\\){var c=data[k].exercises.length; console.log\\(k+'': ''+c\\); total+=c; data[k].exercises.forEach\\(function\\(ex\\){if\\(!nameMap[ex.name]\\)nameMap[ex.name]=[]; nameMap[ex.name].push\\(k\\);}\\)} console.log\\(''Total: ''+total\\); var dups=0; for\\(var n in nameMap\\){if\\(nameMap[n].length>1\\){console.log\\(''DUPLICATE: ''+n+'' in ''+nameMap[n].join\\('', ''\\)\\); dups++;}} if\\(dups==0\\) console.log\\(''No duplicates found''\\);\")",
+      "Bash(grep -o \"gif: ''''[^'''']*''''\" data/exercises.js)"
     ]
   }
 }

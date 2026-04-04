@@ -1,4 +1,20 @@
 /* ── Nutrition Lab ── */
+
+/* View mode toggle (Today / Saved) */
+.nl-view-toggle {
+  display:flex; background:var(--subtle-bg); border-radius:12px;
+  padding:3px; margin-bottom:16px;
+}
+.nl-view-btn {
+  flex:1; background:none; border:none; color:var(--muted);
+  padding:10px; border-radius:10px; font-size:0.9rem; font-weight:600;
+  cursor:pointer; font-family:inherit; transition:all 0.2s;
+}
+.nl-view-btn.active {
+  background:var(--card); color:var(--text);
+  box-shadow:0 1px 4px rgba(0,0,0,0.1);
+}
+
 .nl-sort-row { display:flex; gap:8px; margin-bottom:16px; }
 .nl-sort-btn { flex:1; background:var(--card); border:1px solid var(--border-med); color:var(--muted); padding:10px; border-radius:12px; font-size:0.85rem; font-family:inherit; cursor:pointer; }
 .nl-sort-btn.active { color:var(--accent); border-color:var(--accent); background:rgba(233,69,96,0.12); font-weight:700; }
@@ -69,6 +85,12 @@
 .nl-custom-field input { width:100%; box-sizing:border-box; background:var(--subtle-bg); border:1px solid var(--border-med); color:var(--text); padding:12px; border-radius:10px; font-size:0.95rem; font-family:inherit; outline:none; }
 .nl-add-ing-btn { width:100%; background:rgba(233,69,96,0.12); border:1px solid rgba(233,69,96,0.3); color:var(--accent); padding:15px; border-radius:14px; font-size:0.95rem; font-weight:600; font-family:inherit; cursor:pointer; margin-bottom:12px; }
 .nl-add-ing-btn:active { opacity:0.85; }
+.nl-eat-today-btn {
+  width:100%; background:var(--green); border:none; color:#fff;
+  padding:15px; border-radius:14px; font-size:1rem; font-weight:700;
+  font-family:inherit; cursor:pointer; margin-bottom:12px; margin-top:4px;
+}
+.nl-eat-today-btn:active { opacity:0.85; }
 .nl-browse-btn { width:100%; background:var(--subtle-bg); border:1px solid var(--border-med); color:var(--text); padding:14px; border-radius:14px; font-size:0.95rem; font-family:inherit; cursor:pointer; margin-bottom:18px; text-align:center; }
 .nl-browse-btn:active { background:var(--subtle-bg-hover); }
 .nl-amount-header { display:flex; align-items:center; gap:14px; justify-content:center; margin-bottom:16px; }

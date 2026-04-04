@@ -27,11 +27,32 @@ function nlRenderPie(p, c, f) {
     <div class="nl-chart-legend">${segs.map(s => `<div><span style="color:${s.col};font-size:1.1rem;">\u25cf</span> ${s.lbl} <b>${Math.round(s.pct * 100)}%</b></div>`).join('')}</div>`;
 }
 
+// ── View Mode Toggle ──
+
+export function nlSetViewMode(mode) {
+  state.nlViewMode = mode;
+  document.getElementById('nlViewToday').classList.toggle('active', mode === 'today');
+  document.getElementById('nlViewSaved').classList.toggle('active', mode === 'saved');
+  // Show/hide macro goals and sort row based on mode
+  const goalsSection = document.getElementById('macroGoalsSection');
+  if (goalsSection) goalsSection.style.display = mode === 'today' ? '' : 'none';
+  renderNLMeals();
+}
+
 // ── Meal List ──
 
 export function renderNLMeals() {
   const list = document.getElementById('nlMealList');
+  const today = new Date().toISOString().slice(0, 10);
   let meals = getNLMeals();
+
+  // Filter by view mode
+  if (state.nlViewMode === 'today') {
+    meals = meals.filter(m => (m.type || 'logged') === 'logged' && m.createdAt === today);
+  } else {
+    meals = meals.filter(m => m.type === 'saved');
+  }
+
   if (state.nlFavOnly) meals = meals.filter(m => m.favorite);
   meals.sort((a, b) => {
     if (state.nlSortBy === 'date') return (b.createdAt || '').localeCompare(a.createdAt || '');
@@ -41,7 +62,10 @@ export function renderNLMeals() {
     return 0;
   });
   if (meals.length === 0) {
-    list.innerHTML = `<div class="nl-empty"><div class="nl-empty-icon">\ud83e\uddea</div><div class="nl-empty-text">${state.nlFavOnly ? 'No favorite meals yet.<br>Star a meal to see it here.' : 'No meals yet.<br>Tap + to create your first meal.'}</div></div>`;
+    const emptyMsg = state.nlViewMode === 'today'
+      ? 'No meals logged today.<br>Tap + to log a meal, or eat a saved meal.'
+      : (state.nlFavOnly ? 'No favorite meals yet.<br>Star a meal to see it here.' : 'No saved meals yet.<br>Tap + to create a reusable meal.');
+    list.innerHTML = `<div class="nl-empty"><div class="nl-empty-icon">${state.nlViewMode === 'today' ? '\ud83c\udf7d\ufe0f' : '\ud83d\udcd6'}</div><div class="nl-empty-text">${emptyMsg}</div></div>`;
     return;
   }
   list.innerHTML = meals.map(m => {
@@ -60,6 +84,9 @@ export function nlShowMeal(id) {
   const meal = getNLMeals().find(m => m.id === id);
   setHeader(meal ? meal.name : 'Meal', true, 'Delete', nlDeleteMeal);
   document.getElementById('fab').classList.add('hidden');
+  // Show "Eat Today" button only for saved meals
+  const eatBtn = document.getElementById('nlEatTodayBtn');
+  if (eatBtn) eatBtn.style.display = (meal && meal.type === 'saved') ? '' : 'none';
   state.navContext = 'nl-meal';
 }
 
@@ -231,7 +258,8 @@ export function nlCloseCreate() { document.getElementById('nlCreateOverlay').cla
 export function nlCreateMeal() {
   const name = document.getElementById('nlMealNameInput').value.trim();
   if (!name) return;
-  const meal = { id: 'meal_' + Date.now(), name, ingredients: [], notes: '', favorite: false, createdAt: new Date().toISOString().slice(0, 10) };
+  const type = state.nlViewMode === 'saved' ? 'saved' : 'logged';
+  const meal = { id: 'meal_' + Date.now(), name, type, ingredients: [], notes: '', favorite: false, createdAt: new Date().toISOString().slice(0, 10) };
   const meals = getNLMeals(); meals.push(meal); saveNLMeals(meals);
   nlCloseCreate(); nlShowMeal(meal.id);
 }
@@ -253,7 +281,7 @@ export function nlToggleFav(id) {
 export function nlDuplicateMeal() {
   const meals = getNLMeals(), meal = meals.find(m => m.id === state.nlCurrentMealId);
   if (!meal) return;
-  const dup = { id: 'meal_' + Date.now(), name: meal.name + ' (copy)', ingredients: meal.ingredients.map(i => ({ ...i })), notes: meal.notes, favorite: false, createdAt: new Date().toISOString().slice(0, 10) };
+  const dup = { id: 'meal_' + Date.now(), name: meal.name + ' (copy)', type: meal.type || 'logged', ingredients: meal.ingredients.map(i => ({ ...i })), notes: meal.notes, favorite: false, createdAt: new Date().toISOString().slice(0, 10) };
   meals.push(dup); saveNLMeals(meals); nlShowMeal(dup.id);
 }
 
@@ -331,11 +359,48 @@ export function nlSaveCustom() {
   saveCustomIngs(customs); nlCloseCustom(); renderNLPicker();
 }
 
+// ── Log Saved Meal as Today ──
+
+export function nlLogSavedMeal() {
+  const meals = getNLMeals(), meal = meals.find(m => m.id === state.nlCurrentMealId);
+  if (!meal) return;
+  const logged = {
+    id: 'meal_' + Date.now(),
+    name: meal.name,
+    type: 'logged',
+    ingredients: meal.ingredients.map(i => ({ ...i })),
+    notes: '',
+    favorite: false,
+    createdAt: new Date().toISOString().slice(0, 10)
+  };
+  meals.push(logged);
+  saveNLMeals(meals);
+  // Show confirmation then go to today view
+  state.nlCurrentMealId = null;
+  state.nlViewMode = 'today';
+  showView('nutritionView');
+  setHeader('Nutrition Lab', false);
+  document.getElementById('fab').classList.remove('hidden');
+  state.navContext = 'nutrition';
+  document.getElementById('nlViewToday').classList.add('active');
+  document.getElementById('nlViewSaved').classList.remove('active');
+  document.getElementById('macroGoalsSection').style.display = '';
+  renderNLMeals();
+  renderMacroGoals();
+  // Brief toast
+  const toast = document.createElement('div');
+  toast.className = 'pr-toast';
+  toast.style.background = 'linear-gradient(135deg, var(--green), #27ae60)';
+  toast.textContent = `Logged "${meal.name}" for today`;
+  document.body.appendChild(toast);
+  setTimeout(() => { if (toast.parentNode) toast.remove(); }, 2600);
+}
+
 // ── Macro Goals ──
 
 function nlCalcDailyTotals() {
   const today = new Date().toISOString().slice(0, 10);
-  const meals = getNLMeals().filter(m => m.createdAt === today);
+  const meals = getNLMeals().filter(m => (m.type || 'logged') === 'logged' && m.createdAt === today);
   let p = 0, c = 0, f = 0, cal = 0;
   meals.forEach(m => { const t = nlCalcTotals(m); p += t.p; c += t.c; f += t.f; cal += t.cal; });
   return { p: Math.round(p * 10) / 10, c: Math.round(c * 10) / 10, f: Math.round(f * 10) / 10, cal: Math.round(cal) };

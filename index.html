@@ -157,6 +157,10 @@
 
   <!-- ── Nutrition Lab Tab ── -->
   <div class="view" id="nutritionView">
+    <div class="nl-view-toggle">
+      <button class="nl-view-btn active" id="nlViewToday" onclick="nlSetViewMode('today')">Today</button>
+      <button class="nl-view-btn" id="nlViewSaved" onclick="nlSetViewMode('saved')">Saved Meals</button>
+    </div>
     <div id="macroGoalsSection"></div>
     <div class="nl-sort-row">
       <button class="nl-sort-btn active" onclick="nlSetSort('date',this)">Date</button>
@@ -172,6 +176,7 @@
     <div class="nl-totals" id="nlTotals"></div>
     <div id="nlIngList"></div>
     <button class="nl-add-ing-btn" onclick="nlShowPicker()">＋ Add Ingredient</button>
+    <button class="nl-eat-today-btn" id="nlEatTodayBtn" onclick="nlLogSavedMeal()" style="display:none;">🍽  Eat Today</button>
     <div class="section-label" style="margin-top:18px;">Notes to Self</div>
     <textarea class="nl-notes" id="nlNotes" maxlength="500" placeholder="Taste, digestion, timing, reminders…" oninput="nlAutoSaveNotes()"></textarea>
     <div class="nl-meal-actions">
