@@ -65,12 +65,19 @@ export function createPlan() {
   plans.push(newPlan);
   savePlans(plans);
   closeCreatePlan();
+  state._planJustCreated = true;
   showPlanDetail(newPlan.id);
 }
 
-/** "Done" button in plan detail — exit edit mode back to view mode */
+/** "Done" button in plan detail — navigate back to plans list */
 export function donePlanDetail() {
-  setPlanEditMode(false);
+  state._planEditing = false;
+  state.currentPlanId = null;
+  showView('plansView');
+  setHeader('My Plans', false);
+  document.getElementById('fab').classList.remove('hidden');
+  state.navContext = 'plans';
+  renderPlans();
 }
 
 /** Toggle between view mode and edit mode in plan detail */
@@ -175,7 +182,9 @@ export function showPlanDetail(planId) {
   state.navContext = 'plan-detail';
 
   const wasEditing = state._planEditing;
-  if (wasEditing) {
+  const justCreated = state._planJustCreated;
+  state._planJustCreated = false;
+  if (justCreated || wasEditing) {
     setHeader(plan.name, true, null);
     setPlanEditMode(true);
   } else {

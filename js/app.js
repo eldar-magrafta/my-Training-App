@@ -61,6 +61,7 @@ function handleBack() {
     state.navContext = 'home';
     state.currentMuscleKey = null;
   } else if (state.navContext === 'plan-detail') {
+    state._planEditing = false;
     showView('plansView');
     setHeader('My Plans', false);
     document.getElementById('fab').classList.remove('hidden');
