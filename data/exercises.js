@@ -55,7 +55,7 @@ export const exerciseData = {
         desc: 'Builds thickness across the entire back, especially the mid and lower traps and rhomboids.',
         tips: ['Hinge to about 45 degrees', 'Pull bar to lower chest or navel', 'Squeeze shoulder blades at top', 'Keep lower back neutral'],
         yt: 'barbell bent over row form tutorial',
-        gif: 'gifs/back_lower/Barbell-Bent-Over-Row.gif' },
+        gif: 'gifs/back_upper/Barbell-Bent-Over-Row.gif' },
       { name: 'Seated Cable Row', sets: '3 sets × 10–12 reps',
         desc: 'Builds mid-back thickness with constant tension. Targets rhomboids and middle traps.',
         tips: ['Sit tall with chest up', 'Pull handle to lower abs', 'Squeeze shoulder blades together', 'Full forward stretch between reps'],
@@ -66,11 +66,6 @@ export const exerciseData = {
         tips: ['Pull the rope toward your lower chest', 'Split the rope apart at peak contraction', 'Squeeze shoulder blades together', 'Full stretch forward between reps'],
         yt: 'seated cable rope row tutorial',
         gif: 'gifs/back_upper/Seated-Cable-Rope-Row.gif' },
-      { name: 'Seated Row Machine', sets: '3–4 sets × 10–12 reps',
-        desc: 'A machine row that builds mid-back thickness. The fixed path makes it beginner-friendly.',
-        tips: ['Chest against the pad throughout', 'Pull handles to your sides', 'Squeeze shoulder blades at the end', 'Full stretch forward between reps'],
-        yt: 'seated row machine back exercise tutorial',
-        gif: 'gifs/back_lower/Seated-Row-Machine.gif' },
       { name: 'T-Bar Row', sets: '3–4 sets × 8–10 reps',
         desc: 'A heavy rowing movement that builds upper back thickness. The close grip emphasizes the mid traps and rhomboids.',
         tips: ['Hinge forward at the hips', 'Pull the bar into your chest', 'Squeeze shoulder blades hard at the top', 'Keep lower back neutral throughout'],
@@ -80,17 +75,12 @@ export const exerciseData = {
         desc: 'A unilateral rowing movement that builds mid-back thickness. Allows heavy loading with one arm at a time.',
         tips: ['One hand and knee on a bench for support', 'Pull the dumbbell to your hip', 'Squeeze the shoulder blade at the top', 'Keep your back flat and core tight'],
         yt: 'dumbbell row one arm row tutorial',
-        gif: 'gifs/back_lower/Dumbbell-Row.gif' },
-      { name: 'Barbell Upright Row', sets: '3 sets × 10–12 reps',
-        desc: 'Targets the upper traps and lateral deltoids. A compound pulling movement for upper back and shoulder width.',
-        tips: ['Grip the bar slightly narrower than shoulder-width', 'Pull the bar straight up along your body', 'Lead with your elbows — raise them above the bar', 'Lower slowly and controlled'],
-        yt: 'barbell upright row proper form tutorial',
-        gif: 'gifs/back_upper/Barbell-Upright-Row.gif' },
-      { name: 'Dumbbell Upright Row', sets: '3 sets × 10–12 reps',
-        desc: 'A dumbbell variation of the upright row. Allows a more natural wrist path and reduces shoulder impingement risk.',
-        tips: ['Hold dumbbells in front of your thighs', 'Pull elbows up and out to the sides', 'Raise to about chin height', 'Lower with control — do not drop'],
-        yt: 'dumbbell upright row tutorial',
-        gif: 'gifs/back_upper/Dumbbell-Upright-Row.gif' },
+        gif: 'gifs/back_upper/Dumbbell-Row.gif' },
+      { name: 'One Arm Cable Row', sets: '3 sets × 10–12 reps per arm',
+        desc: 'A unilateral cable row that fixes imbalances and allows a full stretch and contraction on each side.',
+        tips: ['Use a single handle on a low cable', 'Pull the handle to your hip', 'Squeeze the shoulder blade at the top', 'Full forward stretch between reps'],
+        yt: 'one arm cable row tutorial',
+        gif: 'gifs/back_upper/One-arm-Cable-Row.gif' },
       { name: 'Dumbbell Shrug', sets: '3–4 sets × 12–15 reps',
         desc: 'Isolates the upper trapezius. Builds the thick yoke look between the neck and shoulders.',
         tips: ['Hold heavy dumbbells at your sides', 'Shrug shoulders straight up toward your ears', 'Squeeze hard at the top for 1–2 seconds', 'Lower slowly — do not roll the shoulders'],
@@ -110,7 +100,7 @@ export const exerciseData = {
         desc: 'Develops lat width. A great starting point before you can do full pull-ups.',
         tips: ['Lean back slightly', 'Pull bar to upper chest', 'Initiate with lats, not biceps', 'Full stretch at the top'],
         yt: 'lat pulldown proper form tutorial',
-        gif: 'gifs/back_lower/Lat-Pulldown.gif' },
+        gif: 'gifs/back_lateral/Lat-Pulldown.gif' },
       { name: 'Close Grip Lat Pulldown', sets: '3 sets × 10–12 reps',
         desc: 'A close-grip pulldown that emphasizes the lower lats and allows a stronger peak contraction.',
         tips: ['Use a V-bar or close-grip handle', 'Pull the handle to your upper chest', 'Squeeze lats hard at the bottom', 'Full stretch at the top — let lats extend'],
@@ -120,22 +110,27 @@ export const exerciseData = {
         desc: 'A wider grip variation that emphasizes the outer lats for maximum back width.',
         tips: ['Grip wider than shoulder-width', 'Pull bar to upper chest', 'Drive elbows down and outward', 'Full stretch at the top'],
         yt: 'wide grip lat pulldown tutorial',
-        gif: 'gifs/back_lower/Front-Pulldown.gif' },
+        gif: 'gifs/back_lateral/Front-Pulldown.gif' },
       { name: 'Straight Arm Pulldown', sets: '3 sets × 12–15 reps',
         desc: 'Isolates the lats with minimal bicep involvement. Great for learning to feel the lat muscle.',
         tips: ['Arms stay straight — no elbow bend', 'Hinge slightly at the hips', 'Pull bar down to your thighs', 'Squeeze lats hard at the bottom'],
         yt: 'straight arm pulldown lat isolation tutorial',
-        gif: 'gifs/back_lower/Cable-Straight-Arm-Pulldown.gif' },
+        gif: 'gifs/back_lateral/Cable-Straight-Arm-Pulldown.gif' },
       { name: 'Dumbbell Pullover', sets: '3 sets × 10–12 reps',
         desc: 'A classic lat exercise that stretches and loads the lats through a long range of motion.',
         tips: ['Lie across a bench with upper back supported', 'Hold one dumbbell with both hands overhead', 'Lower it behind your head in an arc', 'Pull back up using the lats — not the chest'],
         yt: 'dumbbell pullover lat exercise tutorial',
         gif: 'gifs/back_lateral/Dumbbell-Pullover.gif' },
-      { name: 'Barbell Bent Arm Pullover', sets: '3 sets × 10–12 reps',
-        desc: 'A barbell pullover variation with bent arms. Loads the lats and chest through a deep overhead stretch.',
-        tips: ['Lie flat on a bench', 'Hold barbell with a shoulder-width grip', 'Lower behind your head with elbows bent', 'Pull back over your chest using lats'],
-        yt: 'barbell bent arm pullover tutorial',
-        gif: 'gifs/back_lateral/Barbell-Bent-Arm-Pullover.gif' }
+      { name: 'V-Bar Lat Pulldown', sets: '3 sets × 10–12 reps',
+        desc: 'A V-bar attachment pulldown that allows a neutral grip, emphasizing the lower lats and teres major.',
+        tips: ['Use a V-bar handle on the lat pulldown', 'Pull the handle to your upper chest', 'Squeeze lats hard at the bottom', 'Full stretch at the top'],
+        yt: 'v-bar lat pulldown tutorial',
+        gif: 'gifs/back_lateral/V-bar-Lat-Pulldown.gif' },
+      { name: 'Seated Row Machine', sets: '3–4 sets × 10–12 reps',
+        desc: 'A machine row that builds mid-back thickness and lat width. The fixed path makes it beginner-friendly.',
+        tips: ['Chest against the pad throughout', 'Pull handles to your sides', 'Squeeze shoulder blades at the end', 'Full stretch forward between reps'],
+        yt: 'seated row machine back exercise tutorial',
+        gif: 'gifs/back_lateral/Seated-Row-Machine.gif' }
     ]
   },
   back_lower: {
@@ -146,11 +141,11 @@ export const exerciseData = {
         tips: ['Bar over mid-foot', 'Hip hinge, not a squat', 'Keep bar close to body throughout', 'Neutral spine — no rounding'],
         yt: 'conventional deadlift proper form tutorial',
         gif: 'gifs/hamstrings/Barbell-Deadlift.gif' },
-      { name: 'One Arm Cable Row', sets: '3 sets × 10–12 reps per arm',
-        desc: 'A unilateral cable row that fixes imbalances and allows a full stretch and contraction on each side.',
-        tips: ['Use a single handle on a low cable', 'Pull the handle to your hip', 'Squeeze the shoulder blade at the top', 'Full forward stretch between reps'],
-        yt: 'one arm cable row tutorial',
-        gif: 'gifs/back_lower/One-arm-Cable-Row.gif' }
+      { name: 'Hyperextension', sets: '3 sets × 12–15 reps',
+        desc: 'Strengthens the erector spinae, glutes, and hamstrings. Essential for lower back health and deadlift performance.',
+        tips: ['Hinge at the hips — not the waist', 'Lower slowly until your torso is near 90 degrees', 'Squeeze glutes and lower back at the top', 'Hold a plate for added resistance'],
+        yt: 'hyperextension lower back exercise tutorial',
+        gif: 'gifs/back_lower/hyperextension.gif' }
     ]
   },
   shoulders: {
@@ -220,7 +215,17 @@ export const exerciseData = {
         desc: 'A cable variation of the upright row providing constant tension. Targets upper traps and lateral deltoids.',
         tips: ['Use a straight bar or EZ bar on a low cable', 'Pull elbows up and outward', 'Raise to chin height', 'Slow controlled negative'],
         yt: 'cable upright row tutorial',
-        gif: 'gifs/shoulders/Cable-Upright-Row.gif' }
+        gif: 'gifs/shoulders/Cable-Upright-Row.gif' },
+      { name: 'Barbell Upright Row', sets: '3 sets × 10–12 reps',
+        desc: 'Targets the upper traps and lateral deltoids. A compound pulling movement for shoulder width.',
+        tips: ['Grip the bar slightly narrower than shoulder-width', 'Pull the bar straight up along your body', 'Lead with your elbows — raise them above the bar', 'Lower slowly and controlled'],
+        yt: 'barbell upright row proper form tutorial',
+        gif: 'gifs/shoulders/Barbell-Upright-Row.gif' },
+      { name: 'Dumbbell Upright Row', sets: '3 sets × 10–12 reps',
+        desc: 'A dumbbell variation of the upright row. Allows a more natural wrist path and reduces shoulder impingement risk.',
+        tips: ['Hold dumbbells in front of your thighs', 'Pull elbows up and out to the sides', 'Raise to about chin height', 'Lower with control — do not drop'],
+        yt: 'dumbbell upright row tutorial',
+        gif: 'gifs/shoulders/Dumbbell-Upright-Row.gif' }
     ]
   },
   biceps: {
@@ -390,7 +395,12 @@ export const exerciseData = {
         desc: 'An explosive hip hinge that builds hamstrings, glutes, and posterior chain power. Great for conditioning.',
         tips: ['Hinge at the hips — not a squat', 'Snap hips forward explosively', 'Arms are just along for the ride', 'Squeeze glutes hard at the top'],
         yt: 'kettlebell swing proper form tutorial',
-        gif: 'gifs/glutes/Kettlebell-Swings.gif' }
+        gif: 'gifs/glutes/Kettlebell-Swings.gif' },
+      { name: 'Barbell Hip Thrust', sets: '3–4 sets × 8–12 reps',
+        desc: 'The most effective glute isolation exercise. Maximizes glute activation at full hip extension.',
+        tips: ['Upper back rests on a bench', 'Barbell across the hips with a pad', 'Drive hips up until torso is parallel to floor', 'Squeeze glutes hard at the top for 1–2 seconds'],
+        yt: 'barbell hip thrust proper form tutorial',
+        gif: 'gifs/glutes/Barbell-Hip-Thrust.gif' }
     ]
   },
   calves: {
@@ -430,7 +440,7 @@ export const exerciseData = {
         desc: 'A cable-based adductor exercise providing constant tension throughout the range of motion.',
         tips: ['Attach ankle strap to low cable', 'Stand sideways to the machine', 'Pull leg across and in front of your body', 'Squeeze inner thigh at peak contraction'],
         yt: 'cable hip adduction inner thigh exercise tutorial',
-        gif: 'gifs/glutes/Cable-Hips-Adduction.gif' }
+        gif: 'gifs/adductors/Cable-Hips-Adduction.gif' }
     ]
   },
   forearms: {
