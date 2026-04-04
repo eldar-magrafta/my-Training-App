@@ -171,10 +171,17 @@ export function showPlanDetail(planId) {
   [...list.children].forEach((child, i) => _initItemDrag(child, i));
 
   showView('planDetailView');
-  setHeader(plan.name, true, '&#9998;', () => setPlanEditMode(true));
   document.getElementById('fab').classList.add('hidden');
   state.navContext = 'plan-detail';
-  setPlanEditMode(false);
+
+  const hasExercises = plan.exercises.length > 0;
+  if (hasExercises) {
+    setHeader(plan.name, true, '&#9998;', () => setPlanEditMode(true));
+    setPlanEditMode(false);
+  } else {
+    setHeader(plan.name, true, null);
+    setPlanEditMode(true);
+  }
 }
 
 // ── Remove Exercise Confirmation ──
