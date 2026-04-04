@@ -43,6 +43,55 @@ body {
 }
 .header-action.visible { display: block; }
 
+/* ── Burger Menu Button ── */
+.burger-btn {
+  background: none; border: none; color: #fff;
+  font-size: 1.5rem; cursor: pointer; padding: 4px 2px;
+  flex-shrink: 0; line-height: 1;
+}
+
+/* ── Burger Overlay & Menu ── */
+.burger-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+  z-index: 99; opacity: 0; pointer-events: none;
+  transition: opacity 0.25s;
+}
+.burger-overlay.open { opacity: 1; pointer-events: auto; }
+
+.burger-menu {
+  position: fixed; top: 0; right: -280px; width: 270px;
+  height: 100%; background: var(--card); z-index: 100;
+  padding: calc(var(--safe-top) + 20px) 20px 20px;
+  transition: right 0.3s cubic-bezier(0.4,0,0.2,1);
+  box-shadow: -4px 0 24px rgba(0,0,0,0.4);
+}
+.burger-menu.open { right: 0; }
+
+.burger-header {
+  font-size: 1.2rem; font-weight: 700; margin-bottom: 24px;
+  padding-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.burger-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 0; cursor: pointer;
+}
+.burger-item-icon { font-size: 1.3rem; }
+.burger-item-label { flex: 1; font-size: 1rem; font-weight: 500; }
+
+/* ── Theme Toggle Switch ── */
+.theme-toggle {
+  width: 48px; height: 26px; border-radius: 13px;
+  background: rgba(255,255,255,0.15); position: relative;
+  transition: background 0.2s; flex-shrink: 0;
+}
+.theme-toggle-knob {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: #fff; position: absolute; top: 2px; left: 2px;
+  transition: left 0.2s;
+}
+.light .theme-toggle { background: var(--accent); }
+.light .theme-toggle .theme-toggle-knob { left: 24px; }
+
 /* ── Views ── */
 .view { display: none; padding: 20px; padding-bottom: calc(var(--safe-bottom) + 90px); }
 .view.active { display: block; }
@@ -99,3 +148,56 @@ body {
   font-size: 0.78rem; font-weight: 700; text-transform: uppercase;
   letter-spacing: 1px; color: var(--muted); margin-bottom: 10px;
 }
+
+/* ══════════════════════════════════════
+   Light Theme
+   ══════════════════════════════════════ */
+.light {
+  --bg: #f2f2f7;
+  --card: #ffffff;
+  --card2: #e8e8ef;
+  --muted: #6b7280;
+}
+.light body, .light { color: #1a1a2e; }
+.light .header {
+  background: var(--bg);
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+.light .back-btn { background: var(--card); color: var(--accent); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+.light .burger-btn { color: #1a1a2e; }
+.light .burger-menu { background: var(--card); box-shadow: -4px 0 24px rgba(0,0,0,0.12); }
+.light .burger-header { border-bottom-color: rgba(0,0,0,0.1); }
+.light .tab-bar { background: var(--card); border-top: 1px solid rgba(0,0,0,0.08); }
+.light .tab-btn { color: var(--muted); }
+.light .tab-btn.active { color: var(--accent); }
+.light .fab { box-shadow: 0 4px 20px rgba(233,69,96,0.3); }
+
+/* Light borders & subtle bg overrides */
+.light .muscle-card,
+.light .exercise-item,
+.light .plan-card,
+.light .plan-ex-item,
+.light .plan-section-title { border-color: rgba(0,0,0,0.08); }
+
+.light .modal { background: var(--card); }
+.light .modal-handle { background: rgba(0,0,0,0.15); }
+.light .modal-close { background: rgba(0,0,0,0.08); color: #333; }
+.light .tips-list li { border-bottom-color: rgba(0,0,0,0.06); }
+.light .log-input-wrap { border-color: rgba(0,0,0,0.12); }
+.light .log-input-wrap input { color: #1a1a2e; }
+.light .log-input-wrap input::placeholder { color: rgba(0,0,0,0.3); }
+.light .plan-name-input { border-color: rgba(0,0,0,0.12); color: #1a1a2e; }
+.light .confirm-sheet { background: var(--card); }
+.light .confirm-btn-cancel { background: rgba(0,0,0,0.06); color: #333; }
+.light .muscle-icon-wrap { background: #e8e8ef; }
+
+/* Nutrition & bodyweight cards */
+.light .nl-meal-card,
+.light .nl-ing-row,
+.light .nl-summary,
+.light .bw-entry,
+.light .bw-chart-wrap,
+.light .picker-group-header { border-color: rgba(0,0,0,0.08); }
+
+.light .section-label { color: var(--muted); }
+.light .empty-sub { color: var(--muted); }
