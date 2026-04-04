@@ -8,6 +8,15 @@
   --accent: #e94560;
   --green: #2ecc71;
   --muted: #8892a4;
+  --text: #ffffff;
+  --text-secondary: rgba(255,255,255,0.7);
+  --text-faint: rgba(255,255,255,0.2);
+  --border: rgba(255,255,255,0.06);
+  --border-med: rgba(255,255,255,0.12);
+  --subtle-bg: rgba(255,255,255,0.06);
+  --subtle-bg-hover: rgba(255,255,255,0.1);
+  --chart-label: rgba(255,255,255,0.3);
+  --chart-grid: rgba(255,255,255,0.07);
   --safe-top: env(safe-area-inset-top);
   --safe-bottom: env(safe-area-inset-bottom);
 }
@@ -15,7 +24,7 @@
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
   background: var(--bg);
-  color: #fff;
+  color: var(--text);
   min-height: 100vh;
   overflow-x: hidden;
 }
@@ -26,7 +35,7 @@ body {
   background: var(--bg);
   padding: calc(var(--safe-top) + 16px) 20px 16px;
   display: flex; align-items: center; gap: 12px;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid var(--border);
 }
 .back-btn {
   background: var(--card); border: none; color: var(--accent);
@@ -45,7 +54,7 @@ body {
 
 /* ── Burger Menu Button ── */
 .burger-btn {
-  background: none; border: none; color: #fff;
+  background: none; border: none; color: var(--text);
   font-size: 1.5rem; cursor: pointer; padding: 4px 2px;
   flex-shrink: 0; line-height: 1;
 }
@@ -69,7 +78,7 @@ body {
 
 .burger-header {
   font-size: 1.2rem; font-weight: 700; margin-bottom: 24px;
-  padding-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding-bottom: 14px; border-bottom: 1px solid var(--border);
 }
 .burger-item {
   display: flex; align-items: center; gap: 12px;
@@ -81,7 +90,7 @@ body {
 /* ── Theme Toggle Switch ── */
 .theme-toggle {
   width: 48px; height: 26px; border-radius: 13px;
-  background: rgba(255,255,255,0.15); position: relative;
+  background: var(--subtle-bg-hover); position: relative;
   transition: background 0.2s; flex-shrink: 0;
 }
 .theme-toggle-knob {
@@ -100,7 +109,7 @@ body {
 .tab-bar {
   position: fixed; bottom: 0; left: 0; right: 0; z-index: 20;
   background: var(--card);
-  border-top: 1px solid rgba(255,255,255,0.08);
+  border-top: 1px solid var(--border);
   display: flex;
   padding-bottom: var(--safe-bottom);
 }
@@ -150,92 +159,29 @@ body {
 }
 
 /* ══════════════════════════════════════
-   Light Theme
+   Light Theme — override all variables
    ══════════════════════════════════════ */
 .light {
   --bg: #f2f2f7;
   --card: #ffffff;
   --card2: #e8e8ef;
   --muted: #6b7280;
+  --text: #1a1a2e;
+  --text-secondary: rgba(0,0,0,0.6);
+  --text-faint: rgba(0,0,0,0.25);
+  --border: rgba(0,0,0,0.1);
+  --border-med: rgba(0,0,0,0.15);
+  --subtle-bg: rgba(0,0,0,0.04);
+  --subtle-bg-hover: rgba(0,0,0,0.08);
+  --chart-label: rgba(0,0,0,0.45);
+  --chart-grid: rgba(0,0,0,0.1);
 }
-.light body, .light { color: #1a1a2e; }
-.light .header {
-  background: var(--bg);
-  border-bottom: 1px solid rgba(0,0,0,0.08);
-}
-.light .back-btn { background: var(--card); color: var(--accent); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
-.light .burger-btn { color: #1a1a2e; }
-.light .burger-menu { background: var(--card); box-shadow: -4px 0 24px rgba(0,0,0,0.12); }
-.light .burger-header { border-bottom-color: rgba(0,0,0,0.1); }
-.light .tab-bar { background: var(--card); border-top: 1px solid rgba(0,0,0,0.08); }
-.light .tab-btn { color: var(--muted); }
-.light .tab-btn.active { color: var(--accent); }
+.light .back-btn { box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+.light .burger-menu { box-shadow: -4px 0 24px rgba(0,0,0,0.12); }
 .light .fab { box-shadow: 0 4px 20px rgba(233,69,96,0.3); }
-
-/* Light: borders */
-.light .muscle-card,
-.light .exercise-item,
-.light .plan-card,
-.light .plan-ex-item,
-.light .plan-section-title,
-.light .nl-meal-card,
-.light .nl-ing-row,
-.light .nl-summary,
-.light .bw-entry,
-.light .bw-chart-wrap,
-.light .picker-group-header,
-.light .tips-list li { border-color: rgba(0,0,0,0.08); }
-
-/* Light: modals & overlays */
-.light .modal { background: var(--card); }
 .light .modal-handle { background: rgba(0,0,0,0.15); }
-.light .modal-close { background: rgba(0,0,0,0.08); color: #333; }
-.light .confirm-sheet { background: var(--card); }
-.light .confirm-btn-cancel { background: rgba(0,0,0,0.06); color: #333; }
+.light .modal-close { background: rgba(0,0,0,0.06); color: var(--text); }
+.light .confirm-btn-cancel { background: rgba(0,0,0,0.06); color: var(--text); }
 .light .muscle-icon-wrap { background: #e8e8ef; }
-
-/* Light: inputs */
-.light .log-input-wrap { border-color: rgba(0,0,0,0.12); }
-.light .log-input-wrap input { color: #1a1a2e; }
-.light .log-input-wrap input::placeholder { color: rgba(0,0,0,0.3); }
-.light .plan-name-input { border-color: rgba(0,0,0,0.12); color: #1a1a2e; }
-
-/* Light: dark text for all previously-white text */
-.light .modal-title,
-.light .modal-desc,
-.light .exercise-item .ex-name,
-.light .muscle-card .name,
-.light .plan-card,
-.light .plan-ex-name,
-.light .plan-section-title-text,
-.light .burger-header,
-.light .burger-item-label,
-.light .confirm-title,
-.light .empty-title { color: #1a1a2e; }
-
-/* Light: plans */
-.light .plan-title-remove { color: rgba(0,0,0,0.25); }
-.light .drag-handle { color: rgba(0,0,0,0.25); }
-.light .drag-handle:active { color: rgba(0,0,0,0.5); }
-
-/* Light: bodyweight */
-.light .bw-stat-val { color: #1a1a2e; }
-.light .bw-cal-nav { color: #1a1a2e; }
-.light .bw-cal-day.other-month { color: rgba(0,0,0,0.2); }
-.light .bw-cal-day.future { color: rgba(0,0,0,0.18); }
-.light .bw-input-row input { color: #1a1a2e; }
-.light .bw-input-row input::placeholder { color: rgba(0,0,0,0.3); }
-
-/* Light: nutrition */
-.light .nl-notes,
-.light .nl-search { color: #1a1a2e; }
-.light .nl-notes::placeholder,
-.light .nl-search::placeholder { color: rgba(0,0,0,0.35); }
-.light .nl-custom-field input { color: #1a1a2e; }
-.light .nl-custom-field input::placeholder { color: rgba(0,0,0,0.35); }
-.light .nl-sort-btn.active { color: #fff; }
-
-/* Light: rgba white backgrounds → dark equivalents */
 .light .theme-toggle { background: rgba(0,0,0,0.12); }
-.light .picker-ex-name { color: #1a1a2e; }
-.light .picker-group-header { color: #1a1a2e; }
+.light .bw-cal-day:active { background: rgba(0,0,0,0.06) !important; }

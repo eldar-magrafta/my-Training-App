@@ -46,8 +46,13 @@ function renderExHistChart() {
     entries = entries.filter(([d]) => d >= cutStr && d <= today);
   }
 
+  const cs = getComputedStyle(document.documentElement);
+  const chartLbl = cs.getPropertyValue('--chart-label').trim() || '#8892a4';
+  const chartGrid = cs.getPropertyValue('--chart-grid').trim() || 'rgba(255,255,255,0.04)';
+  const mutedCol = cs.getPropertyValue('--muted').trim() || '#8892a4';
+
   if (entries.length < 2) {
-    svg.innerHTML = `<text x="170" y="75" text-anchor="middle" fill="#8892a4" font-size="12">Log on multiple days to see progression</text>`;
+    svg.innerHTML = `<text x="170" y="75" text-anchor="middle" fill="${mutedCol}" font-size="12">Log on multiple days to see progression</text>`;
     return;
   }
 
@@ -72,14 +77,14 @@ function renderExHistChart() {
   const gridLines = [0, 0.25, 0.5, 0.75, 1].map(f => {
     const v = mn + f * rng;
     const y = pT + (1 - f) * (H - pT - pB);
-    return `<line x1="${pad}" x2="${W - pad}" y1="${y.toFixed(1)}" y2="${y.toFixed(1)}" stroke="rgba(255,255,255,0.04)"/>
-      <text x="${pad - 4}" y="${(y + 4).toFixed(1)}" text-anchor="end" fill="#8892a4" font-size="8">${Math.round(v)}</text>`;
+    return `<line x1="${pad}" x2="${W - pad}" y1="${y.toFixed(1)}" y2="${y.toFixed(1)}" stroke="${chartGrid}"/>
+      <text x="${pad - 4}" y="${(y + 4).toFixed(1)}" text-anchor="end" fill="${chartLbl}" font-size="8">${Math.round(v)}</text>`;
   }).join('');
 
   const step = Math.max(1, Math.floor(entries.length / 3));
   const xLabels = pts.filter((_, i) => i === 0 || i === pts.length - 1 || i % step === 0).map(p => {
     const [y, m, d] = p.d.split('-');
-    return `<text x="${p.x.toFixed(1)}" y="${H - 4}" text-anchor="middle" fill="#8892a4" font-size="8">${d}/${m}/${y.slice(2)}</text>`;
+    return `<text x="${p.x.toFixed(1)}" y="${H - 4}" text-anchor="middle" fill="${chartLbl}" font-size="8">${d}/${m}/${y.slice(2)}</text>`;
   }).join('');
 
   svg.innerHTML = `${gridLines}<path d="${area}" fill="url(#exGrad)" opacity="0.25"/><path d="${line}" fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round"/>${dots}${xLabels}<defs><linearGradient id="exGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--accent)"/><stop offset="100%" stop-color="transparent"/></linearGradient></defs>`;

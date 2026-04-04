@@ -63,9 +63,14 @@ function renderBWChart() {
     entries = entries.filter(([d]) => d >= dateToStr(cut));
   }
 
+  const cs = getComputedStyle(document.documentElement);
+  const chartLbl = cs.getPropertyValue('--chart-label').trim() || 'rgba(255,255,255,0.3)';
+  const chartGrid = cs.getPropertyValue('--chart-grid').trim() || 'rgba(255,255,255,0.07)';
+  const textFaint = cs.getPropertyValue('--text-faint').trim() || 'rgba(255,255,255,0.2)';
+
   if (entries.length < 2) {
     svg.setAttribute('viewBox', '0 0 300 120'); svg.setAttribute('height', '120');
-    svg.innerHTML = `<text x="50%" y="50%" text-anchor="middle" fill="rgba(255,255,255,0.2)" font-size="13" dominant-baseline="middle" font-family="-apple-system,sans-serif">Log weight on multiple days to see your trend</text>`;
+    svg.innerHTML = `<text x="50%" y="50%" text-anchor="middle" fill="${textFaint}" font-size="13" dominant-baseline="middle" font-family="-apple-system,sans-serif">Log weight on multiple days to see your trend</text>`;
     return;
   }
 
@@ -87,7 +92,7 @@ function renderBWChart() {
   const areaPath = linePath + ` L ${pts[pts.length - 1].x} ${H - P.b} L ${pts[0].x} ${H - P.b} Z`;
 
   const yLbls = [minV, (minV + maxV) / 2, maxV].map(v =>
-    `<text x="${P.l - 6}" y="${yS(v)}" text-anchor="end" dominant-baseline="middle" fill="rgba(255,255,255,0.3)" font-size="9" font-family="-apple-system,sans-serif">${v.toFixed(1)}</text>`
+    `<text x="${P.l - 6}" y="${yS(v)}" text-anchor="end" dominant-baseline="middle" fill="${chartLbl}" font-size="9" font-family="-apple-system,sans-serif">${v.toFixed(1)}</text>`
   ).join('');
 
   const xIdxs = entries.length <= 3
@@ -96,7 +101,7 @@ function renderBWChart() {
   const xLbls = [...new Set(xIdxs)].map(i => {
     const [ds] = entries[i]; const [y, m, d] = ds.split('-');
     const anchor = i === 0 ? 'start' : i === entries.length - 1 ? 'end' : 'middle';
-    return `<text x="${xS(i)}" y="${H - P.b + 13}" text-anchor="${anchor}" fill="rgba(255,255,255,0.3)" font-size="9" font-family="-apple-system,sans-serif">${d}/${m}/${y.slice(2)}</text>`;
+    return `<text x="${xS(i)}" y="${H - P.b + 13}" text-anchor="${anchor}" fill="${chartLbl}" font-size="9" font-family="-apple-system,sans-serif">${d}/${m}/${y.slice(2)}</text>`;
   }).join('');
 
   const dots = pts.map(p =>
@@ -111,7 +116,7 @@ function renderBWChart() {
         <stop offset="100%" stop-color="rgba(233,69,96,0.0)"/>
       </linearGradient>
     </defs>
-    <line x1="${P.l}" y1="${H - P.b}" x2="${W - P.r}" y2="${H - P.b}" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+    <line x1="${P.l}" y1="${H - P.b}" x2="${W - P.r}" y2="${H - P.b}" stroke="${chartGrid}" stroke-width="1"/>
     <path d="${areaPath}" fill="url(#bwG)"/>
     <path d="${linePath}" fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
     ${yLbls}${xLbls}${dots}`;

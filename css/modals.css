@@ -13,7 +13,7 @@
 }
 @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 .modal-handle {
-  width: 40px; height: 4px; background: rgba(255,255,255,0.15);
+  width: 40px; height: 4px; background: var(--subtle-bg-hover);
   border-radius: 2px; margin: 0 auto 20px;
 }
 .modal-header {
@@ -22,7 +22,7 @@
 }
 .modal-title { font-size: 1.45rem; font-weight: 700; flex: 1; padding-right: 12px; }
 .modal-close {
-  background: rgba(255,255,255,0.1); border: none; color: #fff;
+  background: var(--subtle-bg-hover); border: none; color: var(--text);
   width: 32px; height: 32px; border-radius: 50%; font-size: 15px;
   cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
@@ -35,7 +35,7 @@
 .tips-list { list-style: none; margin-bottom: 20px; }
 .tips-list li {
   padding: 9px 0 9px 22px; position: relative;
-  font-size: 0.95rem; border-bottom: 1px solid rgba(255,255,255,0.05);
+  font-size: 0.95rem; border-bottom: 1px solid var(--border);
 }
 .tips-list li::before { content: '✓'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
 
@@ -66,14 +66,14 @@
 .log-input-wrap {
   display: flex; align-items: center; background: var(--bg);
   border-radius: 10px; padding: 12px; gap: 6px;
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid var(--border-med);
 }
 .log-input-wrap input {
-  background: none; border: none; color: #fff;
+  background: none; border: none; color: var(--text);
   font-size: 1.1rem; font-weight: 600; width: 100%;
   outline: none; font-family: inherit;
 }
-.log-input-wrap input::placeholder { color: rgba(255,255,255,0.25); }
+.log-input-wrap input::placeholder { color: var(--muted); }
 .log-input-wrap span { color: var(--muted); font-size: 0.85rem; flex-shrink: 0; }
 
 /* ── Buttons ── */
@@ -94,8 +94,8 @@
 /* ── Create Plan / Title Modal Inputs ── */
 .plan-name-input {
   width: 100%; background: var(--bg);
-  border: 1px solid rgba(255,255,255,0.12); border-radius: 12px;
-  padding: 15px 16px; color: white; font-size: 1.1rem;
+  border: 1px solid var(--border-med); border-radius: 12px;
+  padding: 15px 16px; color: var(--text); font-size: 1.1rem;
   font-family: inherit; outline: none; margin-bottom: 16px;
 }
 .plan-name-input:focus { border-color: var(--accent); }
@@ -115,5 +115,5 @@
 .confirm-msg { font-size: 0.88rem; color: var(--muted); text-align: center; margin-bottom: 28px; line-height: 1.5; }
 .confirm-btn-del { width: 100%; background: var(--accent); border: none; color: #fff; padding: 16px; border-radius: 16px; font-size: 1rem; font-weight: 700; font-family: inherit; cursor: pointer; margin-bottom: 10px; }
 .confirm-btn-del:active { opacity: 0.85; }
-.confirm-btn-cancel { width: 100%; background: rgba(255,255,255,0.07); border: none; color: #fff; padding: 15px; border-radius: 16px; font-size: 1rem; font-family: inherit; cursor: pointer; }
+.confirm-btn-cancel { width: 100%; background: var(--subtle-bg); border: none; color: var(--text); padding: 15px; border-radius: 16px; font-size: 1rem; font-family: inherit; cursor: pointer; }
 .confirm-btn-cancel:active { opacity: 0.7; }

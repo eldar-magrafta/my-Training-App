@@ -3,7 +3,7 @@
 .muscle-card {
   background: var(--card); border-radius: 18px; padding: 12px 12px 14px;
   text-align: center; cursor: pointer;
-  border: 1px solid rgba(255,255,255,0.05); transition: transform 0.15s;
+  border: 1px solid var(--border); transition: transform 0.15s;
   position: relative; overflow: hidden;
 }
 .muscle-card::after {
@@ -33,7 +33,7 @@
 .exercise-item {
   background: var(--card); border-radius: 14px; padding: 16px 18px;
   display: flex; align-items: center; justify-content: space-between;
-  cursor: pointer; border: 1px solid rgba(255,255,255,0.05); transition: transform 0.12s;
+  cursor: pointer; border: 1px solid var(--border); transition: transform 0.12s;
 }
 .exercise-item:active { transform: scale(0.98); background: var(--card2); }
 .exercise-item .ex-name { font-size: 1rem; font-weight: 500; }
