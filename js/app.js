@@ -3,7 +3,7 @@
 
 import { state } from './state.js';
 import { migrateOldExLogs, getNLMeals } from './store.js';
-import { initFirebase, onAuthChange, loadFromCloud, signInWithGoogle, signOutUser, registerWithEmail, signInWithEmail } from './cloud.js';
+import { initFirebase, onAuthChange, loadFromCloud, signInWithGoogle, signOutUser, registerWithEmail, signInWithEmail, sendForgotPassword } from './cloud.js';
 import { showView, setHeader } from './navigation.js';
 import { buildHome, showExercises, openModal, closeModal, handleOverlayClick, autoSaveExNotes, initModalSwipe, deleteExLog } from './exercises.js';
 import { renderPlans, openCreatePlan, closeCreatePlan, handleCreateOverlayClick, createPlan, donePlanDetail, setPlanEditMode, openDeletePlanConfirm, closeDeletePlanConfirm, confirmDeletePlan, showPlanDetail, openRemoveExConfirm, closeRemoveExConfirm, confirmRemoveEx, openAddTitle, closeAddTitle, handleTitleOverlayClick, saveTitle, showExercisePicker, togglePickerGroup, toggleExerciseInPlan, previewExercise } from './plans.js';
@@ -290,6 +290,7 @@ async function handleEmailSignIn() {
   if (!email || !password) { errEl.textContent = 'Please fill in all fields.'; return; }
   try {
     await signInWithEmail(email, password);
+    // onAuthChange will fire — verified check happens there
   } catch (e) {
     errEl.textContent = _authError(e.code);
   }
@@ -307,10 +308,37 @@ async function handleEmailRegister() {
   if (password.length < 6) { errEl.textContent = 'Password must be at least 6 characters.'; return; }
   try {
     await registerWithEmail(name, email, password);
+    showVerifyEmailScreen(email);
   } catch (e) {
     errEl.textContent = _authError(e.code);
   }
 }
+
+async function handleForgotPassword() {
+  const email = document.getElementById('siEmail').value.trim();
+  const errEl = document.getElementById('siError');
+  errEl.textContent = '';
+  if (!email) { errEl.textContent = 'Enter your email above first.'; return; }
+  try {
+    await sendForgotPassword(email);
+    errEl.style.color = '#2ecc71';
+    errEl.textContent = 'Password reset email sent! Check your inbox.';
+    setTimeout(() => { errEl.style.color = ''; errEl.textContent = ''; }, 5000);
+  } catch (e) {
+    errEl.textContent = _authError(e.code);
+  }
+}
+
+function showVerifyEmailScreen(email) {
+  document.getElementById('authPanelSignIn').style.display = 'none';
+  document.getElementById('authPanelRegister').style.display = 'none';
+  document.getElementById('authTabSignIn').classList.remove('auth-tab-active');
+  document.getElementById('authTabRegister').classList.remove('auth-tab-active');
+  document.getElementById('authPanelVerify').style.display = '';
+  document.getElementById('verifyEmailAddr').textContent = email;
+}
+
+window.handleForgotPassword = handleForgotPassword;
 
 function showAuthTab(tab) {
   document.getElementById('authTabSignIn').classList.toggle('auth-tab-active', tab === 'signin');
@@ -336,11 +364,23 @@ window.handleEmailSignIn = handleEmailSignIn;
 window.handleEmailRegister = handleEmailRegister;
 window.showAuthTab = showAuthTab;
 
-async function handleSignOut() {
+function handleSignOut() {
   closeBurgerMenu();
+  document.getElementById('signOutConfirm').style.display = 'flex';
+}
+
+async function confirmSignOut() {
+  document.getElementById('signOutConfirm').style.display = 'none';
   await signOutUser();
   showSignInScreen();
 }
+
+function cancelSignOut() {
+  document.getElementById('signOutConfirm').style.display = 'none';
+}
+
+window.confirmSignOut = confirmSignOut;
+window.cancelSignOut = cancelSignOut;
 
 window.handleSignIn = handleSignIn;
 window.handleSignOut = handleSignOut;
@@ -363,6 +403,13 @@ initFirebase();
 
 onAuthChange(async (user) => {
   if (user) {
+    // Block email/password users who haven't verified their email
+    if (!user.emailVerified && user.providerData[0]?.providerId === 'password') {
+      await signOutUser();
+      showSignInScreen();
+      document.getElementById('siError').textContent = 'Please verify your email before signing in. Check your inbox.';
+      return;
+    }
     showLoadingScreen('Syncing your data…');
     await loadFromCloud(user.uid);
     updateUserUI(user);

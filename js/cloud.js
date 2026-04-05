@@ -5,7 +5,8 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.0/firebas
 import {
   getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut,
   createUserWithEmailAndPassword, signInWithEmailAndPassword,
-  updateProfile, browserLocalPersistence, setPersistence
+  updateProfile, browserLocalPersistence, setPersistence,
+  sendEmailVerification, sendPasswordResetEmail
 } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js';
 import { getFirestore, doc, setDoc, getDoc, collection, getDocs } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js';
 import { FIREBASE_CONFIG } from './firebase-config.js';
@@ -42,6 +43,12 @@ export async function signInWithGoogle() {
 export async function registerWithEmail(name, email, password) {
   const cred = await createUserWithEmailAndPassword(auth, email, password);
   await updateProfile(cred.user, { displayName: name });
+  await sendEmailVerification(cred.user);
+  await signOut(auth); // force sign-out until email is verified
+}
+
+export async function sendForgotPassword(email) {
+  await sendPasswordResetEmail(auth, email);
 }
 
 export async function signInWithEmail(email, password) {

@@ -475,7 +475,7 @@
 <div id="signInOverlay" style="display:none;position:fixed;inset:0;z-index:9000;background:var(--bg,#0f0f1a);flex-direction:column;align-items:center;justify-content:center;padding:24px;overflow-y:auto;">
   <div style="width:100%;max-width:360px;">
     <div style="text-align:center;margin-bottom:28px;">
-      <div style="font-size:3rem;margin-bottom:10px;">💪</div>
+      <img src="assets/icons/icon-192.png" alt="RSR Fitness" style="width:80px;height:80px;border-radius:20px;margin-bottom:14px;box-shadow:0 4px 20px rgba(0,0,0,0.4);">
       <div style="font-size:1.6rem;font-weight:800;color:var(--text,#fff);">RSR Fitness</div>
       <div style="font-size:0.85rem;color:var(--muted,#888);margin-top:6px;">Your data, always with you</div>
     </div>
@@ -499,8 +499,11 @@
       </div>
       <input id="siEmail" type="email" placeholder="Email" autocomplete="email" style="width:100%;box-sizing:border-box;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:14px;color:var(--text,#fff);font-size:1rem;margin-bottom:12px;outline:none;" />
       <input id="siPassword" type="password" placeholder="Password" autocomplete="current-password" style="width:100%;box-sizing:border-box;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:14px;color:var(--text,#fff);font-size:1rem;margin-bottom:8px;outline:none;" />
-      <div id="siError" style="color:#ff6b6b;font-size:0.82rem;min-height:18px;margin-bottom:12px;"></div>
-      <button onclick="handleEmailSignIn()" style="width:100%;background:var(--accent,#e94560);border:none;border-radius:14px;padding:14px;color:#fff;font-size:1rem;font-weight:700;cursor:pointer;">Sign In</button>
+      <div id="siError" style="color:#ff6b6b;font-size:0.82rem;min-height:18px;margin-bottom:8px;"></div>
+      <button onclick="handleEmailSignIn()" style="width:100%;background:var(--accent,#e94560);border:none;border-radius:14px;padding:14px;color:#fff;font-size:1rem;font-weight:700;cursor:pointer;margin-bottom:12px;">Sign In</button>
+      <div style="text-align:center;">
+        <button onclick="handleForgotPassword()" style="background:none;border:none;color:var(--muted,#888);font-size:0.85rem;cursor:pointer;text-decoration:underline;font-family:inherit;">Forgot password?</button>
+      </div>
     </div>
 
     <!-- Register Panel -->
@@ -512,13 +515,36 @@
       <div id="regError" style="color:#ff6b6b;font-size:0.82rem;min-height:18px;margin-bottom:12px;"></div>
       <button onclick="handleEmailRegister()" style="width:100%;background:var(--accent,#e94560);border:none;border-radius:14px;padding:14px;color:#fff;font-size:1rem;font-weight:700;cursor:pointer;">Create Account</button>
     </div>
+
+    <!-- Verify Email Panel -->
+    <div id="authPanelVerify" style="display:none;text-align:center;">
+      <div style="font-size:3rem;margin-bottom:16px;">📧</div>
+      <div style="font-size:1.1rem;font-weight:700;color:var(--text,#fff);margin-bottom:10px;">Check your email</div>
+      <div style="font-size:0.9rem;color:var(--muted,#888);margin-bottom:6px;">We sent a verification link to:</div>
+      <div id="verifyEmailAddr" style="font-weight:600;color:var(--text,#fff);margin-bottom:20px;word-break:break-all;"></div>
+      <div style="font-size:0.85rem;color:var(--muted,#888);margin-bottom:24px;">Click the link in the email to activate your account, then come back and sign in.</div>
+      <button onclick="showAuthTab('signin')" style="width:100%;background:var(--accent,#e94560);border:none;border-radius:14px;padding:14px;color:#fff;font-size:1rem;font-weight:700;cursor:pointer;">Back to Sign In</button>
+    </div>
   </div>
 </div>
 
 <!-- Loading Screen -->
 <div id="loadingOverlay" style="display:none;position:fixed;inset:0;z-index:9000;background:var(--bg,#0f0f1a);flex-direction:column;align-items:center;justify-content:center;gap:16px;">
-  <div style="font-size:2rem;">💪</div>
+  <img src="assets/icons/icon-192.png" alt="" style="width:64px;height:64px;border-radius:16px;margin-bottom:4px;">
   <div id="loadingMsg" style="color:var(--muted,#888);font-size:0.95rem;">Loading…</div>
+</div>
+
+<!-- Sign Out Confirmation -->
+<div id="signOutConfirm" style="display:none;position:fixed;inset:0;z-index:9100;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;padding:24px;">
+  <div style="background:var(--card,#1a1a2e);border-radius:20px;padding:28px;width:100%;max-width:320px;text-align:center;">
+    <div style="font-size:2rem;margin-bottom:12px;">🚪</div>
+    <div style="font-size:1.1rem;font-weight:700;color:var(--text,#fff);margin-bottom:8px;">Sign Out?</div>
+    <div style="font-size:0.88rem;color:var(--muted,#888);margin-bottom:24px;">Your data is safely stored in the cloud. You can sign back in anytime.</div>
+    <div style="display:flex;gap:12px;">
+      <button onclick="cancelSignOut()" style="flex:1;background:rgba(255,255,255,0.08);border:none;border-radius:12px;padding:14px;color:var(--text,#fff);font-size:0.95rem;font-weight:600;cursor:pointer;font-family:inherit;">Cancel</button>
+      <button onclick="confirmSignOut()" style="flex:1;background:var(--accent,#e94560);border:none;border-radius:12px;padding:14px;color:#fff;font-size:0.95rem;font-weight:600;cursor:pointer;font-family:inherit;">Sign Out</button>
+    </div>
+  </div>
 </div>
 </body>
 </html>
