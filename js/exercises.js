@@ -37,7 +37,7 @@ export function showExercises(key) {
     const item = document.createElement('div');
     item.className = 'exercise-item';
     item.innerHTML = `
-      <span class="ex-name">${ex.name}${renderPRBadge(ex.name)}</span>
+      <span class="ex-name">${ex.name}</span>
       <span class="arrow">\u203a</span>`;
     item.onclick = () => openModal(ex, group.name);
     list.appendChild(item);
