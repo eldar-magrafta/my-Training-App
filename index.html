@@ -472,14 +472,47 @@
 </div><!-- /#appRoot -->
 
 <!-- Sign-In Screen -->
-<div id="signInOverlay" style="display:none;position:fixed;inset:0;z-index:9000;background:var(--bg,#0f0f1a);flex-direction:column;align-items:center;justify-content:center;padding:32px;">
-  <div style="font-size:3rem;margin-bottom:12px;">💪</div>
-  <div style="font-size:1.6rem;font-weight:800;color:var(--text,#fff);margin-bottom:8px;">RSR Fitness</div>
-  <div style="font-size:0.9rem;color:var(--muted,#888);text-align:center;margin-bottom:40px;max-width:280px;">Sign in to keep your data safe and sync across devices</div>
-  <button onclick="handleSignIn()" style="display:flex;align-items:center;gap:12px;background:#fff;color:#222;border:none;border-radius:14px;padding:14px 28px;font-size:1rem;font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.3);">
-    <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.8 2.5 30.2 0 24 0 14.6 0 6.6 5.4 2.7 13.3l7.8 6C12.3 13.2 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 6.9-10.1 7.1-17z"/><path fill="#FBBC05" d="M10.5 28.7A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.2.8-4.7l-7.8-6A23.9 23.9 0 0 0 0 24c0 3.9.9 7.5 2.7 10.7l7.8-6z"/><path fill="#34A853" d="M24 48c6.2 0 11.4-2 15.2-5.5l-7.5-5.8c-2 1.4-4.7 2.2-7.7 2.2-6.3 0-11.6-4.2-13.5-9.9l-7.8 6C6.6 42.6 14.6 48 24 48z"/></svg>
-    Sign in with Google
-  </button>
+<div id="signInOverlay" style="display:none;position:fixed;inset:0;z-index:9000;background:var(--bg,#0f0f1a);flex-direction:column;align-items:center;justify-content:center;padding:24px;overflow-y:auto;">
+  <div style="width:100%;max-width:360px;">
+    <div style="text-align:center;margin-bottom:28px;">
+      <div style="font-size:3rem;margin-bottom:10px;">💪</div>
+      <div style="font-size:1.6rem;font-weight:800;color:var(--text,#fff);">RSR Fitness</div>
+      <div style="font-size:0.85rem;color:var(--muted,#888);margin-top:6px;">Your data, always with you</div>
+    </div>
+
+    <!-- Tabs -->
+    <div style="display:flex;border-radius:12px;background:rgba(255,255,255,0.06);padding:4px;margin-bottom:24px;">
+      <button id="authTabSignIn" class="auth-tab auth-tab-active" onclick="showAuthTab('signin')">Sign In</button>
+      <button id="authTabRegister" class="auth-tab" onclick="showAuthTab('register')">Create Account</button>
+    </div>
+
+    <!-- Sign In Panel -->
+    <div id="authPanelSignIn">
+      <button onclick="handleSignIn()" style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;background:#fff;color:#222;border:none;border-radius:14px;padding:14px;font-size:1rem;font-weight:700;cursor:pointer;margin-bottom:20px;">
+        <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.8 2.5 30.2 0 24 0 14.6 0 6.6 5.4 2.7 13.3l7.8 6C12.3 13.2 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 6.9-10.1 7.1-17z"/><path fill="#FBBC05" d="M10.5 28.7A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.2.8-4.7l-7.8-6A23.9 23.9 0 0 0 0 24c0 3.9.9 7.5 2.7 10.7l7.8-6z"/><path fill="#34A853" d="M24 48c6.2 0 11.4-2 15.2-5.5l-7.5-5.8c-2 1.4-4.7 2.2-7.7 2.2-6.3 0-11.6-4.2-13.5-9.9l-7.8 6C6.6 42.6 14.6 48 24 48z"/></svg>
+        Continue with Google
+      </button>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+        <div style="flex:1;height:1px;background:rgba(255,255,255,0.1);"></div>
+        <span style="font-size:0.75rem;color:var(--muted,#888);">or</span>
+        <div style="flex:1;height:1px;background:rgba(255,255,255,0.1);"></div>
+      </div>
+      <input id="siEmail" type="email" placeholder="Email" autocomplete="email" style="width:100%;box-sizing:border-box;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:14px;color:var(--text,#fff);font-size:1rem;margin-bottom:12px;outline:none;" />
+      <input id="siPassword" type="password" placeholder="Password" autocomplete="current-password" style="width:100%;box-sizing:border-box;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:14px;color:var(--text,#fff);font-size:1rem;margin-bottom:8px;outline:none;" />
+      <div id="siError" style="color:#ff6b6b;font-size:0.82rem;min-height:18px;margin-bottom:12px;"></div>
+      <button onclick="handleEmailSignIn()" style="width:100%;background:var(--accent,#e94560);border:none;border-radius:14px;padding:14px;color:#fff;font-size:1rem;font-weight:700;cursor:pointer;">Sign In</button>
+    </div>
+
+    <!-- Register Panel -->
+    <div id="authPanelRegister" style="display:none;">
+      <input id="regName" type="text" placeholder="Full Name" autocomplete="name" style="width:100%;box-sizing:border-box;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:14px;color:var(--text,#fff);font-size:1rem;margin-bottom:12px;outline:none;" />
+      <input id="regEmail" type="email" placeholder="Email" autocomplete="email" style="width:100%;box-sizing:border-box;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:14px;color:var(--text,#fff);font-size:1rem;margin-bottom:12px;outline:none;" />
+      <input id="regPassword" type="password" placeholder="Password (min. 6 characters)" autocomplete="new-password" style="width:100%;box-sizing:border-box;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:14px;color:var(--text,#fff);font-size:1rem;margin-bottom:12px;outline:none;" />
+      <input id="regConfirm" type="password" placeholder="Confirm Password" autocomplete="new-password" style="width:100%;box-sizing:border-box;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:14px;color:var(--text,#fff);font-size:1rem;margin-bottom:8px;outline:none;" />
+      <div id="regError" style="color:#ff6b6b;font-size:0.82rem;min-height:18px;margin-bottom:12px;"></div>
+      <button onclick="handleEmailRegister()" style="width:100%;background:var(--accent,#e94560);border:none;border-radius:14px;padding:14px;color:#fff;font-size:1rem;font-weight:700;cursor:pointer;">Create Account</button>
+    </div>
+  </div>
 </div>
 
 <!-- Loading Screen -->

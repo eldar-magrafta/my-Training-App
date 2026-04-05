@@ -52,6 +52,16 @@ body {
 }
 .header-action.visible { display: block; }
 
+/* ── Auth Screen Tabs ── */
+.auth-tab {
+  flex: 1; background: none; border: none; color: var(--muted);
+  padding: 10px; border-radius: 10px; font-size: 0.9rem; font-weight: 600;
+  cursor: pointer; font-family: inherit; transition: all 0.2s;
+}
+.auth-tab-active {
+  background: var(--card, #1a1a2e); color: var(--text, #fff);
+}
+
 /* ── Burger Menu Button ── */
 .burger-btn {
   background: none; border: none; color: var(--text);

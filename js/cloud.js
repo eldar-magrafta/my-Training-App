@@ -1,15 +1,15 @@
 // ── Cloud Sync (Firebase) ──
-// Handles Google Auth and Firestore read/write.
-// Architecture: localStorage is the working copy; Firestore is the backup.
-// On sign-in: pull all Firestore data into localStorage, then start the app.
-// On every save: write to localStorage first (instant), then Firestore (background).
+// Handles Google Auth, Email/Password Auth, and Firestore read/write.
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js';
-import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js';
+import {
+  getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut,
+  createUserWithEmailAndPassword, signInWithEmailAndPassword,
+  updateProfile, browserLocalPersistence, setPersistence
+} from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js';
 import { getFirestore, doc, setDoc, getDoc, collection, getDocs } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js';
 import { FIREBASE_CONFIG } from './firebase-config.js';
 
-// Maps Firestore section doc IDs → localStorage keys
 const SECTION_MAP = {
   plans:      'trainer_plans',
   bodyweight: 'trainer_bw',
@@ -27,6 +27,8 @@ export function initFirebase() {
   const app = initializeApp(FIREBASE_CONFIG);
   auth = getAuth(app);
   db = getFirestore(app);
+  // Keep user logged in forever across browser sessions
+  setPersistence(auth, browserLocalPersistence).catch(() => {});
 }
 
 export function getUid() { return _uid; }
@@ -37,13 +39,21 @@ export async function signInWithGoogle() {
   await signInWithPopup(auth, provider);
 }
 
+export async function registerWithEmail(name, email, password) {
+  const cred = await createUserWithEmailAndPassword(auth, email, password);
+  await updateProfile(cred.user, { displayName: name });
+}
+
+export async function signInWithEmail(email, password) {
+  await signInWithEmailAndPassword(auth, email, password);
+}
+
 export async function signOutUser() {
   await signOut(auth);
   _uid = null;
   _userEmail = null;
 }
 
-/** Call this once on app startup. Fires callback(user) when auth state is known. */
 export function onAuthChange(callback) {
   onAuthStateChanged(auth, user => {
     _uid = user ? user.uid : null;
@@ -52,27 +62,21 @@ export function onAuthChange(callback) {
   });
 }
 
-/** Pull all Firestore data into localStorage. Called once after sign-in. */
 export async function loadFromCloud(uid) {
-  // Sections (plans, meals, prs, etc.)
   await Promise.all(
     Object.entries(SECTION_MAP).map(async ([section, lsKey]) => {
       try {
         const snap = await getDoc(doc(db, 'users', uid, 'sections', section));
         if (snap.exists()) localStorage.setItem(lsKey, snap.data().value);
-      } catch (e) { /* network error — keep existing localStorage */ }
+      } catch (e) {}
     })
   );
-
-  // Exercise history (one Firestore doc per exercise)
   try {
     const snaps = await getDocs(collection(db, 'users', uid, 'exhist'));
     snaps.forEach(d => {
       localStorage.setItem('trainer_exhist_' + decodeURIComponent(d.id), d.data().value);
     });
   } catch (e) {}
-
-  // Exercise notes (one Firestore doc per exercise)
   try {
     const snaps = await getDocs(collection(db, 'users', uid, 'notes'));
     snaps.forEach(d => {
@@ -81,12 +85,6 @@ export async function loadFromCloud(uid) {
   } catch (e) {}
 }
 
-/**
- * Save a value to Firestore in the background.
- * section: 'sections' | 'exhist' | 'notes'
- * docId:   section name (e.g. 'plans') or encodeURIComponent(exerciseName)
- * value:   string to store
- */
 export function cloudSave(section, docId, value) {
   if (!_uid || !db) return;
   setDoc(doc(db, 'users', _uid, section, docId), { value }).catch(() => {});

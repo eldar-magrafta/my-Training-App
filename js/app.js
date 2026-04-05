@@ -3,7 +3,7 @@
 
 import { state } from './state.js';
 import { migrateOldExLogs, getNLMeals } from './store.js';
-import { initFirebase, onAuthChange, loadFromCloud, signInWithGoogle, signOutUser, getUserEmail } from './cloud.js';
+import { initFirebase, onAuthChange, loadFromCloud, signInWithGoogle, signOutUser, registerWithEmail, signInWithEmail } from './cloud.js';
 import { showView, setHeader } from './navigation.js';
 import { buildHome, showExercises, openModal, closeModal, handleOverlayClick, autoSaveExNotes, initModalSwipe, deleteExLog } from './exercises.js';
 import { renderPlans, openCreatePlan, closeCreatePlan, handleCreateOverlayClick, createPlan, donePlanDetail, setPlanEditMode, openDeletePlanConfirm, closeDeletePlanConfirm, confirmDeletePlan, showPlanDetail, openRemoveExConfirm, closeRemoveExConfirm, confirmRemoveEx, openAddTitle, closeAddTitle, handleTitleOverlayClick, saveTitle, showExercisePicker, togglePickerGroup, toggleExerciseInPlan, previewExercise } from './plans.js';
@@ -281,6 +281,60 @@ async function handleSignIn() {
     alert('Sign-in failed. Please try again.');
   }
 }
+
+async function handleEmailSignIn() {
+  const email = document.getElementById('siEmail').value.trim();
+  const password = document.getElementById('siPassword').value;
+  const errEl = document.getElementById('siError');
+  errEl.textContent = '';
+  if (!email || !password) { errEl.textContent = 'Please fill in all fields.'; return; }
+  try {
+    await signInWithEmail(email, password);
+  } catch (e) {
+    errEl.textContent = _authError(e.code);
+  }
+}
+
+async function handleEmailRegister() {
+  const name = document.getElementById('regName').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const password = document.getElementById('regPassword').value;
+  const confirm = document.getElementById('regConfirm').value;
+  const errEl = document.getElementById('regError');
+  errEl.textContent = '';
+  if (!name || !email || !password || !confirm) { errEl.textContent = 'Please fill in all fields.'; return; }
+  if (password !== confirm) { errEl.textContent = 'Passwords do not match.'; return; }
+  if (password.length < 6) { errEl.textContent = 'Password must be at least 6 characters.'; return; }
+  try {
+    await registerWithEmail(name, email, password);
+  } catch (e) {
+    errEl.textContent = _authError(e.code);
+  }
+}
+
+function showAuthTab(tab) {
+  document.getElementById('authTabSignIn').classList.toggle('auth-tab-active', tab === 'signin');
+  document.getElementById('authTabRegister').classList.toggle('auth-tab-active', tab === 'register');
+  document.getElementById('authPanelSignIn').style.display = tab === 'signin' ? '' : 'none';
+  document.getElementById('authPanelRegister').style.display = tab === 'register' ? '' : 'none';
+}
+
+function _authError(code) {
+  const map = {
+    'auth/user-not-found': 'No account found with this email.',
+    'auth/wrong-password': 'Incorrect password.',
+    'auth/invalid-credential': 'Invalid email or password.',
+    'auth/email-already-in-use': 'An account with this email already exists.',
+    'auth/invalid-email': 'Please enter a valid email address.',
+    'auth/weak-password': 'Password must be at least 6 characters.',
+    'auth/too-many-requests': 'Too many attempts. Please try again later.',
+  };
+  return map[code] || 'Something went wrong. Please try again.';
+}
+
+window.handleEmailSignIn = handleEmailSignIn;
+window.handleEmailRegister = handleEmailRegister;
+window.showAuthTab = showAuthTab;
 
 async function handleSignOut() {
   closeBurgerMenu();
