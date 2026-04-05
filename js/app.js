@@ -397,7 +397,11 @@ function startApp() {
   initModalSwipe();
 }
 
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js');
+  // Auto-reload when a new Service Worker takes over (new code deployed)
+  navigator.serviceWorker.addEventListener('controllerchange', () => window.location.reload());
+}
 
 initFirebase();
 

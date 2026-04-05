@@ -1,4 +1,4 @@
-const CACHE = 'trainer-v6';
+const CACHE = 'trainer-v7';
 const FILES = [
   './',
   './index.html',
@@ -13,6 +13,8 @@ const FILES = [
   './js/app.js',
   './js/state.js',
   './js/store.js',
+  './js/cloud.js',
+  './js/firebase-config.js',
   './js/utils.js',
   './js/navigation.js',
   './js/exercises.js',
