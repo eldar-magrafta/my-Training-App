@@ -159,7 +159,7 @@ export function showPlanDetail(planId) {
       const el = document.createElement('div');
       el.className = 'plan-ex-item';
       el.dataset.planItemIdx = idx;
-      const subText = log ? `Last: ${log.weight}kg \u00d7 ${log.reps}r` + (log.sets > 1 ? ` \u00b7 ${log.sets} sets` : '') : found.groupName;
+      const subText = log ? `Last: ${log.setList.map(s => `${s.w}kg \u00d7 ${s.r}`).join(' / ')}` : found.groupName;
       el.innerHTML = `
         <span class="drag-handle">\u2807</span>
         <div class="plan-ex-info">
