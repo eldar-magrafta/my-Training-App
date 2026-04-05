@@ -3,6 +3,7 @@
 
 import { state } from './state.js';
 import { migrateOldExLogs, getNLMeals } from './store.js';
+import { initFirebase, onAuthChange, loadFromCloud, signInWithGoogle, signOutUser, getUserEmail } from './cloud.js';
 import { showView, setHeader } from './navigation.js';
 import { buildHome, showExercises, openModal, closeModal, handleOverlayClick, autoSaveExNotes, initModalSwipe, deleteExLog } from './exercises.js';
 import { renderPlans, openCreatePlan, closeCreatePlan, handleCreateOverlayClick, createPlan, donePlanDetail, setPlanEditMode, openDeletePlanConfirm, closeDeletePlanConfirm, confirmDeletePlan, showPlanDetail, openRemoveExConfirm, closeRemoveExConfirm, confirmRemoveEx, openAddTitle, closeAddTitle, handleTitleOverlayClick, saveTitle, showExercisePicker, togglePickerGroup, toggleExerciseInPlan, previewExercise } from './plans.js';
@@ -247,13 +248,73 @@ window.closeBurgerMenu = closeBurgerMenu;
 window.toggleTheme = toggleTheme;
 
 // ═══════════════════════════════════════════
+// Auth UI
+// ═══════════════════════════════════════════
+
+function showSignInScreen() {
+  document.getElementById('signInOverlay').style.display = 'flex';
+  document.getElementById('appRoot').style.display = 'none';
+}
+
+function showLoadingScreen(msg) {
+  document.getElementById('signInOverlay').style.display = 'none';
+  document.getElementById('loadingOverlay').style.display = 'flex';
+  document.getElementById('loadingMsg').textContent = msg || 'Loading…';
+  document.getElementById('appRoot').style.display = 'none';
+}
+
+function showApp() {
+  document.getElementById('signInOverlay').style.display = 'none';
+  document.getElementById('loadingOverlay').style.display = 'none';
+  document.getElementById('appRoot').style.display = '';
+}
+
+function updateUserUI(user) {
+  const el = document.getElementById('burgerUserEmail');
+  if (el) el.textContent = user ? user.email : '';
+}
+
+async function handleSignIn() {
+  try {
+    await signInWithGoogle();
+  } catch (e) {
+    alert('Sign-in failed. Please try again.');
+  }
+}
+
+async function handleSignOut() {
+  closeBurgerMenu();
+  await signOutUser();
+  showSignInScreen();
+}
+
+window.handleSignIn = handleSignIn;
+window.handleSignOut = handleSignOut;
+
+// ═══════════════════════════════════════════
 // Initialization
 // ═══════════════════════════════════════════
 
+function startApp() {
+  applyStoredTheme();
+  migrateOldExLogs();
+  rebuildAllPRs();
+  buildHome();
+  initModalSwipe();
+}
+
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
 
-applyStoredTheme();
-migrateOldExLogs();
-rebuildAllPRs();
-buildHome();
-initModalSwipe();
+initFirebase();
+
+onAuthChange(async (user) => {
+  if (user) {
+    showLoadingScreen('Syncing your data…');
+    await loadFromCloud(user.uid);
+    updateUserUI(user);
+    showApp();
+    startApp();
+  } else {
+    showSignInScreen();
+  }
+});
