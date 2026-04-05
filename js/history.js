@@ -190,6 +190,7 @@ export function openExHistEntry(dateStr) {
   renderExHistSets(sets);
   document.getElementById('exHistNotes').value = entry && entry.n ? entry.n : '';
   document.getElementById('exHistBtnDel').style.display = entry ? '' : 'none';
+  document.getElementById('exHistBtnDelTop').style.display = entry ? '' : 'none';
   document.getElementById('exHistEntryOverlay').classList.add('open');
   setTimeout(() => document.getElementById('exHistEntrySheet').style.transform = 'translateY(0)', 10);
 }

@@ -229,7 +229,10 @@
     <div class="bw-sheet" id="exHistEntrySheet">
       <div class="bw-sheet-handle"></div>
       <div class="bw-sheet-dateLbl" id="exHistEntryDate"></div>
-      <div class="bw-sheet-title">Log Exercise</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+        <div class="bw-sheet-title" style="margin-bottom:0;">Log Exercise</div>
+        <button id="exHistBtnDelTop" onclick="deleteExHistEntry()" style="display:none;background:none;border:none;cursor:pointer;font-size:1.4rem;color:var(--muted);padding:4px 0 4px 12px;" title="Delete entry">🗑</button>
+      </div>
       <div style="margin-bottom:14px;">
         <label style="font-size:0.8rem;color:var(--muted);display:block;margin-bottom:6px;">Number of Sets</label>
         <select id="exHistSetCount" onchange="renderExHistSets()" class="themed-select">
