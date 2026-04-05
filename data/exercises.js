@@ -468,6 +468,16 @@ export const exerciseData = {
         gif: 'assets/exercises/forearms/wrist-roller.gif' }
     ]
   },
+  abductors: {
+    name: 'Abductors', icon: '🦵', img: 'abductors',
+    exercises: [
+      { name: 'Hip Abduction Machine', sets: '3–4 sets × 12–15 reps',
+        desc: 'The most direct outer hip isolation exercise. The abduction machine targets the gluteus medius and minimus through controlled lateral leg movement.',
+        tips: ['Sit tall with back flat against the pad', 'Push legs outward in a slow controlled arc', 'Do not use momentum — squeeze at the peak', 'Full range of motion each rep'],
+        yt: 'hip abduction machine outer thigh glute medius tutorial',
+        gif: 'assets/exercises/abductors/HiP-ABDUCTION-MACHINE.gif' }
+    ]
+  },
   core: {
     name: 'Core', icon: '🔥', img: 'core',
     exercises: [
