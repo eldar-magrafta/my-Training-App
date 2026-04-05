@@ -4,7 +4,7 @@
 
 export const exerciseData = {
   chest: {
-    name: 'Chest', icon: '🏋️', img: 'chest',
+    name: 'Chest', img: 'chest',
     exercises: [
       { name: 'Barbell Bench Press', sets: '3–4 sets × 6–10 reps',
         desc: 'The foundational chest exercise. Builds overall chest mass, tricep strength, and anterior deltoid size.',
@@ -49,7 +49,7 @@ export const exerciseData = {
     ]
   },
   back_upper: {
-    name: 'Upper Back', icon: '🎯', img: 'back_upper',
+    name: 'Upper Back', img: 'back_upper',
     exercises: [
       { name: 'Bent Over Row', sets: '3–4 sets × 6–10 reps',
         desc: 'Builds thickness across the entire back, especially the mid and lower traps and rhomboids.',
@@ -89,7 +89,7 @@ export const exerciseData = {
     ]
   },
   back_lateral: {
-    name: 'Lateral Back', icon: '🦅', img: 'latissimus',
+    name: 'Lateral Back', img: 'latissimus',
     exercises: [
       { name: 'Pull Up', sets: '3–4 sets × 5–10 reps',
         desc: 'The ultimate lat exercise. Builds lat width, back thickness, and overall pulling strength.',
@@ -134,7 +134,7 @@ export const exerciseData = {
     ]
   },
   back_lower: {
-    name: 'Lower Back', icon: '🔙', img: 'back_lower',
+    name: 'Lower Back', img: 'back_lower',
     exercises: [
       { name: 'Deadlift', sets: '3–4 sets × 3–6 reps',
         desc: 'The king of all lifts. Works the entire posterior chain — lower back, glutes, and hamstrings.',
@@ -149,7 +149,7 @@ export const exerciseData = {
     ]
   },
   shoulders: {
-    name: 'Shoulders', icon: '⬆️', img: 'shoulders',
+    name: 'Shoulders', img: 'shoulders',
     exercises: [
       { name: 'Barbell Shoulder Press', sets: '3–4 sets × 6–10 reps',
         desc: 'The primary compound shoulder movement. Builds all three deltoid heads and overall pressing strength.',
@@ -224,7 +224,7 @@ export const exerciseData = {
     ]
   },
   biceps: {
-    name: 'Biceps', icon: '💪', img: 'biceps',
+    name: 'Biceps', img: 'biceps',
     exercises: [
       { name: 'Barbell Curl', sets: '3–4 sets × 8–10 reps',
         desc: 'The best mass-builder for biceps. Allows the most weight to be used in a curl movement.',
@@ -269,7 +269,7 @@ export const exerciseData = {
     ]
   },
   triceps: {
-    name: 'Triceps', icon: '⚡', img: 'triceps',
+    name: 'Triceps', img: 'triceps',
     exercises: [
       { name: 'Tricep Rope Pushdown', sets: '3–4 sets × 10–15 reps',
         desc: 'A rope pushdown that allows the hands to split apart at the bottom for a stronger tricep contraction.',
@@ -314,7 +314,7 @@ export const exerciseData = {
     ]
   },
   quads: {
-    name: 'Quads', icon: '🦵', img: 'quadriceps',
+    name: 'Quads', img: 'quadriceps',
     exercises: [
       { name: 'Barbell Back Squat', sets: '3–4 sets × 5–8 reps',
         desc: 'The king of leg exercises. Builds quads, glutes, and hamstrings while developing core and full-body strength.',
@@ -359,7 +359,7 @@ export const exerciseData = {
     ]
   },
   hamstrings: {
-    name: 'Hamstrings', icon: '🔙', img: 'hamstring',
+    name: 'Hamstrings', img: 'hamstring',
     exercises: [
       { name: 'Romanian Deadlift', sets: '3 sets × 8–12 reps',
         desc: 'The best hamstring exercise. A hip hinge that stretches and loads the hamstrings fully.',
@@ -379,7 +379,7 @@ export const exerciseData = {
     ]
   },
   glutes: {
-    name: 'Glutes', icon: '🍑', img: 'gluteus',
+    name: 'Glutes', img: 'gluteus',
     exercises: [
       { name: 'Sumo Deadlift', sets: '3–4 sets × 5–8 reps',
         desc: 'A wide-stance deadlift that recruits the glutes and adductors alongside hamstrings and lower back.',
@@ -399,7 +399,7 @@ export const exerciseData = {
     ]
   },
   calves: {
-    name: 'Calves', icon: '🦶', img: 'calfs',
+    name: 'Calves', img: 'calfs',
     exercises: [
       { name: 'Standing Calf Raise', sets: '4 sets × 15–20 reps',
         desc: 'The primary calf exercise targeting the gastrocnemius. Straight knee maximizes gastroc activation.',
@@ -424,7 +424,7 @@ export const exerciseData = {
     ]
   },
   adductors: {
-    name: 'Adductors', icon: '🔺', img: 'adductors',
+    name: 'Adductors', img: 'adductors',
     exercises: [
       { name: 'Machine Hip Adduction', sets: '3–4 sets × 12–15 reps',
         desc: 'The most direct adductor isolation exercise. The inner thigh machine allows easy progression.',
@@ -439,7 +439,7 @@ export const exerciseData = {
     ]
   },
   forearms: {
-    name: 'Forearms', icon: '🤜', img: 'forearms',
+    name: 'Forearms', img: 'forearms',
     exercises: [
       { name: 'Dumbbell Wrist Curl', sets: '3–4 sets × 15–20 reps',
         desc: 'The classic forearm flexor exercise. Builds the meaty inner forearm responsible for grip strength.',
@@ -469,7 +469,7 @@ export const exerciseData = {
     ]
   },
   abductors: {
-    name: 'Abductors', icon: '🦵', img: 'abductors',
+    name: 'Abductors', img: 'abductors',
     exercises: [
       { name: 'Hip Abduction Machine', sets: '3–4 sets × 12–15 reps',
         desc: 'The most direct outer hip isolation exercise. The abduction machine targets the gluteus medius and minimus through controlled lateral leg movement.',
@@ -479,7 +479,7 @@ export const exerciseData = {
     ]
   },
   core: {
-    name: 'Core', icon: '🔥', img: 'core',
+    name: 'Core', img: 'core',
     exercises: [
       { name: 'Crunch', sets: '3 sets \u00d7 15\u201320 reps',
         desc: 'The basic abdominal crunch targeting the rectus abdominis. A foundational core exercise suitable for all levels.',
