@@ -3,7 +3,7 @@
 
 import { exerciseData, findExercise } from '../data/exercises.js';
 import { state } from './state.js';
-import { getLog, getNotes, saveNotesData } from './store.js';
+import { getLog, getNotes, saveNotesData, deleteLastLog } from './store.js';
 import { showView, setHeader } from './navigation.js';
 import { getPR, renderPRBadge } from './prs.js';
 
@@ -88,14 +88,17 @@ export function openModal(ex, muscleName, fromPlan = false) {
     const log = getLog(ex.name);
     const valEl = document.getElementById('lastSessionValue');
     const dateEl = document.getElementById('lastSessionDate');
+    const delBtn = document.getElementById('deleteLogBtn');
     if (log) {
       valEl.textContent = log.setList.map(s => `${s.w}kg \u00d7 ${s.r} reps`).join(' / ');
       valEl.className = 'ls-value';
       dateEl.textContent = log.date;
+      if (delBtn) delBtn.style.display = '';
     } else {
       valEl.textContent = 'No data yet';
       valEl.className = 'ls-value none';
       dateEl.textContent = '';
+      if (delBtn) delBtn.style.display = 'none';
     }
 
     // PR display
@@ -146,6 +149,26 @@ export function closeModal() {
 
 export function handleOverlayClick(e) {
   if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
+
+/** Delete the most recent log entry for the current exercise and refresh the modal */
+export function deleteExLog() {
+  if (!state.currentExerciseName) return;
+  deleteLastLog(state.currentExerciseName);
+  const log = getLog(state.currentExerciseName);
+  const valEl = document.getElementById('lastSessionValue');
+  const dateEl = document.getElementById('lastSessionDate');
+  const delBtn = document.getElementById('deleteLogBtn');
+  if (log) {
+    valEl.textContent = log.setList.map(s => `${s.w}kg \u00d7 ${s.r} reps`).join(' / ');
+    valEl.className = 'ls-value';
+    dateEl.textContent = log.date;
+  } else {
+    valEl.textContent = 'No data yet';
+    valEl.className = 'ls-value none';
+    dateEl.textContent = '';
+    if (delBtn) delBtn.style.display = 'none';
+  }
 }
 
 /** Initialize swipe-down-to-dismiss on the exercise modal */

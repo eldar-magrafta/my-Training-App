@@ -9,6 +9,15 @@ export function saveExHist(name, data) {
   localStorage.setItem('trainer_exhist_' + name, JSON.stringify(data));
 }
 
+/** Delete the most recent log entry for an exercise. */
+export function deleteLastLog(name) {
+  const hist = getExHist(name);
+  const entries = Object.entries(hist).sort(([a], [b]) => b.localeCompare(a));
+  if (entries.length === 0) return;
+  delete hist[entries[0][0]];
+  saveExHist(name, hist);
+}
+
 /** Get latest log for an exercise (newest date). Returns {setList, date} or null. */
 export function getLog(name) {
   const hist = getExHist(name);
