@@ -93,12 +93,12 @@ export function openModal(ex, muscleName, fromPlan = false) {
       valEl.textContent = log.setList.map(s => `${s.w}kg \u00d7 ${s.r} reps`).join(' / ');
       valEl.className = 'ls-value';
       dateEl.textContent = log.date;
-      if (delBtn) delBtn.style.display = '';
+      if (delBtn) delBtn.classList.add('visible');
     } else {
       valEl.textContent = 'No data yet';
       valEl.className = 'ls-value none';
       dateEl.textContent = '';
-      if (delBtn) delBtn.style.display = 'none';
+      if (delBtn) delBtn.classList.remove('visible');
     }
 
     // PR display
@@ -167,7 +167,7 @@ export function deleteExLog() {
     valEl.textContent = 'No data yet';
     valEl.className = 'ls-value none';
     dateEl.textContent = '';
-    if (delBtn) delBtn.style.display = 'none';
+    if (delBtn) delBtn.classList.remove('visible');
   }
 }
 
