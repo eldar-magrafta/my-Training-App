@@ -1,4 +1,4 @@
-const CACHE = 'trainer-v7';
+const CACHE = 'trainer-v8';
 const FILES = [
   './',
   './index.html',
@@ -10,7 +10,10 @@ const FILES = [
   './css/modals.css',
   './css/bodyweight.css',
   './css/nutrition.css',
+  './css/summary.css',
+  './css/auth.css',
   './js/app.js',
+  './js/auth.js',
   './js/state.js',
   './js/store.js',
   './js/cloud.js',
@@ -22,6 +25,8 @@ const FILES = [
   './js/bodyweight.js',
   './js/nutrition.js',
   './js/history.js',
+  './js/prs.js',
+  './js/summary.js',
   './data/exercises.js',
   './data/ingredients.js',
 ];

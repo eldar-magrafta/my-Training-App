@@ -68,6 +68,13 @@ body {
   font-size: 1.5rem; cursor: pointer; padding: 4px 2px;
   flex-shrink: 0; line-height: 1;
 }
+.cloud-sync-dot {
+  display: none; width: 8px; height: 8px; border-radius: 50%;
+  position: absolute; top: 14px; right: 10px;
+}
+.cloud-sync-dot.error {
+  display: block; background: var(--accent);
+}
 
 /* ── Burger Overlay & Menu ── */
 .burger-overlay {

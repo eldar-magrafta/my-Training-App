@@ -2,7 +2,7 @@
 // Stats, chart, calendar, entry sheet, photo handling.
 
 import { state } from './state.js';
-import { getBWData, saveBWData, bwGetWeight, bwGetPhoto } from './store.js';
+import { getBWData, saveBWData, bwGetWeight, bwGetPhoto, saveBWEmpty } from './store.js';
 import { dateToStr, fmtDateLabel, resizeImage, MONTHS } from './utils.js';
 
 // ── Build / Refresh ──
@@ -182,7 +182,7 @@ export function renderBWCalendar() {
 export function openBWDeleteConfirm() { document.getElementById('bwConfirmOverlay').classList.add('open'); }
 export function closeBWDeleteConfirm() { document.getElementById('bwConfirmOverlay').classList.remove('open'); }
 export function confirmDeleteAllBW() {
-  localStorage.removeItem('trainer_bw');
+  saveBWEmpty();
   state.bwSelDate = null;
   state.bwCurrentPhoto = null;
   closeBWDeleteConfirm();

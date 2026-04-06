@@ -3,7 +3,7 @@
 import { state } from './state.js';
 import { exerciseData } from '../data/exercises.js';
 import { getExHist, getBWData, bwGetWeight, getNLMeals } from './store.js';
-import { exHistMaxWeight } from './utils.js';
+import { exHistMaxWeight, calcMealTotals } from './utils.js';
 import { showView, setHeader } from './navigation.js';
 
 function getDateRange(range) {
@@ -24,11 +24,7 @@ function getDateRange(range) {
   return { startDate: toStr(start), endDate: toStr(end) };
 }
 
-function nlCalcMealTotals(meal) {
-  let p = 0, c = 0, f = 0, cal = 0;
-  (meal.ingredients || []).forEach(i => { const m = i.grams / 100; p += i.p * m; c += i.c * m; f += i.f * m; cal += i.cal * m; });
-  return { p, c, f, cal };
-}
+function nlCalcMealTotals(meal) { return calcMealTotals(meal); }
 
 function computeSummary(range) {
   const { startDate, endDate } = getDateRange(range);

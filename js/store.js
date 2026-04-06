@@ -1,8 +1,11 @@
 // ── localStorage Service ──
 // All persistent data access in one place.
-// Every save also calls cloudSave() in the background for Firestore sync.
+// Every save also calls _cloudSave() in the background for Firestore sync.
+// The cloud module registers its save function via setCloudSaver().
 
-import { cloudSave } from './cloud.js';
+let _cloudSave = () => {};
+
+export function setCloudSaver(fn) { _cloudSave = fn; }
 
 // ── Exercise History (date-keyed) ──
 export function getExHist(name) {
@@ -11,7 +14,7 @@ export function getExHist(name) {
 export function saveExHist(name, data) {
   const v = JSON.stringify(data);
   localStorage.setItem('trainer_exhist_' + name, v);
-  cloudSave('exhist', encodeURIComponent(name), v);
+  _cloudSave('exhist', encodeURIComponent(name), v);
 }
 
 /** Delete the most recent log entry for an exercise. */
@@ -38,15 +41,9 @@ export function getLog(name) {
   return { setList: [{ w: parseFloat(e.w) || 0, r: parseInt(e.r) || 0 }], date };
 }
 
-export function saveLogData(name, weight, reps) {
-  const today = new Date().toISOString().slice(0, 10);
-  const hist = getExHist(name);
-  hist[today] = { w: weight, r: reps };
-  saveExHist(name, hist);
-}
-
-/** Migrate old single-entry format to date-keyed history */
+/** Migrate old single-entry format to date-keyed history (runs once) */
 export function migrateOldExLogs() {
+  if (localStorage.getItem('trainer_migrated')) return;
   const keys = [];
   for (let i = 0; i < localStorage.length; i++) {
     const k = localStorage.key(i);
@@ -72,6 +69,7 @@ export function migrateOldExLogs() {
       } catch (e) { /* skip corrupted entries */ }
     }
   });
+  localStorage.setItem('trainer_migrated', '1');
 }
 
 // ── Plans ──
@@ -81,7 +79,7 @@ export function getPlans() {
 export function savePlans(plans) {
   const v = JSON.stringify(plans);
   localStorage.setItem('trainer_plans', v);
-  cloudSave('sections', 'plans', v);
+  _cloudSave('sections', 'plans', v);
 }
 export function getPlan(id) {
   return getPlans().find(p => p.id === id);
@@ -94,7 +92,7 @@ export function getNotes(name) {
 export function saveNotesData(name, text) {
   const t = text.slice(0, 250);
   localStorage.setItem('trainer_notes_' + name, t);
-  cloudSave('notes', encodeURIComponent(name), t);
+  _cloudSave('notes', encodeURIComponent(name), t);
 }
 
 // ── Body Weight ──
@@ -105,7 +103,12 @@ export function saveBWData(data) {
   const v = JSON.stringify(data);
   localStorage.setItem('trainer_bw', v);
   // Skip cloud if data is very large (may contain base64 progress photos)
-  if (v.length < 900000) cloudSave('sections', 'bodyweight', v);
+  if (v.length < 900000) _cloudSave('sections', 'bodyweight', v);
+}
+
+export function saveBWEmpty() {
+  localStorage.removeItem('trainer_bw');
+  _cloudSave('sections', 'bodyweight', '{}');
 }
 
 // Backward-compat helpers (old entries are plain numbers, new are {w,p} objects)
@@ -119,7 +122,7 @@ export function getNLMeals() {
 export function saveNLMeals(m) {
   const v = JSON.stringify(m);
   localStorage.setItem('trainer_meals', v);
-  cloudSave('sections', 'meals', v);
+  _cloudSave('sections', 'meals', v);
 }
 
 // ── Personal Records ──
@@ -129,7 +132,7 @@ export function getPRs() {
 export function savePRs(prs) {
   const v = JSON.stringify(prs);
   localStorage.setItem('trainer_prs', v);
-  cloudSave('sections', 'prs', v);
+  _cloudSave('sections', 'prs', v);
 }
 
 // ── Macro Goals ──
@@ -139,7 +142,7 @@ export function getMacroGoals() {
 export function saveMacroGoals(goals) {
   const v = JSON.stringify(goals);
   localStorage.setItem('trainer_macro_goals', v);
-  cloudSave('sections', 'macrogoals', v);
+  _cloudSave('sections', 'macrogoals', v);
 }
 
 // ── Custom Ingredients ──
@@ -149,5 +152,5 @@ export function getCustomIngs() {
 export function saveCustomIngs(c) {
   const v = JSON.stringify(c);
   localStorage.setItem('trainer_custom_ings', v);
-  cloudSave('sections', 'customings', v);
+  _cloudSave('sections', 'customings', v);
 }

@@ -3,7 +3,7 @@
 
 import { state } from './state.js';
 import { migrateOldExLogs, getNLMeals } from './store.js';
-import { initFirebase, onAuthChange, loadFromCloud, signInWithGoogle, signOutUser, registerWithEmail, signInWithEmail, sendForgotPassword } from './cloud.js';
+import { initFirebase, onAuthChange, loadFromCloud, signOutUser } from './cloud.js';
 import { showView, setHeader } from './navigation.js';
 import { buildHome, showExercises, openModal, closeModal, handleOverlayClick, autoSaveExNotes, initModalSwipe, deleteExLog } from './exercises.js';
 import { renderPlans, openCreatePlan, closeCreatePlan, handleCreateOverlayClick, createPlan, donePlanDetail, setPlanEditMode, openDeletePlanConfirm, closeDeletePlanConfirm, confirmDeletePlan, showPlanDetail, openRemoveExConfirm, closeRemoveExConfirm, confirmRemoveEx, openAddTitle, closeAddTitle, handleTitleOverlayClick, saveTitle, showExercisePicker, togglePickerGroup, toggleExerciseInPlan, previewExercise } from './plans.js';
@@ -12,6 +12,7 @@ import { renderNLMeals, nlShowMeal, nlShowPicker, renderNLPicker, nlPickIngredie
 import { openExHistory, setExHistRange, exHistPrevMonth, exHistNextMonth, renderExHistSets, openExHistEntry, closeExHistEntry, saveExHistEntry, deleteExHistEntry } from './history.js';
 import { rebuildAllPRs } from './prs.js';
 import { openSummary, setSummaryRange } from './summary.js';
+import { showSignInScreen, showLoadingScreen, showApp, updateUserUI, handleSignIn, handleEmailSignIn, handleEmailRegister, handleForgotPassword, showAuthTab, handleSignOut, confirmSignOut, cancelSignOut } from './auth.js';
 
 // ═══════════════════════════════════════════
 // Tab Switching & Navigation (orchestration)
@@ -248,142 +249,17 @@ window.closeBurgerMenu = closeBurgerMenu;
 window.toggleTheme = toggleTheme;
 
 // ═══════════════════════════════════════════
-// Auth UI
+// Auth UI (delegated to auth.js)
 // ═══════════════════════════════════════════
 
-function showSignInScreen() {
-  document.getElementById('signInOverlay').style.display = 'flex';
-  document.getElementById('appRoot').style.display = 'none';
-}
-
-function showLoadingScreen(msg) {
-  document.getElementById('signInOverlay').style.display = 'none';
-  document.getElementById('loadingOverlay').style.display = 'flex';
-  document.getElementById('loadingMsg').textContent = msg || 'Loading…';
-  document.getElementById('appRoot').style.display = 'none';
-}
-
-function showApp() {
-  document.getElementById('signInOverlay').style.display = 'none';
-  document.getElementById('loadingOverlay').style.display = 'none';
-  document.getElementById('appRoot').style.display = '';
-}
-
-function updateUserUI(user) {
-  const el = document.getElementById('burgerUserEmail');
-  if (el) el.textContent = user ? user.email : '';
-}
-
-async function handleSignIn() {
-  try {
-    await signInWithGoogle();
-  } catch (e) {
-    alert('Sign-in failed. Please try again.');
-  }
-}
-
-async function handleEmailSignIn() {
-  const email = document.getElementById('siEmail').value.trim();
-  const password = document.getElementById('siPassword').value;
-  const errEl = document.getElementById('siError');
-  errEl.textContent = '';
-  if (!email || !password) { errEl.textContent = 'Please fill in all fields.'; return; }
-  try {
-    await signInWithEmail(email, password);
-    // onAuthChange will fire — verified check happens there
-  } catch (e) {
-    errEl.textContent = _authError(e.code);
-  }
-}
-
-async function handleEmailRegister() {
-  const name = document.getElementById('regName').value.trim();
-  const email = document.getElementById('regEmail').value.trim();
-  const password = document.getElementById('regPassword').value;
-  const confirm = document.getElementById('regConfirm').value;
-  const errEl = document.getElementById('regError');
-  errEl.textContent = '';
-  if (!name || !email || !password || !confirm) { errEl.textContent = 'Please fill in all fields.'; return; }
-  if (password !== confirm) { errEl.textContent = 'Passwords do not match.'; return; }
-  if (password.length < 8) { errEl.textContent = 'Password must be at least 8 characters.'; return; }
-  try {
-    await registerWithEmail(name, email, password);
-    showVerifyEmailScreen(email);
-  } catch (e) {
-    errEl.textContent = _authError(e.code);
-  }
-}
-
-async function handleForgotPassword() {
-  const email = document.getElementById('siEmail').value.trim();
-  const errEl = document.getElementById('siError');
-  errEl.textContent = '';
-  if (!email) { errEl.textContent = 'Enter your email above first.'; return; }
-  try {
-    await sendForgotPassword(email);
-    errEl.style.color = '#2ecc71';
-    errEl.textContent = 'Password reset email sent! Check your inbox.';
-    setTimeout(() => { errEl.style.color = ''; errEl.textContent = ''; }, 5000);
-  } catch (e) {
-    errEl.textContent = _authError(e.code);
-  }
-}
-
-function showVerifyEmailScreen(email) {
-  document.getElementById('authPanelSignIn').style.display = 'none';
-  document.getElementById('authPanelRegister').style.display = 'none';
-  document.getElementById('authTabSignIn').classList.remove('auth-tab-active');
-  document.getElementById('authTabRegister').classList.remove('auth-tab-active');
-  document.getElementById('authPanelVerify').style.display = '';
-  document.getElementById('verifyEmailAddr').textContent = email;
-}
-
 window.handleForgotPassword = handleForgotPassword;
-
-function showAuthTab(tab) {
-  document.getElementById('authTabSignIn').classList.toggle('auth-tab-active', tab === 'signin');
-  document.getElementById('authTabRegister').classList.toggle('auth-tab-active', tab === 'register');
-  document.getElementById('authPanelSignIn').style.display = tab === 'signin' ? '' : 'none';
-  document.getElementById('authPanelRegister').style.display = tab === 'register' ? '' : 'none';
-}
-
-function _authError(code) {
-  const map = {
-    'auth/user-not-found': 'No account found with this email.',
-    'auth/wrong-password': 'Incorrect password.',
-    'auth/invalid-credential': 'Invalid email or password.',
-    'auth/email-already-in-use': 'An account with this email already exists.',
-    'auth/invalid-email': 'Please enter a valid email address.',
-    'auth/weak-password': 'Password must be at least 8 characters.',
-    'auth/too-many-requests': 'Too many attempts. Please try again later.',
-  };
-  return map[code] || 'Something went wrong. Please try again.';
-}
-
 window.handleEmailSignIn = handleEmailSignIn;
 window.handleEmailRegister = handleEmailRegister;
 window.showAuthTab = showAuthTab;
-
-function handleSignOut() {
-  closeBurgerMenu();
-  document.getElementById('signOutConfirm').style.display = 'flex';
-}
-
-async function confirmSignOut() {
-  document.getElementById('signOutConfirm').style.display = 'none';
-  await signOutUser();
-  showSignInScreen();
-}
-
-function cancelSignOut() {
-  document.getElementById('signOutConfirm').style.display = 'none';
-}
-
 window.confirmSignOut = confirmSignOut;
 window.cancelSignOut = cancelSignOut;
-
 window.handleSignIn = handleSignIn;
-window.handleSignOut = handleSignOut;
+window.handleSignOut = () => handleSignOut(closeBurgerMenu);
 
 // ═══════════════════════════════════════════
 // Initialization

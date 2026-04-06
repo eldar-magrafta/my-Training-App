@@ -47,3 +47,10 @@ export function exHistTotalReps(entry) {
   if (entry.sets) return entry.sets.map(s => parseInt(s.r) || 0);
   return [parseInt(entry.r) || 0];
 }
+
+/** Calculate macro totals for a meal */
+export function calcMealTotals(meal) {
+  let p = 0, c = 0, f = 0, cal = 0;
+  (meal.ingredients || []).forEach(i => { const m = i.grams / 100; p += i.p * m; c += i.c * m; f += i.f * m; cal += i.cal * m; });
+  return { p: Math.round(p * 10) / 10, c: Math.round(c * 10) / 10, f: Math.round(f * 10) / 10, cal: Math.round(cal) };
+}

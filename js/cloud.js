@@ -10,6 +10,7 @@ import {
 } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js';
 import { getFirestore, doc, setDoc, getDoc, collection, getDocs } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js';
 import { FIREBASE_CONFIG } from './firebase-config.js';
+import { setCloudSaver } from './store.js';
 
 const SECTION_MAP = {
   plans:      'trainer_plans',
@@ -30,6 +31,8 @@ export function initFirebase() {
   db = getFirestore(app);
   // Keep user logged in forever across browser sessions
   setPersistence(auth, browserLocalPersistence).catch(() => {});
+  // Wire up cloud saving so store.js can sync without importing cloud.js
+  setCloudSaver(cloudSave);
 }
 
 export function getUid() { return _uid; }
@@ -92,7 +95,24 @@ export async function loadFromCloud(uid) {
   } catch (e) {}
 }
 
+let _cloudError = false;
+
+export function hasCloudError() { return _cloudError; }
+
 export function cloudSave(section, docId, value) {
   if (!_uid || !db) return;
-  setDoc(doc(db, 'users', _uid, section, docId), { value }).catch(() => {});
+  setDoc(doc(db, 'users', _uid, section, docId), { value })
+    .then(() => {
+      if (_cloudError) { _cloudError = false; _updateSyncIndicator(); }
+    })
+    .catch(() => {
+      if (!_cloudError) { _cloudError = true; _updateSyncIndicator(); }
+    });
+}
+
+function _updateSyncIndicator() {
+  const el = document.getElementById('cloudSyncStatus');
+  if (!el) return;
+  el.classList.toggle('error', _cloudError);
+  el.title = _cloudError ? 'Cloud sync issue – changes saved locally' : 'Synced';
 }

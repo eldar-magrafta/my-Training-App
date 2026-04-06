@@ -5,14 +5,11 @@ import { NL_INGREDIENTS } from '../data/ingredients.js';
 import { state } from './state.js';
 import { getNLMeals, saveNLMeals, getCustomIngs, saveCustomIngs, getMacroGoals, saveMacroGoals } from './store.js';
 import { showView, setHeader } from './navigation.js';
+import { calcMealTotals } from './utils.js';
 
 function getAllIngs() { return [...NL_INGREDIENTS, ...getCustomIngs()]; }
 
-function nlCalcTotals(meal) {
-  let p = 0, c = 0, f = 0, cal = 0;
-  (meal.ingredients || []).forEach(i => { const m = i.grams / 100; p += i.p * m; c += i.c * m; f += i.f * m; cal += i.cal * m; });
-  return { p: Math.round(p * 10) / 10, c: Math.round(c * 10) / 10, f: Math.round(f * 10) / 10, cal: Math.round(cal) };
-}
+function nlCalcTotals(meal) { return calcMealTotals(meal); }
 
 function nlRenderPie(p, c, f) {
   const pCal = p * 4, cCal = c * 4, fCal = f * 9, total = pCal + cCal + fCal;

@@ -1,0 +1,260 @@
+/* ── Auth Screens ── */
+
+/* Shared overlay base */
+#signInOverlay,
+#loadingOverlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  background: var(--bg, #0f0f1a);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#signInOverlay {
+  padding: 24px;
+  overflow-y: auto;
+}
+
+#loadingOverlay {
+  gap: 16px;
+}
+
+/* Sign-In content wrapper */
+.auth-content {
+  width: 100%;
+  max-width: 360px;
+}
+
+/* Header / branding */
+.auth-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+.auth-logo {
+  width: 80px;
+  height: 80px;
+  border-radius: 20px;
+  margin-bottom: 14px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+.auth-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--text, #fff);
+}
+.auth-tagline {
+  font-size: 0.85rem;
+  color: var(--muted, #888);
+  margin-top: 6px;
+}
+
+/* Auth tabs row */
+.auth-tabs {
+  display: flex;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.06);
+  padding: 4px;
+  margin-bottom: 24px;
+}
+
+/* Google sign-in button */
+.auth-google-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  background: #fff;
+  color: #222;
+  border: none;
+  border-radius: 14px;
+  padding: 14px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+/* "or" divider */
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.auth-divider-line {
+  flex: 1;
+  height: 1px;
+  background: rgba(255,255,255,0.1);
+}
+.auth-divider-text {
+  font-size: 0.75rem;
+  color: var(--muted, #888);
+}
+
+/* Shared input style */
+.auth-input {
+  width: 100%;
+  box-sizing: border-box;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px;
+  padding: 14px;
+  color: var(--text, #fff);
+  font-size: 1rem;
+  margin-bottom: 12px;
+  outline: none;
+}
+
+/* Error message */
+.auth-error {
+  color: #ff6b6b;
+  font-size: 0.82rem;
+  min-height: 18px;
+  margin-bottom: 8px;
+}
+.auth-error-reg {
+  color: #ff6b6b;
+  font-size: 0.82rem;
+  min-height: 18px;
+  margin-bottom: 12px;
+}
+
+/* Primary action buttons */
+.auth-btn {
+  width: 100%;
+  background: var(--accent, #e94560);
+  border: none;
+  border-radius: 14px;
+  padding: 14px;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.auth-btn-signin {
+  margin-bottom: 12px;
+}
+
+/* Forgot password */
+.auth-forgot-wrap {
+  text-align: center;
+}
+.auth-forgot-btn {
+  background: none;
+  border: none;
+  color: var(--muted, #888);
+  font-size: 0.85rem;
+  cursor: pointer;
+  text-decoration: underline;
+  font-family: inherit;
+}
+
+/* Password field spacing tweak */
+.auth-input-last {
+  margin-bottom: 8px;
+}
+
+/* Verify email panel */
+.auth-panel-verify {
+  display: none;
+  text-align: center;
+}
+.auth-verify-emoji {
+  font-size: 3rem;
+  margin-bottom: 16px;
+}
+.auth-verify-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text, #fff);
+  margin-bottom: 10px;
+}
+.auth-verify-text {
+  font-size: 0.9rem;
+  color: var(--muted, #888);
+  margin-bottom: 6px;
+}
+.auth-verify-email {
+  font-weight: 600;
+  color: var(--text, #fff);
+  margin-bottom: 20px;
+  word-break: break-all;
+}
+.auth-verify-hint {
+  font-size: 0.85rem;
+  color: var(--muted, #888);
+  margin-bottom: 24px;
+}
+
+/* Loading overlay */
+.auth-loading-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  margin-bottom: 4px;
+}
+.auth-loading-msg {
+  color: var(--muted, #888);
+  font-size: 0.95rem;
+}
+
+/* Sign-out confirmation */
+#signOutConfirm {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9100;
+  background: rgba(0,0,0,0.6);
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.signout-card {
+  background: var(--card, #1a1a2e);
+  border-radius: 20px;
+  padding: 28px;
+  width: 100%;
+  max-width: 320px;
+  text-align: center;
+}
+.signout-emoji {
+  font-size: 2rem;
+  margin-bottom: 12px;
+}
+.signout-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text, #fff);
+  margin-bottom: 8px;
+}
+.signout-msg {
+  font-size: 0.88rem;
+  color: var(--muted, #888);
+  margin-bottom: 24px;
+}
+.signout-btns {
+  display: flex;
+  gap: 12px;
+}
+.signout-btn {
+  flex: 1;
+  border: none;
+  border-radius: 12px;
+  padding: 14px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+.signout-btn-cancel {
+  background: rgba(255,255,255,0.08);
+  color: var(--text, #fff);
+}
+.signout-btn-confirm {
+  background: var(--accent, #e94560);
+  color: #fff;
+}
