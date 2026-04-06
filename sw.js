@@ -1,4 +1,4 @@
-const CACHE = 'trainer-v14';
+const CACHE = 'trainer-v15';
 const FILES = [
   './',
   './index.html',
