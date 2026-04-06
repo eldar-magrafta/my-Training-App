@@ -9,6 +9,11 @@ import { getPR, renderPRBadge } from './prs.js';
 
 /** Build the muscle-group grid on the home/exercises tab */
 export function buildHome() {
+  const searchEl = document.getElementById('globalExSearch');
+  if (searchEl) searchEl.value = '';
+  document.getElementById('globalSearchResults').style.display = 'none';
+  document.getElementById('muscleGrid').style.display = '';
+
   const grid = document.getElementById('muscleGrid');
   const entries = Object.entries(exerciseData);
   grid.innerHTML = '';
@@ -27,13 +32,60 @@ export function buildHome() {
   });
 }
 
+/** Global search across all exercises */
+export function globalExSearchHandler() {
+  const q = document.getElementById('globalExSearch').value.trim().toLowerCase();
+  const resultsEl = document.getElementById('globalSearchResults');
+  const gridEl = document.getElementById('muscleGrid');
+
+  if (!q) {
+    resultsEl.style.display = 'none';
+    gridEl.style.display = '';
+    return;
+  }
+
+  resultsEl.style.display = '';
+  gridEl.style.display = 'none';
+  resultsEl.innerHTML = '';
+
+  Object.entries(exerciseData).forEach(([key, group]) => {
+    group.exercises.forEach(ex => {
+      if (ex.name.toLowerCase().includes(q)) {
+        const item = document.createElement('div');
+        item.className = 'exercise-item';
+        item.innerHTML = `
+          <div><span class="ex-name">${ex.name}</span><span class="ex-search-group">${group.name}</span></div>
+          <span class="arrow">\u203a</span>`;
+        item.onclick = () => openModal(ex, group.name);
+        resultsEl.appendChild(item);
+      }
+    });
+  });
+
+  if (!resultsEl.children.length) {
+    resultsEl.innerHTML = '<div class="ex-search-empty">No exercises found</div>';
+  }
+}
+
 /** Show exercise list for a muscle group */
 export function showExercises(key) {
   state.currentMuscleKey = key;
   const group = exerciseData[key];
+  const searchEl = document.getElementById('groupExSearch');
+  if (searchEl) searchEl.value = '';
+  _renderGroupList(group);
+  showView('exerciseView');
+  setHeader(group.name, true);
+  document.getElementById('fab').classList.add('hidden');
+  state.navContext = 'exercise-list';
+}
+
+function _renderGroupList(group, filter) {
   const list = document.getElementById('exerciseList');
   list.innerHTML = '';
+  const q = (filter || '').toLowerCase();
   group.exercises.forEach(ex => {
+    if (q && !ex.name.toLowerCase().includes(q)) return;
     const item = document.createElement('div');
     item.className = 'exercise-item';
     item.innerHTML = `
@@ -42,10 +94,17 @@ export function showExercises(key) {
     item.onclick = () => openModal(ex, group.name);
     list.appendChild(item);
   });
-  showView('exerciseView');
-  setHeader(group.name, true);
-  document.getElementById('fab').classList.add('hidden');
-  state.navContext = 'exercise-list';
+  if (q && !list.children.length) {
+    list.innerHTML = '<div class="ex-search-empty">No exercises found</div>';
+  }
+}
+
+/** Filter within current muscle group */
+export function groupExSearchHandler() {
+  const group = exerciseData[state.currentMuscleKey];
+  if (!group) return;
+  const q = document.getElementById('groupExSearch').value.trim();
+  _renderGroupList(group, q);
 }
 
 /** Open the exercise detail modal */

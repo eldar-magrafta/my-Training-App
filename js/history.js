@@ -180,15 +180,19 @@ export function openExHistEntry(dateStr) {
   document.getElementById('exHistEntryDate').textContent = d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
   const hist = getExHist(state.currentExerciseName);
   const entry = hist[dateStr];
-  let sets = [];
-  let setCount = 3;
   if (entry) {
+    let sets = [];
+    let setCount = 3;
     if (entry.sets) { sets = entry.sets; setCount = sets.length; }
     else if (entry.w) { sets = [{ w: entry.w, r: entry.r }]; setCount = 1; }
+    document.getElementById('exHistSetCount').value = setCount;
+    renderExHistSets(sets);
+    document.getElementById('exHistNotes').value = entry.n || '';
+  } else {
+    document.getElementById('exHistSetCount').value = 3;
+    renderExHistSets();
+    document.getElementById('exHistNotes').value = '';
   }
-  document.getElementById('exHistSetCount').value = setCount;
-  renderExHistSets(sets);
-  document.getElementById('exHistNotes').value = entry && entry.n ? entry.n : '';
   document.getElementById('exHistBtnDel').style.display = entry ? '' : 'none';
   document.getElementById('exHistBtnDelTop').style.display = entry ? '' : 'none';
   document.getElementById('exHistEntryOverlay').classList.add('open');
@@ -196,7 +200,46 @@ export function openExHistEntry(dateStr) {
 }
 
 export function closeExHistEntry() {
+  const sheet = document.getElementById('exHistEntrySheet');
+  sheet.style.transform = '';
   document.getElementById('exHistEntryOverlay').classList.remove('open');
+}
+
+/** Initialize swipe-down-to-dismiss on the Log Exercise sheet */
+export function initExHistSheetSwipe() {
+  const overlay = document.getElementById('exHistEntryOverlay');
+  const sheet = document.getElementById('exHistEntrySheet');
+  let _sd = null;
+
+  sheet.addEventListener('touchstart', e => {
+    const touch = e.touches[0];
+    const rect = sheet.getBoundingClientRect();
+    if (touch.clientY - rect.top > 50) return;
+    _sd = { startY: touch.clientY };
+  }, { passive: true });
+
+  sheet.addEventListener('touchmove', e => {
+    if (!_sd) return;
+    const dy = Math.max(0, e.touches[0].clientY - _sd.startY);
+    e.preventDefault();
+    sheet.style.transition = 'none';
+    sheet.style.transform = `translateY(${dy}px)`;
+    overlay.style.background = `rgba(0,0,0,${Math.max(0.05, 0.65 - dy / 400)})`;
+  }, { passive: false });
+
+  sheet.addEventListener('touchend', e => {
+    if (!_sd) return;
+    const dy = e.changedTouches[0].clientY - _sd.startY;
+    sheet.style.transition = '';
+    overlay.style.background = '';
+    if (dy > 120) {
+      sheet.style.transform = `translateY(110%)`;
+      setTimeout(() => closeExHistEntry(), 250);
+    } else {
+      sheet.style.transform = 'translateY(0)';
+    }
+    _sd = null;
+  });
 }
 
 export function saveExHistEntry() {

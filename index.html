@@ -56,9 +56,12 @@
 
   <!-- ── Exercises Tab ── -->
   <div class="view active" id="homeView">
+    <input type="text" id="globalExSearch" class="ex-search-input" placeholder="Search all exercises…" oninput="globalExSearchHandler()" />
+    <div id="globalSearchResults" class="exercise-list" style="display:none;"></div>
     <div class="muscle-grid" id="muscleGrid"></div>
   </div>
   <div class="view" id="exerciseView">
+    <input type="text" id="groupExSearch" class="ex-search-input" placeholder="Search in this group…" oninput="groupExSearchHandler()" />
     <div class="exercise-list" id="exerciseList"></div>
   </div>
 
@@ -237,6 +240,7 @@
   <div class="bw-overlay" id="exHistEntryOverlay" onclick="if(event.target===this)closeExHistEntry()">
     <div class="bw-sheet" id="exHistEntrySheet">
       <div class="bw-sheet-handle"></div>
+      <button class="sheet-close-btn" onclick="closeExHistEntry()">&times;</button>
       <div class="bw-sheet-dateLbl" id="exHistEntryDate"></div>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
         <div class="bw-sheet-title" style="margin-bottom:0;">Log Exercise</div>
