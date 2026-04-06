@@ -27,7 +27,7 @@ function switchTab(tab) {
 
   if (tab === 'exercises') {
     showView('homeView');
-    setHeader('RSR Fitness 💪', false);
+    setHeader('Exercises', false);
     document.getElementById('fab').classList.add('hidden');
     state.navContext = 'home';
     buildHome();
@@ -61,7 +61,7 @@ function handleFab() {
 function handleBack() {
   if (state.navContext === 'exercise-list') {
     showView('homeView');
-    setHeader('RSR Fitness 💪', false);
+    setHeader('Exercises', false);
     document.getElementById('fab').classList.add('hidden');
     state.navContext = 'home';
     state.currentMuscleKey = null;

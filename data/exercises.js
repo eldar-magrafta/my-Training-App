@@ -313,6 +313,36 @@ export const exerciseData = {
         gif: 'assets/exercises/triceps/Triceps-Dips-on-Floor.gif' }
     ]
   },
+  forearms: {
+    name: 'Forearms', img: 'forearms',
+    exercises: [
+      { name: 'Dumbbell Wrist Curl', sets: '3–4 sets × 15–20 reps',
+        desc: 'The classic forearm flexor exercise. Builds the meaty inner forearm responsible for grip strength.',
+        tips: ['Sit with forearms resting on your thighs', 'Palms face up, wrists just past the knees', 'Curl the weight up using only the wrists', 'Full stretch at the bottom each rep'],
+        yt: 'dumbbell wrist curl forearm exercise tutorial',
+        gif: 'assets/exercises/forearms/Dumbbell-Wrist-Curl.gif' },
+      { name: 'Dumbbell Reverse Curl', sets: '3 sets × 10–12 reps',
+        desc: 'A curl with an overhand grip using dumbbells. Builds the brachioradialis and forearm extensors.',
+        tips: ['Overhand grip, palms facing down', 'Keep elbows pinned at your sides', 'Curl up without swinging', 'Slow negative on the way down'],
+        yt: 'dumbbell reverse curl forearm tutorial',
+        gif: 'assets/exercises/forearms/dumbbell-reverse-curl.gif' },
+      { name: 'Reverse Grip EZ Bar Curl', sets: '3 sets × 10–12 reps',
+        desc: 'An EZ bar curl with reverse grip. The angled bar reduces wrist strain while targeting the forearm extensors.',
+        tips: ['Grip the EZ bar with palms facing down', 'Keep elbows pinned at your sides', 'Curl the bar up in a controlled motion', 'Lower slowly for extra forearm engagement'],
+        yt: 'reverse grip ez bar curl forearm tutorial',
+        gif: 'assets/exercises/forearms/Reverse-Grip-EZ-Bar-Curl.gif' },
+      { name: 'Seated Barbell Finger Curl', sets: '3 sets × 15–20 reps',
+        desc: 'Targets the finger flexors and deep forearm muscles. Builds crushing grip strength from the fingers up.',
+        tips: ['Sit with forearms on your thighs, palms up', 'Let the bar roll to your fingertips', 'Curl fingers back up to close the hand', 'Squeeze at the top'],
+        yt: 'seated barbell finger curl forearm tutorial',
+        gif: 'assets/exercises/forearms/seated-barbell-finger-curl.gif' },
+      { name: 'Wrist Roller', sets: '3 sets × 2–3 rolls up and down',
+        desc: 'A forearm endurance exercise using a wrist roller device. Builds both flexors and extensors under sustained tension.',
+        tips: ['Hold the roller with arms extended in front', 'Roll the weight up by rotating your wrists', 'Reverse the motion to lower it back down', 'Keep arms parallel to the floor throughout'],
+        yt: 'wrist roller forearm exercise tutorial',
+        gif: 'assets/exercises/forearms/wrist-roller.gif' }
+    ]
+  },
   quads: {
     name: 'Quads', img: 'quadriceps',
     exercises: [
@@ -395,7 +425,12 @@ export const exerciseData = {
         desc: 'The most effective glute isolation exercise. Maximizes glute activation at full hip extension.',
         tips: ['Upper back rests on a bench', 'Barbell across the hips with a pad', 'Drive hips up until torso is parallel to floor', 'Squeeze glutes hard at the top for 1–2 seconds'],
         yt: 'barbell hip thrust proper form tutorial',
-        gif: 'assets/exercises/glutes/Barbell-Hip-Thrust.gif' }
+        gif: 'assets/exercises/glutes/Barbell-Hip-Thrust.gif' },
+      { name: 'Hip Thrust Machine', sets: '3–4 sets × 10–12 reps',
+        desc: 'A machine-based hip thrust that provides a fixed path and easy loading. Great for beginners and heavy glute work without barbell setup.',
+        tips: ['Adjust the pad so it sits across your hips', 'Feet flat on the platform, shoulder-width apart', 'Drive hips up to full extension', 'Squeeze glutes at the top and lower with control'],
+        yt: 'hip thrust machine glute exercise tutorial',
+        gif: 'assets/exercises/glutes/Hip-Thrust-Machine.gif' }
     ]
   },
   calves: {
@@ -436,36 +471,6 @@ export const exerciseData = {
         tips: ['Attach ankle strap to low cable', 'Stand sideways to the machine', 'Pull leg across and in front of your body', 'Squeeze inner thigh at peak contraction'],
         yt: 'cable hip adduction inner thigh exercise tutorial',
         gif: 'assets/exercises/adductors/Cable-Hips-Adduction.gif' }
-    ]
-  },
-  forearms: {
-    name: 'Forearms', img: 'forearms',
-    exercises: [
-      { name: 'Dumbbell Wrist Curl', sets: '3–4 sets × 15–20 reps',
-        desc: 'The classic forearm flexor exercise. Builds the meaty inner forearm responsible for grip strength.',
-        tips: ['Sit with forearms resting on your thighs', 'Palms face up, wrists just past the knees', 'Curl the weight up using only the wrists', 'Full stretch at the bottom each rep'],
-        yt: 'dumbbell wrist curl forearm exercise tutorial',
-        gif: 'assets/exercises/forearms/Dumbbell-Wrist-Curl.gif' },
-      { name: 'Dumbbell Reverse Curl', sets: '3 sets × 10–12 reps',
-        desc: 'A curl with an overhand grip using dumbbells. Builds the brachioradialis and forearm extensors.',
-        tips: ['Overhand grip, palms facing down', 'Keep elbows pinned at your sides', 'Curl up without swinging', 'Slow negative on the way down'],
-        yt: 'dumbbell reverse curl forearm tutorial',
-        gif: 'assets/exercises/forearms/dumbbell-reverse-curl.gif' },
-      { name: 'Reverse Grip EZ Bar Curl', sets: '3 sets × 10–12 reps',
-        desc: 'An EZ bar curl with reverse grip. The angled bar reduces wrist strain while targeting the forearm extensors.',
-        tips: ['Grip the EZ bar with palms facing down', 'Keep elbows pinned at your sides', 'Curl the bar up in a controlled motion', 'Lower slowly for extra forearm engagement'],
-        yt: 'reverse grip ez bar curl forearm tutorial',
-        gif: 'assets/exercises/forearms/Reverse-Grip-EZ-Bar-Curl.gif' },
-      { name: 'Seated Barbell Finger Curl', sets: '3 sets × 15–20 reps',
-        desc: 'Targets the finger flexors and deep forearm muscles. Builds crushing grip strength from the fingers up.',
-        tips: ['Sit with forearms on your thighs, palms up', 'Let the bar roll to your fingertips', 'Curl fingers back up to close the hand', 'Squeeze at the top'],
-        yt: 'seated barbell finger curl forearm tutorial',
-        gif: 'assets/exercises/forearms/seated-barbell-finger-curl.gif' },
-      { name: 'Wrist Roller', sets: '3 sets × 2–3 rolls up and down',
-        desc: 'A forearm endurance exercise using a wrist roller device. Builds both flexors and extensors under sustained tension.',
-        tips: ['Hold the roller with arms extended in front', 'Roll the weight up by rotating your wrists', 'Reverse the motion to lower it back down', 'Keep arms parallel to the floor throughout'],
-        yt: 'wrist roller forearm exercise tutorial',
-        gif: 'assets/exercises/forearms/wrist-roller.gif' }
     ]
   },
   abductors: {
