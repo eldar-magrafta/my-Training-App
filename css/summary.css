@@ -10,10 +10,17 @@
   background:rgba(233,69,96,0.15); border-color:rgba(233,69,96,0.3);
   color:var(--accent);
 }
+.summary-top-row { display:flex; gap:12px; margin-bottom:16px; align-items:stretch; }
 .summary-stats { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px; }
 .summary-stat-card {
   background:var(--card); border-radius:16px;
   padding:18px 12px; border:1px solid var(--border); text-align:center;
+  flex-shrink:0;
+}
+.summary-bw-chart {
+  flex:1; min-width:0; background:var(--card); border-radius:16px;
+  border:1px solid var(--border); padding:8px 6px; display:flex;
+  align-items:center; justify-content:center; overflow:hidden;
 }
 .summary-stat-val { font-size:1.6rem; font-weight:800; color:var(--accent); }
 .summary-stat-lbl {
