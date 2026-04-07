@@ -430,7 +430,17 @@ export const exerciseData = {
         desc: 'A machine-based hip thrust that provides a fixed path and easy loading. Great for beginners and heavy glute work without barbell setup.',
         tips: ['Adjust the pad so it sits across your hips', 'Feet flat on the platform, shoulder-width apart', 'Drive hips up to full extension', 'Squeeze glutes at the top and lower with control'],
         yt: 'hip thrust machine glute exercise tutorial',
-        gif: 'assets/exercises/glutes/Hip-Thrust-Machine.gif' }
+        gif: 'assets/exercises/glutes/Hip-Thrust-Machine.gif' },
+      { name: 'Lever Standing Rear Kick', sets: '3–4 sets × 12–15 reps per leg',
+        desc: 'A machine-based glute kickback performed standing. Isolates the gluteus maximus through hip extension with constant resistance.',
+        tips: ['Stand tall and grip the handles for stability', 'Drive your heel straight back without arching your lower back', 'Squeeze the glute hard at full extension', 'Lower the weight slowly — control the eccentric'],
+        yt: 'lever standing rear kick glute kickback machine tutorial',
+        gif: 'assets/exercises/glutes/Lever-Standing-Rear-Kick.gif' },
+      { name: 'Smith Machine Reverse Kickback', sets: '3–4 sets × 10–12 reps per leg',
+        desc: 'A glute kickback using the Smith machine bar. The fixed path allows heavy, controlled hip extension targeting the gluteus maximus.',
+        tips: ['Place one foot on the bar and push it up and back', 'Keep your core braced and avoid excessive lower back arch', 'Focus on squeezing the glute at the top of the movement', 'Use a slow controlled tempo on the way down'],
+        yt: 'smith machine kickback glute exercise tutorial',
+        gif: 'assets/exercises/glutes/Smith-Machine-Reverse-Kickback.gif' }
     ]
   },
   calves: {
@@ -480,7 +490,12 @@ export const exerciseData = {
         desc: 'The most direct outer hip isolation exercise. The abduction machine targets the gluteus medius and minimus through controlled lateral leg movement.',
         tips: ['Sit tall with back flat against the pad', 'Push legs outward in a slow controlled arc', 'Do not use momentum — squeeze at the peak', 'Full range of motion each rep'],
         yt: 'hip abduction machine outer thigh glute medius tutorial',
-        gif: 'assets/exercises/abductors/HiP-ABDUCTION-MACHINE.gif' }
+        gif: 'assets/exercises/abductors/HiP-ABDUCTION-MACHINE.gif' },
+      { name: 'Cable Hip Abduction', sets: '3 sets × 12–15 reps per leg',
+        desc: 'A cable-based abductor exercise providing constant tension. Targets the gluteus medius and minimus through a standing lateral leg raise.',
+        tips: ['Attach ankle strap to low cable', 'Stand sideways to the machine and brace with one hand', 'Raise your outside leg laterally in a controlled arc', 'Squeeze at the top and lower slowly'],
+        yt: 'cable hip abduction outer thigh exercise tutorial',
+        gif: 'assets/exercises/abductors/Cable-hip-abduction.gif' }
     ]
   },
   core: {
