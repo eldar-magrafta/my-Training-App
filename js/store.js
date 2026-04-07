@@ -154,6 +154,16 @@ export function saveMacroGoalsLog(log) {
   localStorage.setItem('trainer_macro_goals_log', v);
   _cloudSave('sections', 'macrogoalslog', v);
 }
+// ── Macro Goals Skipped Dates ──
+export function getMacroSkippedDates() {
+  try { return JSON.parse(localStorage.getItem('trainer_macro_skip')) || []; } catch { return []; }
+}
+export function saveMacroSkippedDates(dates) {
+  const v = JSON.stringify(dates);
+  localStorage.setItem('trainer_macro_skip', v);
+  _cloudSave('sections', 'macroskip', v);
+}
+
 /** Look up the goals that were active on a given date */
 export function getGoalsForDate(dateStr) {
   const log = getMacroGoalsLog();

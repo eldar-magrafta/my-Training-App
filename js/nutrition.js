@@ -3,7 +3,7 @@
 
 import { NL_INGREDIENTS } from '../data/ingredients.js';
 import { state } from './state.js';
-import { getNLMeals, saveNLMeals, getCustomIngs, saveCustomIngs, getMacroGoals, saveMacroGoals, getMacroGoalsLog, saveMacroGoalsLog, getGoalsForDate } from './store.js';
+import { getNLMeals, saveNLMeals, getCustomIngs, saveCustomIngs, getMacroGoals, saveMacroGoals, getMacroGoalsLog, saveMacroGoalsLog, getGoalsForDate, getMacroSkippedDates, saveMacroSkippedDates } from './store.js';
 import { showView, setHeader } from './navigation.js';
 import { calcMealTotals, MONTHS } from './utils.js';
 
@@ -94,9 +94,6 @@ export function nlShowMeal(id) {
   const meal = getNLMeals().find(m => m.id === id);
   setHeader(meal ? meal.name : 'Meal', true);
   document.getElementById('fab').classList.add('hidden');
-  // Show "Eat Today" button only for saved meals
-  const eatBtn = document.getElementById('nlEatTodayBtn');
-  if (eatBtn) eatBtn.style.display = (meal && meal.type === 'saved') ? '' : 'none';
   state.navContext = 'nl-meal';
 }
 
@@ -385,45 +382,6 @@ export function nlSaveCustom() {
   saveCustomIngs(customs); nlCloseCustom(); renderNLPicker();
 }
 
-// ── Log Saved Meal as Today ──
-
-export function nlLogSavedMeal() {
-  const meals = getNLMeals(), meal = meals.find(m => m.id === state.nlCurrentMealId);
-  if (!meal) return;
-  const logged = {
-    id: 'meal_' + Date.now(),
-    name: meal.name,
-    type: 'logged',
-    ingredients: meal.ingredients.map(i => ({ ...i })),
-    notes: '',
-    favorite: false,
-    createdAt: state.nlSelectedDate || new Date().toISOString().slice(0, 10)
-  };
-  meals.push(logged);
-  saveNLMeals(meals);
-  // Show confirmation then go to today view
-  state.nlCurrentMealId = null;
-  state.nlViewMode = 'today';
-  showView('nutritionView');
-  setHeader('Nutrition Lab', false);
-  document.getElementById('fab').classList.remove('hidden');
-  state.navContext = 'nutrition';
-  document.getElementById('nlViewToday').classList.add('active');
-  document.getElementById('nlViewSaved').classList.remove('active');
-  document.getElementById('macroGoalsSection').style.display = '';
-  document.getElementById('nlCalSection').style.display = '';
-  renderNLCalendar();
-  renderNLMeals();
-  renderMacroGoals();
-  // Brief toast
-  const toast = document.createElement('div');
-  toast.className = 'pr-toast';
-  toast.style.background = 'linear-gradient(135deg, var(--green), #27ae60)';
-  toast.textContent = `Logged "${meal.name}" for today`;
-  document.body.appendChild(toast);
-  setTimeout(() => { if (toast.parentNode) toast.remove(); }, 2600);
-}
-
 // ── Macro Goals ──
 
 function nlCalcDailyTotals() {
@@ -440,6 +398,16 @@ export function renderMacroGoals() {
   const today = new Date().toISOString().slice(0, 10);
   const viewDate = state.nlSelectedDate || today;
   const isToday = viewDate === today;
+
+  // Check if today's goal is skipped
+  if (isToday && getMacroSkippedDates().includes(today)) {
+    section.innerHTML = `<div class="macro-goals-wrap" style="text-align:center;padding:18px;">
+      <div style="color:var(--muted);font-size:0.85rem;margin-bottom:10px;">Goals paused for today</div>
+      <button class="macro-goals-edit" onclick="resumeTodayGoal()">Resume Tracking</button>
+    </div>`;
+    return;
+  }
+
   const goals = getGoalsForDate(viewDate);
   if (!goals) {
     if (isToday) {
@@ -478,12 +446,102 @@ export function renderMacroGoals() {
   </div>`;
 }
 
+// ── Macro Slider State ──
+
+let _pPct = 30, _cPct = 40; // fatPct = 100 - _pPct - _cPct
+let _dragHandle = null;
+let _sliderInited = false;
+
+function _updateMacroSliderUI() {
+  const fPct = 100 - _pPct - _cPct;
+  document.getElementById('macroSegP').style.flexBasis = _pPct + '%';
+  document.getElementById('macroSegC').style.flexBasis = _cPct + '%';
+  document.getElementById('macroSegF').style.flexBasis = fPct + '%';
+  document.getElementById('macroHandlePC').style.left = _pPct + '%';
+  document.getElementById('macroHandleCF').style.left = (_pPct + _cPct) + '%';
+
+  const cal = parseInt(document.getElementById('goalCalInput').value) || 0;
+  const pG = cal > 0 ? Math.round((cal * _pPct / 100) / 4) : 0;
+  const cG = cal > 0 ? Math.round((cal * _cPct / 100) / 4) : 0;
+  const fG = cal > 0 ? Math.round((cal * fPct / 100) / 9) : 0;
+
+  document.getElementById('macroPctP').textContent = _pPct + '%';
+  document.getElementById('macroPctC').textContent = _cPct + '%';
+  document.getElementById('macroPctF').textContent = fPct + '%';
+  document.getElementById('macroGramsP').textContent = pG + 'g';
+  document.getElementById('macroGramsC').textContent = cG + 'g';
+  document.getElementById('macroGramsF').textContent = fG + 'g';
+}
+
+function _initMacroSliderDrag() {
+  if (_sliderInited) return;
+  _sliderInited = true;
+  const bar = document.getElementById('macroSliderBar');
+  const hPC = document.getElementById('macroHandlePC');
+  const hCF = document.getElementById('macroHandleCF');
+
+  function start(handle) {
+    return (e) => { e.preventDefault(); _dragHandle = handle; };
+  }
+  hPC.addEventListener('touchstart', start('pc'), { passive: false });
+  hPC.addEventListener('mousedown', start('pc'));
+  hCF.addEventListener('touchstart', start('cf'), { passive: false });
+  hCF.addEventListener('mousedown', start('cf'));
+
+  function onMove(clientX) {
+    if (!_dragHandle) return;
+    const rect = bar.getBoundingClientRect();
+    const pct = Math.round(((clientX - rect.left) / rect.width) * 100);
+    const h2 = _pPct + _cPct;
+    if (_dragHandle === 'pc') {
+      _pPct = Math.max(5, Math.min(pct, h2 - 5));
+      _cPct = h2 - _pPct;
+    } else {
+      const newH2 = Math.max(_pPct + 5, Math.min(pct, 95));
+      _cPct = newH2 - _pPct;
+    }
+    _updateMacroSliderUI();
+  }
+
+  document.addEventListener('touchmove', e => { if (_dragHandle) { e.preventDefault(); onMove(e.touches[0].clientX); } }, { passive: false });
+  document.addEventListener('mousemove', e => { if (_dragHandle) onMove(e.clientX); });
+  document.addEventListener('touchend', () => { _dragHandle = null; });
+  document.addEventListener('mouseup', () => { _dragHandle = null; });
+}
+
+export function onMacroCalInput() { _updateMacroSliderUI(); }
+
+export function setQuickCal(val) {
+  document.getElementById('goalCalInput').value = val;
+  _updateMacroSliderUI();
+}
+
 export function openMacroGoalsModal() {
   const goals = getMacroGoals();
-  document.getElementById('goalCalInput').value = goals ? goals.calories : '';
-  document.getElementById('goalProteinInput').value = goals ? goals.protein : '';
-  document.getElementById('goalCarbsInput').value = goals ? goals.carbs : '';
-  document.getElementById('goalFatInput').value = goals ? goals.fat : '';
+  if (goals && goals.calories > 0) {
+    document.getElementById('goalCalInput').value = goals.calories;
+    const pCal = (goals.protein || 0) * 4;
+    const cCal = (goals.carbs || 0) * 4;
+    const fCal = (goals.fat || 0) * 9;
+    const total = pCal + cCal + fCal;
+    if (total > 0) {
+      _pPct = Math.round(pCal / total * 100);
+      _cPct = Math.round(cCal / total * 100);
+      if (100 - _pPct - _cPct < 5) _cPct = 95 - _pPct;
+      if (_pPct < 5) _pPct = 5;
+      if (_cPct < 5) _cPct = 5;
+    } else {
+      _pPct = 30; _cPct = 40;
+    }
+  } else {
+    document.getElementById('goalCalInput').value = '';
+    _pPct = 30; _cPct = 40;
+  }
+  _updateMacroSliderUI();
+  _initMacroSliderDrag();
+  // Show clear button only if goals exist
+  const clearBtn = document.getElementById('macroClearBtn');
+  if (clearBtn) clearBtn.style.display = goals ? '' : 'none';
   document.getElementById('macroGoalsOverlay').classList.add('open');
 }
 
@@ -492,12 +550,13 @@ export function closeMacroGoalsModal() {
 }
 
 export function saveMacroGoalsFromModal() {
-  const calories = parseInt(document.getElementById('goalCalInput').value) || 0;
-  const protein = parseInt(document.getElementById('goalProteinInput').value) || 0;
-  const carbs = parseInt(document.getElementById('goalCarbsInput').value) || 0;
-  const fat = parseInt(document.getElementById('goalFatInput').value) || 0;
-  if (!calories && !protein && !carbs && !fat) return;
-  const goals = { calories, protein, carbs, fat };
+  const cal = parseInt(document.getElementById('goalCalInput').value) || 0;
+  if (!cal) return;
+  const fPct = 100 - _pPct - _cPct;
+  const protein = Math.round((cal * _pPct / 100) / 4);
+  const carbs = Math.round((cal * _cPct / 100) / 4);
+  const fat = Math.round((cal * fPct / 100) / 9);
+  const goals = { calories: cal, protein, carbs, fat };
 
   // Persist to dated goals history (read old goals BEFORE saving new ones)
   const today = new Date().toISOString().slice(0, 10);
@@ -505,13 +564,18 @@ export function saveMacroGoalsFromModal() {
   if (log.length === 0) {
     const prev = getMacroGoals();
     if (prev && (prev.calories || prev.protein || prev.carbs || prev.fat)) {
-      if (prev.calories !== calories || prev.protein !== protein || prev.carbs !== carbs || prev.fat !== fat) {
+      if (prev.calories !== cal || prev.protein !== protein || prev.carbs !== carbs || prev.fat !== fat) {
         log.push({ date: '2020-01-01', ...prev });
       }
     }
   }
 
   saveMacroGoals(goals);
+  // Remove today from skipped if it was
+  const skipped = getMacroSkippedDates();
+  const skipIdx = skipped.indexOf(today);
+  if (skipIdx >= 0) { skipped.splice(skipIdx, 1); saveMacroSkippedDates(skipped); }
+
   const idx = log.findIndex(e => e.date === today);
   if (idx >= 0) { log[idx] = { date: today, ...goals }; }
   else { log.push({ date: today, ...goals }); log.sort((a, b) => a.date.localeCompare(b.date)); }
@@ -519,6 +583,82 @@ export function saveMacroGoalsFromModal() {
 
   closeMacroGoalsModal();
   renderMacroGoals();
+}
+
+export function clearTodayGoal() {
+  const today = new Date().toISOString().slice(0, 10);
+  const skipped = getMacroSkippedDates();
+  if (!skipped.includes(today)) { skipped.push(today); saveMacroSkippedDates(skipped); }
+  closeMacroGoalsModal();
+  renderMacroGoals();
+}
+
+export function resumeTodayGoal() {
+  const today = new Date().toISOString().slice(0, 10);
+  const skipped = getMacroSkippedDates();
+  const idx = skipped.indexOf(today);
+  if (idx >= 0) { skipped.splice(idx, 1); saveMacroSkippedDates(skipped); }
+  renderMacroGoals();
+}
+
+// ── FAB Choice + Saved Meal Picker ──
+
+export function openNLFabChoice() {
+  document.getElementById('nlFabChoiceOverlay').classList.add('open');
+}
+
+export function closeNLFabChoice() {
+  document.getElementById('nlFabChoiceOverlay').classList.remove('open');
+}
+
+export function openSavedMealPicker() {
+  const meals = getNLMeals().filter(m => m.type === 'saved');
+  const list = document.getElementById('nlSavedPickerList');
+  if (meals.length === 0) {
+    list.innerHTML = '<div class="nl-empty" style="padding:30px;"><div class="nl-empty-text">No saved meals yet.<br>Create a saved meal first.</div></div>';
+  } else {
+    list.innerHTML = meals.map(m => {
+      const t = nlCalcTotals(m);
+      return `<div class="nl-meal-card" onclick="pickSavedMeal('${m.id}')">
+        <div class="nl-meal-top"><div class="nl-meal-name">${m.name}</div></div>
+        <div class="nl-meal-macros"><div>P: <b>${t.p}g</b></div><div>C: <b>${t.c}g</b></div><div>F: <b>${t.f}g</b></div></div>
+        <div class="nl-meal-cals">\ud83d\udd25 ${t.cal} cal</div></div>`;
+    }).join('');
+  }
+  document.getElementById('nlSavedPickerOverlay').classList.add('open');
+  setTimeout(() => document.getElementById('nlSavedPickerSheet').style.transform = 'translateY(0)', 10);
+}
+
+export function closeSavedMealPicker() {
+  document.getElementById('nlSavedPickerSheet').style.transform = '';
+  document.getElementById('nlSavedPickerOverlay').classList.remove('open');
+}
+
+export function pickSavedMeal(id) {
+  const meals = getNLMeals();
+  const meal = meals.find(m => m.id === id);
+  if (!meal) return;
+  const logged = {
+    id: 'meal_' + Date.now(),
+    name: meal.name,
+    type: 'logged',
+    ingredients: meal.ingredients.map(i => ({ ...i })),
+    notes: '',
+    favorite: false,
+    createdAt: state.nlSelectedDate || new Date().toISOString().slice(0, 10)
+  };
+  meals.push(logged);
+  saveNLMeals(meals);
+  closeSavedMealPicker();
+  renderNLCalendar();
+  renderNLMeals();
+  renderMacroGoals();
+  const toast = document.createElement('div');
+  toast.className = 'pr-toast';
+  toast.style.background = 'linear-gradient(135deg, var(--green), #27ae60)';
+  toast.textContent = `Logged "${meal.name}"`;
+  document.body.appendChild(toast);
+  setTimeout(() => { if (toast.parentNode) toast.remove(); }, 2600);
 }
 
 // ── Nutrition Calendar ──

@@ -8,7 +8,7 @@ import { showView, setHeader } from './navigation.js';
 import { buildHome, showExercises, openModal, closeModal, handleOverlayClick, autoSaveExNotes, initModalSwipe, deleteExLog, globalExSearchHandler, groupExSearchHandler } from './exercises.js';
 import { renderPlans, openCreatePlan, closeCreatePlan, handleCreateOverlayClick, createPlan, donePlanDetail, setPlanEditMode, openDeletePlanConfirm, closeDeletePlanConfirm, confirmDeletePlan, showPlanDetail, openRemoveExConfirm, closeRemoveExConfirm, confirmRemoveEx, openAddTitle, closeAddTitle, handleTitleOverlayClick, saveTitle, showExercisePicker, togglePickerGroup, toggleExerciseInPlan, previewExercise } from './plans.js';
 import { buildWeightView, setBWRange, bwPrevMonth, bwNextMonth, openBWEntry, closeBWEntry, handleBWOverlay, saveBWEntry, deleteBWEntry, bwOnFileSelect, bwRemovePhoto, bwViewPhoto, closeBWViewer, openBWDeleteConfirm, closeBWDeleteConfirm, confirmDeleteAllBW } from './bodyweight.js';
-import { renderNLMeals, nlShowMeal, nlShowPicker, renderNLPicker, nlPickIngredient, nlCloseAmount, nlSetGrams, nlAdjustPickerGrams, nlConfirmAddIng, nlOpenCreateModal, nlCloseCreate, nlCreateMeal, openDeleteMealConfirm, closeDeleteMealConfirm, confirmDeleteMeal, nlToggleFav, nlDuplicateMeal, nlCopySummary, nlSetSort, nlToggleFavFilter, nlBrowseFoods, nlOpenCustomModal, nlCloseCustom, nlCustomPhotoSelected, nlSaveCustom, nlAdjustIng, nlRemoveIng, nlAutoSaveNotes, renderMacroGoals, openMacroGoalsModal, closeMacroGoalsModal, saveMacroGoalsFromModal, nlSetViewMode, nlLogSavedMeal, renderNLCalendar, nlPrevMonth, nlNextMonth, nlSelectDate } from './nutrition.js';
+import { renderNLMeals, nlShowMeal, nlShowPicker, renderNLPicker, nlPickIngredient, nlCloseAmount, nlSetGrams, nlAdjustPickerGrams, nlConfirmAddIng, nlOpenCreateModal, nlCloseCreate, nlCreateMeal, openDeleteMealConfirm, closeDeleteMealConfirm, confirmDeleteMeal, nlToggleFav, nlDuplicateMeal, nlCopySummary, nlSetSort, nlToggleFavFilter, nlBrowseFoods, nlOpenCustomModal, nlCloseCustom, nlCustomPhotoSelected, nlSaveCustom, nlAdjustIng, nlRemoveIng, nlAutoSaveNotes, renderMacroGoals, openMacroGoalsModal, closeMacroGoalsModal, saveMacroGoalsFromModal, nlSetViewMode, renderNLCalendar, nlPrevMonth, nlNextMonth, nlSelectDate, onMacroCalInput, setQuickCal, clearTodayGoal, resumeTodayGoal, openNLFabChoice, closeNLFabChoice, openSavedMealPicker, closeSavedMealPicker, pickSavedMeal } from './nutrition.js';
 import { openExHistory, setExHistRange, exHistPrevMonth, exHistNextMonth, renderExHistSets, openExHistEntry, closeExHistEntry, saveExHistEntry, deleteExHistEntry, initExHistSheetSwipe, openDeleteAllExHist, closeDeleteAllExHist, confirmDeleteAllExHist } from './history.js';
 import { rebuildAllPRs } from './prs.js';
 import { openSummary, setSummaryRange } from './summary.js';
@@ -61,7 +61,10 @@ function switchTab(tab) {
 
 function handleFab() {
   if (state.currentTab === 'plans') openCreatePlan();
-  else if (state.currentTab === 'nutrition') nlOpenCreateModal();
+  else if (state.currentTab === 'nutrition') {
+    if (state.nlViewMode === 'today') openNLFabChoice();
+    else nlOpenCreateModal();
+  }
 }
 
 function handleBack() {
@@ -208,10 +211,18 @@ window.openMacroGoalsModal = openMacroGoalsModal;
 window.closeMacroGoalsModal = closeMacroGoalsModal;
 window.saveMacroGoalsFromModal = saveMacroGoalsFromModal;
 window.nlSetViewMode = nlSetViewMode;
-window.nlLogSavedMeal = nlLogSavedMeal;
 window.nlPrevMonth = nlPrevMonth;
 window.nlNextMonth = nlNextMonth;
 window.nlSelectDate = nlSelectDate;
+window.onMacroCalInput = onMacroCalInput;
+window.setQuickCal = setQuickCal;
+window.clearTodayGoal = clearTodayGoal;
+window.resumeTodayGoal = resumeTodayGoal;
+window.openNLFabChoice = openNLFabChoice;
+window.closeNLFabChoice = closeNLFabChoice;
+window.openSavedMealPicker = openSavedMealPicker;
+window.closeSavedMealPicker = closeSavedMealPicker;
+window.pickSavedMeal = pickSavedMeal;
 
 // Summary
 window.openSummary = openSummary;

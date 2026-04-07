@@ -197,7 +197,6 @@
     <div class="nl-totals" id="nlTotals"></div>
     <div id="nlIngList"></div>
     <button class="nl-add-ing-btn" onclick="nlShowPicker()">＋ Add Ingredient</button>
-    <button class="nl-eat-today-btn" id="nlEatTodayBtn" onclick="nlLogSavedMeal()" style="display:none;">🍽  Eat Today</button>
     <div class="section-label" style="margin-top:18px;">Notes to Self</div>
     <textarea class="nl-notes" id="nlNotes" maxlength="500" placeholder="Taste, digestion, timing, reminders…" oninput="nlAutoSaveNotes()"></textarea>
     <div class="nl-meal-actions">
@@ -468,28 +467,51 @@
         <div class="modal-title">Daily Goals</div>
         <button class="modal-close" onclick="closeMacroGoalsModal()">✕</button>
       </div>
-      <div style="font-size:0.85rem;color:var(--muted);margin-bottom:16px;">Set your daily calorie and macro targets</div>
-      <div class="nl-custom-row">
-        <div class="nl-custom-field">
-          <label>Calories</label>
-          <input type="number" id="goalCalInput" placeholder="2000" inputmode="numeric" />
-        </div>
-        <div class="nl-custom-field">
-          <label>Protein (g)</label>
-          <input type="number" id="goalProteinInput" placeholder="150" inputmode="numeric" />
-        </div>
+      <div style="font-size:0.85rem;color:var(--muted);margin-bottom:16px;">Set calories first, then adjust macro split</div>
+      <label class="macro-input-label">Daily Calories</label>
+      <input type="number" id="goalCalInput" class="macro-cal-input" placeholder="2000" inputmode="numeric" oninput="onMacroCalInput()" />
+      <div class="macro-cal-quick">
+        <button onclick="setQuickCal(1500)">1500</button>
+        <button onclick="setQuickCal(2000)">2000</button>
+        <button onclick="setQuickCal(2500)">2500</button>
+        <button onclick="setQuickCal(3000)">3000</button>
       </div>
-      <div class="nl-custom-row">
-        <div class="nl-custom-field">
-          <label>Carbs (g)</label>
-          <input type="number" id="goalCarbsInput" placeholder="200" inputmode="numeric" />
+      <label class="macro-input-label" style="margin-top:16px;">Macro Distribution</label>
+      <div class="macro-slider-wrap" id="macroSliderWrap">
+        <div class="macro-slider-track" id="macroSliderBar">
+          <div class="macro-slider-seg" id="macroSegP"></div>
+          <div class="macro-slider-seg" id="macroSegC"></div>
+          <div class="macro-slider-seg" id="macroSegF"></div>
         </div>
-        <div class="nl-custom-field">
-          <label>Fat (g)</label>
-          <input type="number" id="goalFatInput" placeholder="65" inputmode="numeric" />
-        </div>
+        <div class="macro-slider-handle" id="macroHandlePC"></div>
+        <div class="macro-slider-handle" id="macroHandleCF"></div>
+      </div>
+      <div class="macro-dist-info">
+        <div class="macro-dist-item"><span class="macro-dot" style="background:#4ecdc4;"></span><span class="macro-dist-name">Protein</span><span class="macro-dist-pct" id="macroPctP">30%</span><span class="macro-dist-g" id="macroGramsP">150g</span></div>
+        <div class="macro-dist-item"><span class="macro-dot" style="background:#ff6b6b;"></span><span class="macro-dist-name">Carbs</span><span class="macro-dist-pct" id="macroPctC">40%</span><span class="macro-dist-g" id="macroGramsC">200g</span></div>
+        <div class="macro-dist-item"><span class="macro-dot" style="background:#ffd93d;"></span><span class="macro-dist-name">Fat</span><span class="macro-dist-pct" id="macroPctF">30%</span><span class="macro-dist-g" id="macroGramsF">67g</span></div>
       </div>
       <button class="create-btn" onclick="saveMacroGoalsFromModal()">Save Goals</button>
+      <button class="macro-clear-btn" id="macroClearBtn" onclick="clearTodayGoal()">Clear Today's Goal</button>
+    </div>
+  </div>
+
+  <!-- Nutrition FAB Choice -->
+  <div class="confirm-overlay" id="nlFabChoiceOverlay" onclick="if(event.target===this)closeNLFabChoice()">
+    <div class="confirm-sheet" style="padding-bottom:12px;">
+      <div class="confirm-title">Add Meal</div>
+      <button class="nl-fab-choice-btn" onclick="closeNLFabChoice();nlOpenCreateModal()">＋ Create New Meal</button>
+      <button class="nl-fab-choice-btn nl-fab-choice-saved" onclick="closeNLFabChoice();openSavedMealPicker()">📋 Use Saved Meal</button>
+      <button class="confirm-btn-cancel" onclick="closeNLFabChoice()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Saved Meal Picker -->
+  <div class="bw-overlay" id="nlSavedPickerOverlay" onclick="if(event.target===this)closeSavedMealPicker()">
+    <div class="bw-sheet" id="nlSavedPickerSheet">
+      <div class="bw-sheet-handle"></div>
+      <div class="bw-sheet-title">Choose a Saved Meal</div>
+      <div id="nlSavedPickerList" style="max-height:60vh;overflow-y:auto;"></div>
     </div>
   </div>
 
