@@ -669,27 +669,23 @@ export function renderNLCalendar() {
     const d = daysInPrev - i;
     const m = state.nlCalMon === 0 ? 12 : state.nlCalMon, y = state.nlCalMon === 0 ? state.nlCalYear - 1 : state.nlCalYear;
     const ds = `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-    const isFuture = ds > today;
-    html += `<div class="bw-cal-day other-month${mealDates.has(ds) ? ' has-data' : ''}${ds === state.nlSelectedDate ? ' selected' : ''}${isFuture ? ' future' : ''}"${!isFuture ? ` onclick="nlSelectDate('${ds}')"` : ''}>${d}</div>`;
+    html += `<div class="bw-cal-day other-month${mealDates.has(ds) ? ' has-data' : ''}${ds === state.nlSelectedDate ? ' selected' : ''}" onclick="nlSelectDate('${ds}')">${d}</div>`;
   }
   for (let d = 1; d <= daysInMon; d++) {
     const ds = `${state.nlCalYear}-${String(state.nlCalMon + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-    const isFuture = ds > today;
     const cls = [
       'bw-cal-day',
-      isFuture ? 'future' : '',
       ds === today ? 'today' : '',
       mealDates.has(ds) ? 'has-data' : '',
       ds === state.nlSelectedDate ? 'selected' : '',
     ].filter(Boolean).join(' ');
-    html += `<div class="${cls}"${!isFuture ? ` onclick="nlSelectDate('${ds}')"` : ''}>${d}</div>`;
+    html += `<div class="${cls}" onclick="nlSelectDate('${ds}')">${d}</div>`;
   }
   const remain = 42 - (firstDow + daysInMon);
   for (let d = 1; d <= remain; d++) {
     const m = state.nlCalMon === 11 ? 1 : state.nlCalMon + 2, y = state.nlCalMon === 11 ? state.nlCalYear + 1 : state.nlCalYear;
     const ds = `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-    const isFuture = ds > today;
-    html += `<div class="bw-cal-day other-month${isFuture ? ' future' : ''}${mealDates.has(ds) ? ' has-data' : ''}${ds === state.nlSelectedDate ? ' selected' : ''}"${!isFuture ? ` onclick="nlSelectDate('${ds}')"` : ''}>${d}</div>`;
+    html += `<div class="bw-cal-day other-month${mealDates.has(ds) ? ' has-data' : ''}${ds === state.nlSelectedDate ? ' selected' : ''}" onclick="nlSelectDate('${ds}')">${d}</div>`;
   }
   document.getElementById('nlCalGrid').innerHTML = html;
 }
