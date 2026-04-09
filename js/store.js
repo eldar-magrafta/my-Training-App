@@ -102,8 +102,7 @@ export function getBWData() {
 export function saveBWData(data) {
   const v = JSON.stringify(data);
   localStorage.setItem('trainer_bw', v);
-  // Skip cloud if data is very large (may contain base64 progress photos)
-  if (v.length < 900000) _cloudSave('sections', 'bodyweight', v);
+  _cloudSave('sections', 'bodyweight', v);
 }
 
 export function saveBWEmpty() {

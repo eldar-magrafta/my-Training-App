@@ -8,7 +8,7 @@ import {
   updateProfile, browserLocalPersistence, setPersistence,
   sendEmailVerification, sendPasswordResetEmail
 } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js';
-import { getFirestore, doc, setDoc, getDoc, collection, getDocs } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js';
+import { getFirestore, doc, setDoc, getDoc, deleteDoc, collection, getDocs } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js';
 import { FIREBASE_CONFIG } from './firebase-config.js';
 import { setCloudSaver } from './store.js';
 
@@ -115,4 +115,36 @@ function _updateSyncIndicator() {
   if (!el) return;
   el.classList.toggle('error', _cloudError);
   el.title = _cloudError ? 'Cloud sync issue – changes saved locally' : 'Synced';
+}
+
+// ── Photo document helpers (each photo = its own Firestore doc) ──
+
+export async function savePhotoDoc(collectionName, docId, base64) {
+  if (!_uid || !db) return;
+  try { await setDoc(doc(db, 'users', _uid, collectionName, docId), { value: base64 }); }
+  catch { /* offline — will be synced via migration on next login */ }
+}
+
+export async function loadPhotoDoc(collectionName, docId) {
+  if (!_uid || !db) return null;
+  try {
+    const snap = await getDoc(doc(db, 'users', _uid, collectionName, docId));
+    return snap.exists() ? snap.data().value : null;
+  } catch { return null; }
+}
+
+export async function deletePhotoDoc(collectionName, docId) {
+  if (!_uid || !db) return;
+  try { await deleteDoc(doc(db, 'users', _uid, collectionName, docId)); }
+  catch { /* ignore */ }
+}
+
+export async function loadAllPhotoDocs(collectionName) {
+  if (!_uid || !db) return {};
+  try {
+    const snaps = await getDocs(collection(db, 'users', _uid, collectionName));
+    const result = {};
+    snaps.forEach(d => { result[d.id] = d.data().value; });
+    return result;
+  } catch { return {}; }
 }

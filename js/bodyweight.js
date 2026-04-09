@@ -4,6 +4,8 @@
 import { state } from './state.js';
 import { getBWData, saveBWData, bwGetWeight, bwGetPhoto, saveBWEmpty } from './store.js';
 import { dateToStr, fmtDateLabel, resizeImage, MONTHS } from './utils.js';
+import { savePhoto, loadPhoto, deletePhoto, isBase64 } from './storage.js';
+import { getUid } from './cloud.js';
 
 // ── Build / Refresh ──
 
@@ -182,6 +184,11 @@ export function renderBWCalendar() {
 export function openBWDeleteConfirm() { document.getElementById('bwConfirmOverlay').classList.add('open'); }
 export function closeBWDeleteConfirm() { document.getElementById('bwConfirmOverlay').classList.remove('open'); }
 export function confirmDeleteAllBW() {
+  // Delete all photo docs from Firestore in background
+  const data = getBWData();
+  Object.entries(data).forEach(([dateStr, val]) => {
+    if (bwGetPhoto(val) === 'cloud') deletePhoto('bw-photos', dateStr);
+  });
   saveBWEmpty();
   state.bwSelDate = null;
   state.bwCurrentPhoto = null;
@@ -208,12 +215,26 @@ export function openBWEntry(dateStr) {
   renderBWCalendar();
   const existing = getBWData()[dateStr];
   const w = existing ? bwGetWeight(existing) : null;
-  state.bwCurrentPhoto = existing ? bwGetPhoto(existing) : null;
+  const rawPhoto = existing ? bwGetPhoto(existing) : null;
 
   document.getElementById('bwSheetDate').textContent = fmtDateLabel(dateStr);
   document.getElementById('bwInput').value = w || '';
   document.getElementById('bwBtnDel').classList.toggle('visible', !!existing);
-  bwRenderPhotoArea();
+
+  // Load photo from cache/Firestore if it's stored remotely
+  if (rawPhoto === 'cloud') {
+    state.bwCurrentPhoto = null; // show loading state
+    bwRenderPhotoArea();
+    loadPhoto('bw-photos', dateStr).then(base64 => {
+      if (state.bwSelDate === dateStr) { // still on same entry
+        state.bwCurrentPhoto = base64 || 'cloud';
+        bwRenderPhotoArea();
+      }
+    });
+  } else {
+    state.bwCurrentPhoto = rawPhoto;
+    bwRenderPhotoArea();
+  }
 
   document.getElementById('bwOverlay').classList.add('open');
   setTimeout(() => document.getElementById('bwInput').focus(), 380);
@@ -228,7 +249,7 @@ export function handleBWOverlay(e) {
   if (e.target === document.getElementById('bwOverlay')) closeBWEntry();
 }
 
-export function saveBWEntry() {
+export async function saveBWEntry() {
   const val = parseFloat(document.getElementById('bwInput').value);
   const inp = document.getElementById('bwInput');
   if (!val || val <= 0 || val > 500) {
@@ -237,8 +258,31 @@ export function saveBWEntry() {
     return;
   }
   const data = getBWData();
-  const entry = state.bwCurrentPhoto ? { w: Math.round(val * 10) / 10, p: state.bwCurrentPhoto } : Math.round(val * 10) / 10;
-  data[state.bwSelDate] = entry;
+  const dateStr = state.bwSelDate;
+  const weight = Math.round(val * 10) / 10;
+
+  // Delete old photo from Firestore if being replaced or removed
+  const oldPhoto = bwGetPhoto(data[dateStr]);
+  if (oldPhoto && oldPhoto === 'cloud' && state.bwCurrentPhoto !== oldPhoto) {
+    deletePhoto('bw-photos', dateStr);
+  }
+
+  if (state.bwCurrentPhoto && isBase64(state.bwCurrentPhoto)) {
+    // Save photo to its own Firestore doc + IndexedDB cache
+    try {
+      await savePhoto('bw-photos', dateStr, state.bwCurrentPhoto);
+      data[dateStr] = { w: weight, p: 'cloud' };
+    } catch {
+      // Offline — keep base64 inline, will be migrated on next login
+      data[dateStr] = { w: weight, p: state.bwCurrentPhoto };
+    }
+  } else if (state.bwCurrentPhoto) {
+    // Already a cloud marker or other — preserve it
+    data[dateStr] = { w: weight, p: state.bwCurrentPhoto };
+  } else {
+    data[dateStr] = weight;
+  }
+
   saveBWData(data);
   closeBWEntry();
   buildWeightView();
@@ -246,7 +290,10 @@ export function saveBWEntry() {
 
 export function deleteBWEntry() {
   const data = getBWData();
-  delete data[state.bwSelDate];
+  const dateStr = state.bwSelDate;
+  const photo = bwGetPhoto(data[dateStr]);
+  if (photo === 'cloud') deletePhoto('bw-photos', dateStr);
+  delete data[dateStr];
   saveBWData(data);
   state.bwSelDate = null;
   closeBWEntry();
@@ -257,12 +304,15 @@ export function deleteBWEntry() {
 
 function bwRenderPhotoArea() {
   const area = document.getElementById('bwPhotoArea');
-  if (state.bwCurrentPhoto) {
+  if (state.bwCurrentPhoto && state.bwCurrentPhoto !== 'cloud') {
     area.innerHTML = `
       <div class="bw-thumb-wrap">
         <img class="bw-thumb-img" src="${state.bwCurrentPhoto}" onclick="bwViewPhoto()" />
         <button class="bw-thumb-remove" onclick="bwRemovePhoto()">\u2715</button>
       </div>`;
+  } else if (state.bwCurrentPhoto === 'cloud') {
+    // Photo exists remotely but couldn't be loaded (offline)
+    area.innerHTML = `<div style="text-align:center;color:var(--muted);font-size:0.8rem;padding:10px 0;">\ud83d\udcf7 Photo saved (offline — connect to view)</div>`;
   } else {
     area.innerHTML = `<button class="bw-add-photo-btn" onclick="document.getElementById('bwFileInput').click()">\ud83d\udcf7&nbsp; Add Progress Photo <span style="font-size:0.75rem;opacity:0.5;">(optional)</span></button>`;
   }
@@ -281,7 +331,7 @@ export function bwOnFileSelect(e) {
 export function bwRemovePhoto() { state.bwCurrentPhoto = null; bwRenderPhotoArea(); }
 
 export function bwViewPhoto() {
-  if (!state.bwCurrentPhoto) return;
+  if (!state.bwCurrentPhoto || state.bwCurrentPhoto === 'cloud') return;
   document.getElementById('bwViewerImg').src = state.bwCurrentPhoto;
   document.getElementById('bwViewer').classList.add('open');
 }
